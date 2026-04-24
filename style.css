@@ -486,12 +486,30 @@ h3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.service-preview-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .cards.cards-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .blog-list,
 .posts {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pricing-grid,
+.addon-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.pricing-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.addon-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -506,6 +524,8 @@ h3 {
 .card,
 .post,
 .service-card,
+.pricing-card,
+.addon-card,
 .info-card,
 .contact-card,
 .about-copy,
@@ -519,6 +539,8 @@ h3 {
 .card,
 .post,
 .service-card,
+.pricing-card,
+.addon-card,
 .info-card {
   display: grid;
   align-content: start;
@@ -538,6 +560,8 @@ h3 {
 .card p,
 .post p,
 .service-card p,
+.pricing-card p,
+.addon-card p,
 .info-card p,
 .about-copy p,
 .process-panel p,
@@ -578,6 +602,45 @@ h3 {
 .feature-list.simple li {
   color: var(--text);
   font-weight: 600;
+}
+
+.pricing-card h3 {
+  font-size: 1.6rem;
+}
+
+.price-value {
+  color: var(--accent-strong);
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+
+.pricing-fit {
+  margin-top: auto;
+  font-weight: 600;
+}
+
+.pricing-fit strong {
+  color: var(--text);
+}
+
+.addon-card h3 {
+  font-size: 1.08rem;
+}
+
+.addon-price {
+  color: var(--accent-strong);
+  font-family: var(--font-display);
+  font-size: 1.28rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.pricing-note {
+  margin-top: 1.25rem;
+  padding: 1.15rem 1.3rem;
+  border-radius: var(--radius-lg);
 }
 
 .card-link,
@@ -855,6 +918,17 @@ button.btn {
   flex-shrink: 0;
 }
 
+.footer-link {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+  text-decoration: underline;
+}
+
 .footer-inner {
   display: flex;
   flex-wrap: wrap;
@@ -1047,8 +1121,11 @@ button.btn {
 
 @media (max-width: 900px) {
   .cards,
+  .service-preview-grid,
   .blog-list,
   .posts,
+  .pricing-grid,
+  .addon-grid,
   .service-grid,
   .principles {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1153,9 +1230,12 @@ button.btn {
   }
 
   .cards,
+  .service-preview-grid,
   .cards.cards-4,
   .blog-list,
   .posts,
+  .pricing-grid,
+  .addon-grid,
   .service-grid,
   .principles {
     grid-template-columns: 1fr;
