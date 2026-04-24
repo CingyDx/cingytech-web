@@ -4,13 +4,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cingy.Tech – Opravy počítačů a IT pomoc | Domů</title>
+  <title>Cingy.Tech | Opravy počítačů, upgrady a IT pomoc v okolí Lán</title>
   <meta name="description"
-    content="Cingy.Tech – opravy PC, výměna komponent, stavba počítačů a domácí IT pomoc v okolí Lán." />
+    content="Lokální IT servis v okolí Lán. Opravy PC a notebooků, upgrady komponent, stavba počítačů na míru a domácí IT pomoc." />
+  <meta name="theme-color" content="#08101a" />
   <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body class="home-page">
   <header class="site-header">
     <div class="container header-inner">
       <a class="brand" href="index.html">Cingy.Tech</a>
@@ -22,13 +23,13 @@
         <span class="bar"></span>
       </button>
 
-      <nav id="site-nav" class="site-nav" role="navigation">
+      <nav id="site-nav" class="site-nav" aria-label="Hlavní navigace">
         <ul>
           <li><a class="nav-link" href="index.html">Domů</a></li>
-          <li><a class="nav-link" href="sluzby.html">Služby</a></li>
-          <li><a class="nav-link" href="omne.html">O mně</a></li>
-          <li><a class="nav-link" href="blog.html">Blog</a></li>
-          <li><a class="nav-link" href="kontakt.html">Kontakt</a></li>
+          <li><a class="nav-link" href="pages/sluzby.html">Služby</a></li>
+          <li><a class="nav-link" href="pages/omne.html">O mně</a></li>
+          <li><a class="nav-link" href="pages/blog/index.html">Blog</a></li>
+          <li><a class="nav-link" href="pages/kontakt.html">Kontakt</a></li>
         </ul>
       </nav>
     </div>
@@ -36,75 +37,204 @@
 
   <main class="page" id="page">
     <section class="hero">
-      <div class="container hero-inner">
-        <div class="hero-content glass">
-          <h1>Opravy počítačů, stavba nových sestav a IT pomoc v okolí Lán</h1>
-          <p>Jsem Cingy. Postarám se, aby váš počítač běžel jako nový — rychle, spolehlivě a bez zbytečných komplikací.
+      <div class="container hero-layout">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Lokální servis pro PC a notebooky</p>
+          <h1>Počítač, který zase pracuje pro vás.</h1>
+          <p class="hero-lead">
+            Pomůžu s opravou, upgradem i sestavením nového PC. Bez zbytečného technického žargonu,
+            s jasným vysvětlením a řešením, které dává smysl i dlouhodobě.
           </p>
+
           <div class="hero-actions">
-            <a class="btn" href="sluzby.html">Zjistit více o službách</a>
-            <a class="btn ghost" href="kontakt.html">Kontakt</a>
+            <a class="btn" href="pages/kontakt.html">Napsat poptávku</a>
+            <a class="btn ghost" href="pages/sluzby.html">Projít služby</a>
+          </div>
+
+          <ul class="hero-points">
+            <li>Opravy PC a notebooků</li>
+            <li>Výměny SSD, RAM, chlazení a dalších komponent</li>
+            <li>Domácí IT pomoc v okolí Lán</li>
+          </ul>
+        </div>
+
+        <div class="hero-visual reveal">
+          <div class="hero-image-frame">
+            <img src="assets/hero.jpg" alt="Pracovní stůl s počítačem a servisním vybavením" fetchpriority="high"
+              width="1600" height="900" />
+          </div>
+
+          <aside class="floating-panel glass">
+            <p class="panel-label">Co řeším nejčastěji</p>
+            <div class="tag-list">
+              <span class="tag">Diagnostika</span>
+              <span class="tag">Zrychlení systému</span>
+              <span class="tag">Upgrade komponent</span>
+              <span class="tag">Čištění a chlazení</span>
+              <span class="tag">Přenos dat</span>
+            </div>
+            <p class="panel-note">Lány a okolí • Osobní předání, domácí pomoc i konzultace</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="sluzby-preview" class="section">
+      <div class="container">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Služby</p>
+          <h2>Praktická pomoc od prvního problému až po hotové řešení</h2>
+          <p class="lead">
+            Místo složitého servisu čekejte srozumitelný postup, jasné doporučení a řešení podle toho,
+            co zařízení opravdu potřebuje.
+          </p>
+        </div>
+
+        <div class="cards cards-4">
+          <article class="card glass reveal">
+            <h3>Opravy a diagnostika</h3>
+            <p>Najdu příčinu problému a navrhnu cestu, která dává smysl výkonem i cenou.</p>
+            <ul class="feature-list">
+              <li>PC a notebooky</li>
+              <li>Softwarové i hardwarové závady</li>
+              <li>Reinstalace a základní nastavení</li>
+            </ul>
+            <a class="card-link" href="pages/sluzby.html#opravy">Zjistit víc</a>
+          </article>
+
+          <article class="card glass reveal">
+            <h3>Upgrady komponent</h3>
+            <p>Když zařízení nestačí, pomůžu ho posunout dál bez zbytečného utrácení.</p>
+            <ul class="feature-list">
+              <li>SSD a RAM</li>
+              <li>Chlazení a zdroje</li>
+              <li>Kontrola kompatibility a stability</li>
+            </ul>
+            <a class="card-link" href="pages/sluzby.html#upgrady">Zjistit víc</a>
+          </article>
+
+          <article class="card glass reveal">
+            <h3>Nové sestavy na míru</h3>
+            <p>Sestavím počítač pro práci, studium nebo hraní a vysvětlím, proč byly zvolené právě tyto díly.</p>
+            <ul class="feature-list">
+              <li>Návrh podle rozpočtu</li>
+              <li>Komponenty sladěné k účelu</li>
+              <li>Instalace systému a testy</li>
+            </ul>
+            <a class="card-link" href="pages/sluzby.html#stavba">Zjistit víc</a>
+          </article>
+
+          <article class="card glass reveal">
+            <h3>Domácí IT pomoc</h3>
+            <p>Pomoc s nastavením zařízení a běžnými problémy přímo tam, kde je používáte.</p>
+            <ul class="feature-list">
+              <li>Wi-Fi, tiskárny a účty</li>
+              <li>Přenos a záloha dat</li>
+              <li>Základní uživatelské nastavení</li>
+            </ul>
+            <a class="card-link" href="pages/sluzby.html#domaci">Zjistit víc</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-alt">
+      <div class="container split-grid">
+        <article class="process-panel glass reveal">
+          <p class="eyebrow">Jak to probíhá</p>
+          <h2>Nejdřív zjistíme příčinu, pak vybereme rozumné řešení</h2>
+
+          <ol class="process-list">
+            <li>
+              <span>1</span>
+              <div>
+                <h3>Ozvete se s problémem</h3>
+                <p>Popíšete, co zařízení dělá, kdy problém začal a co od řešení očekáváte.</p>
+              </div>
+            </li>
+            <li>
+              <span>2</span>
+              <div>
+                <h3>Následuje diagnostika a doporučení</h3>
+                <p>Vysvětlím, co je příčina problému a jestli dává větší smysl oprava, upgrade nebo nová sestava.</p>
+              </div>
+            </li>
+            <li>
+              <span>3</span>
+              <div>
+                <h3>Řešení, test a předání</h3>
+                <p>Po dokončení vše zkontroluju a srozumitelně shrnu, co bylo hotové a na co si dát pozor dál.</p>
+              </div>
+            </li>
+          </ol>
+        </article>
+
+        <aside class="check-panel glass reveal">
+          <p class="eyebrow">Kdy se ozvat</p>
+          <h2>Typické situace, kdy má pomoc největší smysl</h2>
+          <ul class="checklist">
+            <li>Notebook je hlučný, přehřívá se nebo padá výkon.</li>
+            <li>Počítač startuje pomalu a práce se zbytečně vleče.</li>
+            <li>Potřebujete víc místa, rychlosti nebo novou sestavu.</li>
+            <li>Řešíte přenos dat, reinstalaci systému nebo nastavení doma.</li>
+          </ul>
+          <a class="btn ghost" href="pages/kontakt.html">Domluvit konzultaci</a>
+        </aside>
+      </div>
+    </section>
+
+    <section id="blog-preview" class="section">
+      <div class="container">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Blog</p>
+          <h2>Krátké tipy, které pomůžou ještě před servisem</h2>
+          <p class="lead">Praktické články o údržbě, rychlosti systému a péči o zařízení bez zbytečné omáčky.</p>
+        </div>
+
+        <div class="blog-list">
+          <article class="post glass reveal">
+            <h3>Jak poznat, že je čas vyčistit notebook</h3>
+            <p>Na co si dát pozor, když ventilátor hučí, zařízení se přehřívá a výkon padá.</p>
+            <a class="card-link" href="pages/blog/blog1.html">Číst článek</a>
+          </article>
+
+          <article class="post glass reveal">
+            <h3>SSD vs HDD: kdy se upgrade opravdu vyplatí</h3>
+            <p>Co čekat od výměny disku a jak se připravit na bezpečný přesun dat.</p>
+            <a class="card-link" href="pages/blog/blog2.html">Číst článek</a>
+          </article>
+
+          <article class="post glass reveal">
+            <h3>Co dělat při pomalém startu systému</h3>
+            <p>Rychlý checklist, který pomůže odhalit, proč se počítač rozjíždí déle, než by měl.</p>
+            <a class="card-link" href="pages/blog/blog6.html">Číst článek</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="cta-banner glass reveal">
+          <div>
+            <p class="eyebrow">Kontakt</p>
+            <h2>Potřebujete opravit PC, zrychlit notebook nebo vybrat nové komponenty?</h2>
+            <p>
+              Napište mi, co zařízení dělá, co od něj čekáte a jestli řešíte opravu, upgrade nebo novou sestavu.
+            </p>
+          </div>
+          <div class="cta-actions">
+            <a class="btn" href="pages/kontakt.html">Napsat zprávu</a>
+            <a class="btn ghost" href="pages/omne.html">Zjistit víc o mně</a>
           </div>
         </div>
-
-        <div class="hero-image">
-          <img src="assets/hero.jpg" alt="Pracovní stůl a počítač (ilustrační foto)" loading="lazy" width="1600" height="900" />
-        </div>
-      </div>
-    </section>
-
-    <section id="sluzby-preview" class="section container">
-      <h2>Hlavní služby</h2>
-      <p class="lead">Rychlý přehled - pokud chcete podrobnosti, přejděte na stránku Služby.</p>
-
-      <div class="cards">
-        <article class="card glass">
-          <h3>Opravy PC a notebooků</h3>
-          <p>Diagnostika, výměna vadných dílů, odstranění softwarových chyb, reinstalace systému.</p>
-          <a class="card-link" href="sluzby.html#opravy">Více</a>
-        </article>
-
-        <article class="card glass">
-          <h3>Výměna a upgrady komponent</h3>
-          <p>SSD, RAM, chlazení, napájení - doporučím optimální poměr cena/výkon a provedení.</p>
-          <a class="card-link" href="sluzby.html#upgrady">Více</a>
-        </article>
-
-        <article class="card glass">
-          <h3>Stavba nových sestav</h3>
-          <p>Sestavím PC na míru pro práci, studium nebo hraní. Pomohu s výběrem komponent.</p>
-          <a class="card-link" href="sluzby.html#stavba">Více</a>
-        </article>
-      </div>
-    </section>
-
-    <section id="blog-preview" class="section container">
-      <h2>Poslední tipy z blogu</h2>
-      <div class="blog-list">
-        <article class="post glass">
-          <h3>Jak poznat, že je čas vyčistit notebook</h3>
-          <p>Ventilátor hučí, zařízení se přehřívá a výkon klesá. Krátký návod, co zkontrolovat.</p>
-          <a href="blog.html">Číst</a>
-        </article>
-
-        <article class="post glass">
-          <h3>SSD vs HDD — proč má smysl přejít</h3>
-          <p>Vysvětlím rozdíly, reálný přínos a jak vykonat přesun dat bez stresu.</p>
-          <a href="blog.html">Číst</a>
-        </article>
-
-        <article class="post glass">
-          <h3>Proč pravidelná údržba prodlouží životnost</h3>
-          <p>Jednoduché úkony, které zabrání větším závadám a udrží výkon.</p>
-          <a href="blog.html">Číst</a>
-        </article>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>© 2025 Cingy.Tech | Vytvořil Kryštof Cingálek | Studentský projekt</p>
+      <p>© 2026 Cingy.Tech | Vytvořil Kryštof Cingálek</p>
       <p class="small">Lokalita: Lány, Česká republika • E-mail: cingy.tech@gmail.com</p>
     </div>
   </footer>

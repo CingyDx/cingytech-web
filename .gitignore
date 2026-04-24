@@ -11,3 +11,6 @@ Thumbs.db
 # Environment / secrets
 .env
 .env.*
+
+# Local backups
+.PuvodniZaloha/
