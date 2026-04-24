@@ -378,7 +378,7 @@ h3 {
 }
 
 .hero-layout-feature {
-  align-items: stretch;
+  align-items: center;
 }
 
 .hero-support {
@@ -620,6 +620,10 @@ h3 {
 
 .service-preview-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.service-web-heading {
+  margin-top: 3.4rem;
 }
 
 .cards.cards-4 {
@@ -1164,6 +1168,16 @@ button.btn {
 
 :root:not([data-theme="light"]) .hero-placeholder-frame::after {
   background: linear-gradient(180deg, rgba(3, 7, 14, 0.08) 0%, rgba(3, 7, 14, 0.74) 100%);
+}
+
+:root:not([data-theme="light"]) .hero-points li::before,
+:root:not([data-theme="light"]) .feature-list li::before,
+:root:not([data-theme="light"]) .checklist li::before {
+  background: #7ca3ff;
+}
+
+:root:not([data-theme="light"]) .hero-points li::before {
+  box-shadow: 0 0 0 0.35rem rgba(124, 163, 255, 0.14);
 }
 
 :root:not([data-theme="light"]) .tag {
