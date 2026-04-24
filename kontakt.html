@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="cs">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cingy.Tech – Kontakt</title>
+  <meta name="description" content="Kontaktujte Cingy.Tech – domluvíme opravu nebo konzultaci." />
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">Cingy.Tech</a>
+      <button id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
+        <span class="sr-only">Otevřít navigaci</span>
+        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+      </button>
+      <nav id="site-nav" class="site-nav" role="navigation">
+        <ul>
+          <li><a class="nav-link" href="index.html">Domů</a></li>
+          <li><a class="nav-link" href="sluzby.html">Služby</a></li>
+          <li><a class="nav-link" href="omne.html">O mně</a></li>
+          <li><a class="nav-link" href="blog.html">Blog</a></li>
+          <li><a class="nav-link" href="kontakt.html">Kontakt</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page" id="page">
+    <section class="section container">
+      <h1>Kontakt</h1>
+      <p class="lead">Chcete domluvit opravu nebo se na něco zeptat? Napište mi zprávu pomocí formuláře níže.</p>
+
+      <div class="contact-grid glass">
+        <form id="contact-form" class="contact-form" name="kontakt" method="POST" data-netlify="true"
+  netlify-honeypot="bot-field" action="/">
+
+
+          <input type="hidden" name="form-name" value="kontakt" />
+          <p style="display:none;">
+            <label>Nechej prázdné: <input name="bot-field" /></label>
+          </p>
+
+          <label for="name">Jméno</label>
+          <input id="name" name="name" type="text" required>
+
+          <label for="email">E-mail</label>
+          <input id="email" name="email" type="email" required>
+
+          <label for="message">Zpráva</label>
+          <textarea id="message" name="message" rows="6" required></textarea>
+
+          <button class="btn" type="submit">Odeslat</button>
+          <p id="form-status" class="form-status" aria-live="polite"></p>
+        </form>
+
+        <aside class="contact-info">
+          <h2>Kontaktovat mě přímo</h2>
+          <p>Lokalita: Lány, Česká republika</p>
+          <p>E-mail: cingy.tech@gmail.com</p>
+          <p>Pro rychlé dotazy použijte e-mail nebo formulář - odpovím co nejdříve.</p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>© 2025 Cingy.Tech | Vytvořil Kryštof Cingálek | Studentský projekt</p>
+      <p class="small">Lokalita: Lány, Česká republika • E-mail: cingy.tech@gmail.com</p>
+    </div>
+  </footer>
+
+  <script src="script.js" defer></script>
+</body>
+
+</html>
