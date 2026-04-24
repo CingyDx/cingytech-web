@@ -173,7 +173,8 @@ h3 {
   position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.72rem;
+  min-width: 0;
   font-family: var(--font-display);
   font-size: 1.18rem;
   font-weight: 700;
@@ -181,13 +182,17 @@ h3 {
   text-decoration: none;
 }
 
-.brand::before {
-  content: "";
-  width: 0.85rem;
-  height: 0.85rem;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--accent) 0%, #ef9a54 100%);
-  box-shadow: 0 0 0 6px rgba(196, 91, 51, 0.12);
+.brand-logo {
+  width: 2.35rem;
+  height: 2.35rem;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 10px 18px rgba(3, 177, 249, 0.18));
+}
+
+.brand-text {
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .header-controls {
@@ -195,6 +200,7 @@ h3 {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  margin-left: auto;
 }
 
 .site-nav ul {
@@ -825,6 +831,30 @@ button.btn {
   border-top: 1px solid rgba(255, 255, 255, 0.46);
 }
 
+.footer-brand-group {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+}
+
+.footer-logo {
+  width: 1.7rem;
+  height: 1.7rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
 .footer-inner {
   display: flex;
   flex-wrap: wrap;
@@ -878,9 +908,9 @@ button.btn {
   border-bottom-color: rgba(124, 163, 255, 0.1);
 }
 
-:root:not([data-theme="light"]) .brand::before {
-  background: linear-gradient(135deg, #9bb8ff 0%, #6289ff 100%);
-  box-shadow: 0 0 0 6px rgba(124, 163, 255, 0.12);
+:root:not([data-theme="light"]) .brand-logo,
+:root:not([data-theme="light"]) .footer-logo {
+  filter: drop-shadow(0 10px 18px rgba(99, 153, 255, 0.22));
 }
 
 :root:not([data-theme="light"]) .site-nav a:hover,
@@ -1062,6 +1092,16 @@ button.btn {
   .theme-toggle {
     gap: 0;
     padding-inline: 0.45rem;
+  }
+
+  .brand {
+    gap: 0.55rem;
+    font-size: 1.05rem;
+  }
+
+  .brand-logo {
+    width: 2rem;
+    height: 2rem;
   }
 
   .site-nav.open {

@@ -1,7 +1,6 @@
 (function () {
   const THEME_STORAGE_KEY = 'cingy-theme';
-  const DARK_THEME_COLOR = '#08101a';
-  const LIGHT_THEME_COLOR = '#f6efe4';
+  const BRAND_THEME_COLOR = '#03b1f9';
 
   applyInitialTheme();
   document.documentElement.classList.add('js');
@@ -50,17 +49,17 @@
     return document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
   }
 
-  function updateThemeColorMeta(theme) {
+  function updateThemeColorMeta() {
     const meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) return;
 
-    meta.setAttribute('content', theme === 'light' ? LIGHT_THEME_COLOR : DARK_THEME_COLOR);
+    meta.setAttribute('content', BRAND_THEME_COLOR);
   }
 
   function setTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
     storeTheme(theme);
-    updateThemeColorMeta(theme);
+    updateThemeColorMeta();
     updateThemeToggle(document.querySelector('.theme-toggle'), theme);
   }
 
