@@ -1,0 +1,13 @@
+﻿# Windows / macOS
+Thumbs.db
+.DS_Store
+
+# VS Code local settings
+.vscode/
+
+# Logs
+*.log
+
+# Environment / secrets
+.env
+.env.*
