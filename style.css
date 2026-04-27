@@ -28,12 +28,16 @@
 
 html {
   min-height: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-height: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
   font-family: var(--font-body);
   color: var(--text);
   line-height: 1.65;
@@ -199,6 +203,7 @@ h3 {
   align-items: center;
   gap: 0.75rem;
   margin-left: auto;
+  z-index: 2;
 }
 
 .site-nav ul {
@@ -237,9 +242,11 @@ h3 {
 }
 
 .nav-toggle {
+  position: relative;
   display: none;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 3rem;
   height: 3rem;
   padding: 0;
@@ -248,15 +255,37 @@ h3 {
   background: rgba(255, 255, 255, 0.7);
   box-shadow: var(--shadow-soft);
   cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .nav-toggle .bar {
+  position: absolute;
   display: block;
   width: 1.2rem;
   height: 2px;
-  margin: 0.2rem 0;
   border-radius: 999px;
   background: var(--text);
+  transition: transform 0.18s ease, opacity 0.18s ease, background 0.18s ease;
+}
+
+.nav-toggle .bar:nth-of-type(2) {
+  transform: translateY(-0.36rem);
+}
+
+.nav-toggle .bar:nth-of-type(4) {
+  transform: translateY(0.36rem);
+}
+
+.nav-toggle[aria-expanded="true"] .bar:nth-of-type(2) {
+  transform: rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] .bar:nth-of-type(3) {
+  opacity: 0;
+}
+
+.nav-toggle[aria-expanded="true"] .bar:nth-of-type(4) {
+  transform: rotate(-45deg);
 }
 
 .theme-toggle {
@@ -683,6 +712,16 @@ h3 {
   display: grid;
   align-content: start;
   gap: 0.95rem;
+  min-width: 0;
+}
+
+.card h3,
+.post h2,
+.service-card h2,
+.pricing-card h3,
+.addon-card h3,
+.info-card h2 {
+  overflow-wrap: anywhere;
 }
 
 .posts .post {
@@ -1322,6 +1361,14 @@ button.btn {
 }
 
 @media (max-width: 720px) {
+  :root.nav-open {
+    overflow: hidden;
+  }
+
+  :root.nav-open body {
+    overflow: hidden;
+  }
+
   .container {
     width: min(var(--container), calc(100% - 1.1rem));
   }
@@ -1334,12 +1381,47 @@ button.btn {
     padding: 1.2rem 0 3.25rem;
   }
 
+  .page-hero {
+    padding-top: 1.35rem;
+  }
+
+  .header-inner {
+    gap: 0.6rem;
+    padding: 0.78rem 0;
+  }
+
+  .header-controls {
+    gap: 0.45rem;
+  }
+
   .site-nav {
-    display: none;
+    position: fixed;
+    top: 4.65rem;
+    right: max(0.55rem, env(safe-area-inset-right));
+    left: max(0.55rem, env(safe-area-inset-left));
+    display: block;
+    width: auto;
+    max-height: calc(100dvh - 5.35rem);
+    padding: 0.65rem;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    border-radius: 1.35rem;
+    background: rgba(255, 248, 239, 0.94);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(22px);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-0.5rem) scale(0.98);
+    transform-origin: top right;
+    visibility: hidden;
+    transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease;
+    z-index: 60;
   }
 
   .nav-toggle {
     display: inline-flex;
+    width: 2.85rem;
+    height: 2.85rem;
   }
 
   .theme-toggle-label {
@@ -1348,7 +1430,10 @@ button.btn {
 
   .theme-toggle {
     gap: 0;
+    min-width: 2.85rem;
+    min-height: 2.85rem;
     padding-inline: 0.45rem;
+    justify-content: center;
   }
 
   .brand {
@@ -1362,26 +1447,25 @@ button.btn {
   }
 
   .site-nav.open {
-    display: block;
-    position: absolute;
-    top: calc(100% + 0.55rem);
-    right: 0;
-    width: min(18rem, calc(100vw - 1.1rem));
-    padding: 0.65rem;
-    border-radius: 1.2rem;
-    background: rgba(255, 248, 239, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.78);
-    box-shadow: var(--shadow);
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    visibility: visible;
   }
 
   .site-nav.open ul {
+    gap: 0.35rem;
     flex-direction: column;
     align-items: stretch;
   }
 
   .site-nav.open a {
     width: 100%;
+    min-height: 3rem;
     justify-content: flex-start;
+    padding: 0.85rem 1rem;
+    border-radius: 1rem;
+    font-size: 1rem;
   }
 
   .hero {
@@ -1394,6 +1478,11 @@ button.btn {
 
   h2 {
     font-size: clamp(1.85rem, 9vw, 2.5rem);
+  }
+
+  .post h2,
+  .service-card h2 {
+    font-size: clamp(1.65rem, 8vw, 2.15rem);
   }
 
   .hero-lead,
@@ -1426,6 +1515,10 @@ button.btn {
     bottom: 0.8rem;
   }
 
+  .about-photo img {
+    min-height: 22rem;
+  }
+
   .cards,
   .service-preview-grid,
   .cards.cards-4,
@@ -1441,6 +1534,8 @@ button.btn {
   .card,
   .post,
   .service-card,
+  .pricing-card,
+  .addon-card,
   .info-card,
   .contact-card,
   .about-copy,
@@ -1456,7 +1551,164 @@ button.btn {
   }
 
   .footer-inner {
+    flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 560px) {
+  .container {
+    width: min(var(--container), calc(100% - 0.9rem));
+  }
+
+  .hero-layout,
+  .split-grid,
+  .about-shell,
+  .contact-shell {
+    gap: 1.25rem;
+  }
+
+  .hero-actions,
+  .cta-actions {
+    width: 100%;
+  }
+
+  .hero-actions .btn,
+  .cta-actions .btn,
+  .article-action .btn {
+    width: 100%;
+  }
+
+  .floating-panel {
+    margin-top: -2.1rem;
+    padding: 1.05rem;
+  }
+
+  .floating-panel-web {
+    margin-top: -1.8rem;
+  }
+
+  .tag-list {
+    gap: 0.5rem;
+  }
+
+  .tag {
+    padding: 0.48rem 0.78rem;
+    font-size: 0.88rem;
+  }
+
+  .section-heading {
+    margin-bottom: 1.35rem;
+  }
+
+  .contact-email-link {
+    font-size: clamp(1.25rem, 6.4vw, 1.75rem);
+    letter-spacing: -0.045em;
+  }
+}
+
+@media (max-width: 420px) {
+  .page {
+    padding-top: 4.9rem;
+  }
+
+  .header-inner {
+    padding: 0.66rem 0;
+  }
+
+  .brand {
+    font-size: 0.98rem;
+  }
+
+  .brand-logo {
+    width: 1.82rem;
+    height: 1.82rem;
+  }
+
+  .nav-toggle,
+  .theme-toggle {
+    width: 2.65rem;
+    min-width: 2.65rem;
+    height: 2.65rem;
+    min-height: 2.65rem;
+  }
+
+  .theme-toggle-track {
+    width: 2.25rem;
+    height: 1.3rem;
+  }
+
+  .theme-toggle-thumb {
+    width: 0.92rem;
+    height: 0.92rem;
+  }
+
+  :root[data-theme="light"] .theme-toggle-thumb {
+    transform: translateX(0.94rem);
+  }
+
+  .site-nav {
+    top: 4.25rem;
+  }
+
+  h1 {
+    font-size: clamp(2.05rem, 12.5vw, 2.9rem);
+  }
+
+  h2 {
+    font-size: clamp(1.55rem, 8vw, 2.1rem);
+  }
+
+  .hero-image-frame {
+    min-height: 15.5rem;
+    border-radius: 1.35rem;
+  }
+
+  .about-photo img {
+    min-height: 16rem;
+  }
+
+  .web-preview-shell {
+    min-height: 17rem;
+  }
+
+  .web-preview-window {
+    padding: 0.8rem;
+  }
+
+  .web-preview-line-long {
+    height: 4.5rem;
+  }
+
+  .web-preview-side {
+    display: none;
+  }
+
+  .web-preview-grid {
+    gap: 0.6rem;
+  }
+
+  .web-preview-card {
+    min-height: 5.5rem;
+  }
+
+  .card,
+  .post,
+  .service-card,
+  .pricing-card,
+  .addon-card,
+  .info-card,
+  .contact-card,
+  .about-copy,
+  .process-panel,
+  .check-panel,
+  .cta-banner {
+    padding: 1rem;
+    border-radius: 1.15rem;
+  }
+
+  .contact-email-link {
+    font-size: clamp(1.05rem, 6.2vw, 1.38rem);
   }
 }
 

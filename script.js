@@ -165,15 +165,26 @@
     const button = document.getElementById('nav-toggle');
     const nav = document.getElementById('site-nav');
     if (!button || !nav) return;
+    const label = button.querySelector('.sr-only');
 
-    function closeNav() {
-      nav.classList.remove('open');
-      button.setAttribute('aria-expanded', 'false');
+    function setNavOpen(isOpen) {
+      nav.classList.toggle('open', isOpen);
+      document.documentElement.classList.toggle('nav-open', isOpen);
+      button.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+      if (label) {
+        label.textContent = isOpen ? 'Zavřít navigaci' : 'Otevřít navigaci';
+      }
     }
 
+    function closeNav() {
+      setNavOpen(false);
+    }
+
+    closeNav();
+
     button.addEventListener('click', () => {
-      const open = nav.classList.toggle('open');
-      button.setAttribute('aria-expanded', open ? 'true' : 'false');
+      setNavOpen(!nav.classList.contains('open'));
     });
 
     nav.querySelectorAll('a').forEach((link) => {
