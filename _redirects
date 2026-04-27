@@ -1,0 +1,20 @@
+/kontakt             /pages/kontakt.html             200
+/sluzby              /pages/sluzby.html              200
+/omne                /pages/omne.html                200
+/blog                /pages/blog/index.html          200
+/blog/blog1          /pages/blog/blog1.html          200
+/blog/blog2          /pages/blog/blog2.html          200
+/blog/blog3          /pages/blog/blog3.html          200
+/blog/blog4          /pages/blog/blog4.html          200
+/blog/blog5          /pages/blog/blog5.html          200
+/blog/blog6          /pages/blog/blog6.html          200
+/tvorba-webu         /pages/tvorba-webu.html         200
+/weby                /pages/tvorba-webu.html         200
+/privacy             /pages/privacy.html             200
+/dekujeme            /pages/dekujeme.html            200
+
+/kontakt.html        /pages/kontakt.html             301
+/sluzby.html         /pages/sluzby.html              301
+/omne.html           /pages/omne.html                301
+/tvorba-webu.html    /pages/tvorba-webu.html         301
+/privacy.html        /pages/privacy.html             301

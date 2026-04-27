@@ -94,9 +94,20 @@
       toggle.type = 'button';
       toggle.className = 'theme-toggle';
       toggle.setAttribute('aria-label', 'Přepnout barevný režim');
-      toggle.innerHTML =
-        '<span class="theme-toggle-track" aria-hidden="true"><span class="theme-toggle-thumb"></span></span>' +
-        '<span class="theme-toggle-label"></span>';
+
+      const track = document.createElement('span');
+      track.className = 'theme-toggle-track';
+      track.setAttribute('aria-hidden', 'true');
+
+      const thumb = document.createElement('span');
+      thumb.className = 'theme-toggle-thumb';
+      track.appendChild(thumb);
+
+      const label = document.createElement('span');
+      label.className = 'theme-toggle-label';
+
+      toggle.appendChild(track);
+      toggle.appendChild(label);
 
       controls.appendChild(toggle);
       controls.appendChild(navToggle);
@@ -248,66 +259,24 @@
     if (!form) return;
 
     const status = document.getElementById('form-status');
-    const submitButton = form.querySelector('button[type="submit"]');
-    const defaultLabel = submitButton ? submitButton.textContent : '';
-
     function setStatus(text, type) {
       if (!status) return;
       status.textContent = text;
       status.className = 'form-status' + (type ? ` ${type}` : '');
     }
 
-    function setSubmitting(isSubmitting) {
-      if (!submitButton) return;
-      submitButton.disabled = isSubmitting;
-      submitButton.textContent = isSubmitting ? 'Odesílám...' : defaultLabel;
-    }
-
-    function isValidEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    form.addEventListener('submit', async function (event) {
-      event.preventDefault();
-
+    form.addEventListener('submit', function (event) {
       const nameValue = (form.querySelector('[name="name"]')?.value || '').trim();
       const emailValue = (form.querySelector('[name="email"]')?.value || '').trim();
       const messageValue = (form.querySelector('[name="message"]')?.value || '').trim();
 
       if (!nameValue || !emailValue || !messageValue) {
+        event.preventDefault();
         setStatus('Vyplňte prosím všechna pole.', 'error');
         return;
       }
 
-      if (!isValidEmail(emailValue)) {
-        setStatus('Zadejte prosím platný e-mail.', 'error');
-        return;
-      }
-
-      setSubmitting(true);
       setStatus('Odesílám zprávu...', 'success');
-
-      try {
-        const formData = new FormData(form);
-        const body = new URLSearchParams(formData).toString();
-
-        const response = await fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body
-        });
-
-        if (!response.ok) {
-          throw new Error('Submit failed');
-        }
-
-        form.reset();
-        setStatus('Zpráva byla odeslána. Ozvu se co nejdříve.', 'success');
-      } catch (error) {
-        setStatus('Odeslání se nepovedlo. Zkuste to prosím znovu.', 'error');
-      } finally {
-        setSubmitting(false);
-      }
     });
   }
 })();
