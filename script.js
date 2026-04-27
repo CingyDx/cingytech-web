@@ -259,13 +259,22 @@
     if (!form) return;
 
     const status = document.getElementById('form-status');
+    const submitButton = form.querySelector('button[type="submit"]');
+    const defaultLabel = submitButton ? submitButton.textContent : '';
+
     function setStatus(text, type) {
       if (!status) return;
       status.textContent = text;
       status.className = 'form-status' + (type ? ` ${type}` : '');
     }
 
-    form.addEventListener('submit', function (event) {
+    function setSubmitting(isSubmitting) {
+      if (!submitButton) return;
+      submitButton.disabled = isSubmitting;
+      submitButton.textContent = isSubmitting ? 'Odesílám...' : defaultLabel;
+    }
+
+    form.addEventListener('submit', async function (event) {
       const nameValue = (form.querySelector('[name="name"]')?.value || '').trim();
       const emailValue = (form.querySelector('[name="email"]')?.value || '').trim();
       const messageValue = (form.querySelector('[name="message"]')?.value || '').trim();
@@ -276,7 +285,33 @@
         return;
       }
 
+      event.preventDefault();
+      setSubmitting(true);
       setStatus('Odesílám zprávu...', 'success');
+
+      try {
+        const formData = new FormData(form);
+        const body = new URLSearchParams(formData).toString();
+        const target = form.getAttribute('action') || '/';
+
+        const response = await fetch(target, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body,
+          credentials: 'same-origin'
+        });
+
+        if (!response.ok) {
+          throw new Error('Submit failed');
+        }
+
+        form.reset();
+        setStatus('Zpráva byla odeslána. Ozvu se co nejdříve.', 'success');
+      } catch (error) {
+        setStatus('Odeslání se nepovedlo. Zkuste to prosím znovu.', 'error');
+      } finally {
+        setSubmitting(false);
+      }
     });
   }
 })();

@@ -25,15 +25,15 @@ Kontaktni formular v `pages/kontakt.html` pouziva:
 - `data-netlify="true"`
 - skryte pole `form-name`
 - honeypot pole `bot-field`
-- redirect po odeslani na `pages/dekujeme.html`
+- odeslani pres same-origin AJAX request, aby uzivatel zustal na kontaktni strance
 
-JavaScript validni odeslani neblokuje. Pouze zastavi odeslani, pokud chybi povinna pole.
+JavaScript validni odeslani zachytava jen proto, aby nedoslo k presmerovani na jinou stranku. Data posila jako `application/x-www-form-urlencoded` na stejny web, bez ukladani osobnich udaju do prohlizece. Odeslani zastavi predem pouze tehdy, pokud chybi povinna pole.
 
 ## Co otestovat po deployi
 
 - Otevrit hlavni web a zkontrolovat, ze se nacita CSS, JS, favicony a obrazky.
 - Odeslat test kontaktniho formulare pres Netlify.
-- Overit redirect na `/pages/dekujeme.html` nebo `/dekujeme`.
+- Overit, ze kontaktni formular po odeslani zustane na kontaktni strance a zobrazi uspesny stav.
 - Otevrit `/privacy` a `pages/privacy.html`.
 - Zkontrolovat hlavicky pres online security headers checker.
 - Projit PageSpeed a HTML/CSS validatory.
