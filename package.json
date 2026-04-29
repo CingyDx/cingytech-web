@@ -1,0 +1,16 @@
+{
+  "name": "worldguess",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@netlify/blobs": "latest"
+  },
+  "devDependencies": {
+    "@netlify/functions": "latest",
+    "typescript": "latest"
+  }
+}

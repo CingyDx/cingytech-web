@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Online Duel Lobby | WorldGuess</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/game.css"><link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-page="duel-lobby">
+  <div class="shell">
+    <header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html"><img src="../assets/logo.svg" alt="">WorldGuess</a><button class="nav-toggle" data-nav-toggle>☰</button><nav class="nav" data-nav><a href="index.html">Play</a><a href="solo.html">Solo</a><a class="active" href="duel-lobby.html">Duel</a><a href="leaderboard.html">Leaderboard</a><a href="rules.html">Rules</a><a href="settings.html">Settings</a></nav></div></header>
+    <main class="section">
+      <div class="container">
+        <p class="eyebrow">Online lobby</p><h1>Set the room. Send the code. Start the clash.</h1>
+        <div class="lobby-grid section" style="padding-bottom:24px">
+          <article class="player-card panel"><img src="../assets/avatar-player1.svg" alt=""><h2>Player 1</h2><input id="player1" class="input" value="Player 1"></article>
+          <div class="vs">VS</div>
+          <article class="player-card panel"><img src="../assets/avatar-player2.svg" alt=""><h2>Player 2</h2><input id="player2" class="input" value="Online rival" disabled></article>
+        </div>
+        <div class="split-grid">
+          <section class="panel form-grid">
+            <h2>Ruleset</h2>
+            <label>Map pool<select id="map-pool" class="select"><option>World</option><option>Europe</option><option>City Mix</option><option>Random</option></select></label>
+            <label>Movement<select id="ruleset" class="select"><option>Moving allowed</option><option>No move</option><option>Pan/zoom only</option></select></label>
+            <div class="online-box">
+              <button id="start-duel" class="btn">Create Online Duel</button>
+              <input id="join-code" class="input" placeholder="Room code">
+              <button id="join-duel" class="btn-ghost">Join Room</button>
+            </div>
+          </section>
+          <aside id="auth-panel" class="panel form-grid">
+            <h2>Online account</h2><p data-auth-state class="mini-note"></p>
+            <form id="login-form" class="form-grid"><input class="input" name="username" placeholder="Username"><input class="input" type="password" name="password" placeholder="Password"><button class="btn-ghost">Login</button></form>
+            <form id="register-form" class="form-grid"><input class="input" name="username" placeholder="New username"><input class="input" type="password" name="password" placeholder="New password"><button class="btn">Register</button></form>
+            <p class="mini-note">Duels use Netlify Functions + Blobs. Both players start with 6000 HP, one guess per round, 15 seconds after the first guess.</p>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+  <script src="../js/data.js"></script><script src="../js/storage.js"></script><script src="../js/timer.js"></script><script src="../js/scoring.js"></script><script src="../js/ui.js"></script><script src="../js/api.js"></script><script src="../js/map.js"></script><script src="../js/app.js"></script><script src="../js/duel.js"></script>
+</body>
+</html>

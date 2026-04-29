@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Profile | WorldGuess</title>
+  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/game.css"><link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body data-page="profile">
+  <div class="shell">
+    <header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html"><img src="../assets/logo.svg" alt="">WorldGuess</a><button class="nav-toggle" data-nav-toggle>☰</button><nav class="nav" data-nav><a href="index.html">Play</a><a href="solo.html">Solo</a><a href="duel-lobby.html">Duel</a><a href="leaderboard.html">Leaderboard</a><a href="rules.html">Rules</a><a href="settings.html">Settings</a></nav></div></header>
+    <main class="section">
+      <div class="container split-grid">
+        <section class="panel form-grid"><img src="../assets/avatar-player1.svg" alt="" style="width:120px"><p class="eyebrow">Profile</p><h1 data-profile-name>Explorer</h1><form id="profile-form" class="form-grid"><input class="input" name="name" placeholder="Player name"><button class="btn">Save profile</button></form></section>
+        <section class="form-grid"><div id="profile-stats" class="card-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"></div><div class="panel"><h2>Achievements</h2><div class="card-grid" style="grid-template-columns:repeat(2,minmax(0,1fr))"><div class="card">First Guess</div><div class="card">Country Master</div><div class="card">Duel Winner</div><div class="card">10 Streak</div><div class="card">Clutch Guess</div></div></div></section>
+      </div>
+    </main>
+  </div>
+  <script src="../js/data.js"></script><script src="../js/storage.js"></script><script src="../js/timer.js"></script><script src="../js/scoring.js"></script><script src="../js/ui.js"></script><script src="../js/api.js"></script><script src="../js/map.js"></script><script src="../js/app.js"></script>
+</body>
+</html>

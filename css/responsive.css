@@ -1,0 +1,167 @@
+@media (max-width: 980px) {
+  .hero-grid,
+  .split-grid,
+  .lobby-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vs {
+    margin: 0 auto;
+  }
+
+  .card-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .duel-hud {
+    grid-template-columns: 1fr;
+  }
+
+  .game-topbar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .container {
+    width: min(100% - 20px, 1180px);
+  }
+
+  .nav-toggle {
+    display: inline-grid;
+    place-items: center;
+  }
+
+  .nav {
+    position: fixed;
+    top: 72px;
+    right: 10px;
+    left: 10px;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: var(--card-strong);
+    box-shadow: var(--shadow);
+  }
+
+  .nav.open {
+    display: flex;
+  }
+
+  .nav a {
+    border-radius: 14px;
+  }
+
+  .hero {
+    min-height: auto;
+    padding-top: 52px;
+  }
+
+  h1 {
+    font-size: clamp(2.8rem, 16vw, 4.7rem);
+  }
+
+  .card-grid,
+  .option-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-preview {
+    min-height: 360px;
+  }
+
+  .game-body {
+    overflow-y: auto;
+  }
+
+  .game-screen {
+    min-height: 100svh;
+    grid-template-rows: auto minmax(420px, 1fr) auto;
+  }
+
+  .panorama-shell {
+    position: relative;
+    min-height: 58svh;
+  }
+
+  .guess-dock {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    margin: 0;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .wg-map {
+    min-height: 230px;
+  }
+
+  .pano-overlay {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .clue-row {
+    justify-content: flex-start;
+  }
+
+  .summary-panel,
+  .round-alert {
+    position: relative;
+    left: auto;
+    top: auto;
+    bottom: auto;
+    width: calc(100% - 24px);
+    margin: 12px;
+    transform: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .section {
+    padding: 48px 0;
+  }
+
+  .actions,
+  .footer-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn,
+  .btn-ghost,
+  .btn-danger {
+    width: 100%;
+  }
+
+  .game-topbar {
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .hud-chip {
+    min-width: 0;
+    padding: 10px;
+  }
+
+  .hud-chip strong {
+    font-size: 1.05rem;
+  }
+
+  .pano-sign.side,
+  .pano-building.right,
+  .pano-tree.t2 {
+    display: none;
+  }
+
+  .pano-overlay {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    padding: 12px;
+  }
+}
