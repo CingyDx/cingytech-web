@@ -1,8 +1,17 @@
 import type { Config } from "@netlify/functions";
 
+declare const Netlify: {
+  env?: {
+    get?: (name: string) => string | undefined;
+  };
+};
+
 function getEnv(name: string) {
-  const netlify = (globalThis as any).Netlify;
-  return netlify?.env?.get?.(name) || "";
+  try {
+    return Netlify?.env?.get?.(name) || "";
+  } catch {
+    return "";
+  }
 }
 
 export default async () => {

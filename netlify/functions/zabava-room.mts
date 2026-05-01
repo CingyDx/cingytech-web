@@ -39,6 +39,17 @@ type Room = {
 const START_HP = 6000;
 const STORE_NAME = "zabava-rooms";
 
+declare const Netlify: {
+  context?: {
+    deploy?: {
+      context?: string;
+    };
+  };
+  env?: {
+    get?: (name: string) => string | undefined;
+  };
+};
+
 function roomsStore() {
   return getStore(STORE_NAME, { consistency: "strong" });
 }
@@ -66,8 +77,11 @@ function randomCode() {
 }
 
 function getDeployContext() {
-  const netlify = (globalThis as any).Netlify;
-  return netlify?.context?.deploy?.context || netlify?.env?.get?.("CONTEXT") || "dev";
+  try {
+    return Netlify?.context?.deploy?.context || Netlify?.env?.get?.("CONTEXT") || "dev";
+  } catch {
+    return "dev";
+  }
 }
 
 async function currentPlayer(req: Request): Promise<Player | null> {
