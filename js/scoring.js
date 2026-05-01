@@ -1,32 +1,22 @@
 (function () {
-  function toRad(value) {
-    return value * Math.PI / 180;
-  }
-
   function haversineDistance(lat1, lon1, lat2, lon2) {
     const earthRadiusKm = 6371;
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = Math.sin(dLat / 2) ** 2
-      + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return Math.round(earthRadiusKm * c);
+      + Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+    return Math.round(earthRadiusKm * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
   }
 
-  function isCorrectCountry(guessCountryCode, locationCountryCode) {
-    return String(guessCountryCode || "").toUpperCase() === String(locationCountryCode || "").toUpperCase();
+  function calculateScore(distanceKm) {
+    return Math.max(0, Math.min(5000, Math.round(5000 * Math.exp(-distanceKm / 2000))));
   }
 
   function getDuelMultiplier(round) {
     return round < 5 ? 1 : 1 + ((round - 4) * 0.5);
   }
 
-  function calculateSoloScore(distanceKm, correct) {
-    if (!correct) return 0;
-    return Math.max(100, Math.round(5000 - Math.min(4900, distanceKm * 2)));
-  }
-
-  function calculateDuelDamage(distanceA, distanceB, round, playerAMissed, playerBMissed) {
+  function calculateDuelDamage(distanceA, distanceB, round, playerAMissed = false, playerBMissed = false) {
     const multiplier = getDuelMultiplier(round);
 
     if (playerAMissed && playerBMissed) {
@@ -36,8 +26,7 @@
     if (playerAMissed || playerBMissed) {
       const loser = playerAMissed ? "player1" : "player2";
       const winner = playerAMissed ? "player2" : "player1";
-      const finalDamage = Math.round(2000 * multiplier);
-      return { loser, winner, baseDamage: 2000, multiplier, finalDamage };
+      return { loser, winner, baseDamage: 2000, multiplier, finalDamage: Math.round(2000 * multiplier) };
     }
 
     const diff = Math.abs(distanceA - distanceB);
@@ -45,19 +34,30 @@
       return { loser: "tie", winner: "tie", baseDamage: 0, multiplier, finalDamage: 0 };
     }
 
-    const loser = distanceA > distanceB ? "player1" : "player2";
-    const winner = distanceA > distanceB ? "player2" : "player1";
     const baseDamage = Math.min(2500, Math.max(50, diff * 1.5));
-    const finalDamage = Math.max(0, Math.round(baseDamage * multiplier));
-
-    return { loser, winner, baseDamage: Math.round(baseDamage), multiplier, finalDamage };
+    return {
+      loser: distanceA > distanceB ? "player1" : "player2",
+      winner: distanceA > distanceB ? "player2" : "player1",
+      baseDamage: Math.round(baseDamage),
+      multiplier,
+      finalDamage: Math.round(baseDamage * multiplier)
+    };
   }
 
-  window.WorldGuessScoring = {
+  function sameCountry(a, b) {
+    return String(a || "").toUpperCase() === String(b || "").toUpperCase();
+  }
+
+  window.Scoring = {
     haversineDistance,
+    calculateScore,
     getDuelMultiplier,
     calculateDuelDamage,
-    calculateSoloScore,
-    isCorrectCountry
+    sameCountry
   };
+  window.haversineDistance = haversineDistance;
+  window.calculateScore = calculateScore;
+  window.getDuelMultiplier = getDuelMultiplier;
+  window.calculateDuelDamage = calculateDuelDamage;
+  window.isCorrectCountry = sameCountry;
 })();

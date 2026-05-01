@@ -1,152 +1,200 @@
 (function () {
-  if (document.body.dataset.page !== "solo") return;
-
-  const { locations } = window.WorldGuessData;
-  const UI = window.WorldGuessUI;
-  const Map = window.WorldGuessMap;
-  const Score = window.WorldGuessScoring;
-  const Storage = window.WorldGuessStorage;
-  const Timer = window.WorldGuessTimer;
-
-  const els = {
-    pano: UI.qs("#panorama"),
-    map: UI.qs("#guess-map"),
-    select: UI.qs("#country-select"),
-    timer: UI.qs("#timer"),
-    round: UI.qs("#round"),
-    streak: UI.qs("#streak"),
-    score: UI.qs("#score"),
-    guess: UI.qs("#guess-btn"),
-    reset: UI.qs("#reset-btn"),
-    giveUp: UI.qs("#giveup-btn")
-  };
-
-  let session = {
+  const state = {
     round: 0,
     streak: 0,
-    score: 0,
-    totalDistance: 0,
-    rounds: [],
-    current: null
+    totalScore: 0,
+    currentLocation: null,
+    timer: null,
+    locked: false,
+    lastLocationId: null
   };
-  let guess = null;
-  let mapApi = null;
-  let roundTimer = null;
 
-  function randomLocation() {
-    const previous = session.current?.id;
-    const pool = locations.filter((location) => location.id !== previous);
-    return pool[Math.floor(Math.random() * pool.length)];
-  }
-
-  function renderHud(seconds = 180) {
-    UI.setTimerText(els.timer, seconds);
-    els.round.textContent = session.round;
-    els.streak.textContent = session.streak;
-    els.score.textContent = session.score;
-  }
-
-  function startRound() {
-    session.round += 1;
-    session.current = randomLocation();
-    guess = null;
-    mapApi.resetPin();
-    els.select.value = "";
-    els.guess.disabled = true;
-    Map.renderPanorama(els.pano, session.current);
-    renderHud(180);
-
-    if (roundTimer) roundTimer.stop();
-    UI.startCountdown(els.pano, () => {
-      roundTimer = Timer.createTimer(180, {
-        onTick: (seconds) => renderHud(seconds),
-        onEnd: () => finishRound(true)
+  async function startGame() {
+    try {
+      await GoogleLoader.loadGoogleMaps();
+      GameMaps.initGuessMap({
+        onPin: () => updateGuessButton()
       });
-      roundTimer.start();
-    });
+      UI.qs("#guess-btn")?.addEventListener("click", handleGuess);
+      UI.qs("#reset-pin-btn")?.addEventListener("click", () => {
+        GameMaps.resetGuessMarker();
+        updateGuessButton();
+      });
+      UI.qs("#give-up-btn")?.addEventListener("click", () => handleRoundFail("No guess"));
+      await startRound();
+    } catch (error) {
+      if (!GoogleLoader.hasMissingKey()) {
+        GoogleLoader.showGoogleSetupError(error.message || "Google Maps could not be started.");
+      }
+    }
   }
 
-  function finishRound(timedOut = false) {
-    if (roundTimer) roundTimer.stop();
-    const current = session.current;
-    const missed = timedOut || !guess;
-    const distance = missed ? 20000 : Score.haversineDistance(guess.lat, guess.lng, current.lat, current.lng);
-    const correct = !missed && Score.isCorrectCountry(guess.countryCode, current.countryCode);
-    const points = Score.calculateSoloScore(distance, correct);
+  async function startRound() {
+    state.locked = false;
+    state.round += 1;
+    GameMaps.resetGuessMarker();
+    updateGuessButton();
+    updateHud();
+    showRoundIntro(`Round ${state.round}`);
+
+    try {
+      state.currentLocation = await StreetViewGame.pickRandomValidLocation(state.lastLocationId);
+      state.lastLocationId = state.currentLocation.id;
+    } catch (error) {
+      GoogleLoader.showGoogleSetupError(error.message);
+      return;
+    }
+
+    window.setTimeout(() => {
+      startTimer();
+      hideRoundIntro();
+    }, 1000);
+  }
+
+  function startTimer() {
+    state.timer?.stop();
+    const seconds = Store.state().settings.timeLimit || 180;
+    state.timer = GameTimer.createTimer(seconds, {
+      onTick: (remaining) => UI.setTimer(UI.qs("#timer"), remaining),
+      onDone: () => handleRoundFail("Time out")
+    });
+    state.timer.start();
+  }
+
+  function updateHud() {
+    UI.qs("#round").textContent = state.round;
+    UI.qs("#streak").textContent = state.streak;
+    UI.qs("#score").textContent = state.totalScore;
+  }
+
+  function updateGuessButton() {
+    const button = UI.qs("#guess-btn");
+    if (!button) return;
+    button.disabled = !GameMaps.getGuessLatLng() || state.locked;
+  }
+
+  async function handleGuess() {
+    if (state.locked) return;
+    const guess = GameMaps.getGuessLatLng();
+    if (!guess) return;
+    await resolveRound(guess);
+  }
+
+  async function handleRoundFail(reason) {
+    if (state.locked) return;
+    state.locked = true;
+    state.timer?.stop();
+    state.streak = 0;
+    updateHud();
+    const location = state.currentLocation;
+    const result = {
+      correct: false,
+      reason,
+      distance: 0,
+      score: 0,
+      totalScore: state.totalScore,
+      streak: state.streak,
+      correctCountry: location?.country || "Unknown",
+      guessCountry: "Unknown"
+    };
+    Store.saveSoloResult(result);
+    showSoloResult(result, null);
+  }
+
+  async function resolveRound(guessLatLng) {
+    state.locked = true;
+    state.timer?.stop();
+    updateGuessButton();
+
+    const location = state.currentLocation;
+    const distance = Scoring.haversineDistance(
+      location.lat,
+      location.lng,
+      guessLatLng.lat(),
+      guessLatLng.lng()
+    );
+    const score = Scoring.calculateScore(distance);
+    const country = await GameMaps.reverseGeocodeCountry(guessLatLng);
+    const correct = Scoring.sameCountry(country.code, location.countryCode);
 
     if (correct) {
-      session.streak += 1;
-      session.score += points;
+      state.streak += 1;
+      state.totalScore += score;
+    } else {
+      state.streak = 0;
     }
 
-    session.totalDistance += distance;
-    session.rounds.push({
-      round: session.round,
-      location: current.city,
-      country: current.country,
-      guess: missed ? "No guess" : guess.country,
-      distance,
+    updateHud();
+
+    const result = {
       correct,
-      points
-    });
+      distance,
+      score,
+      totalScore: state.totalScore,
+      streak: state.streak,
+      correctCountry: location.country,
+      guessCountry: country.name,
+      correctCode: location.countryCode,
+      guessCode: country.code || "Unknown"
+    };
 
-    const best = Storage.getProfile().bestSoloStreak;
+    Store.saveSoloResult(result);
+    showSoloResult(result, guessLatLng);
+  }
+
+  function showSoloResult(result, guessLatLng) {
+    const status = result.correct ? "Correct country" : "Wrong country";
     const html = `
-      <p class="eyebrow">${correct ? "Correct country" : timedOut ? "Time expired" : "Wrong country"}</p>
-      <h2>${correct ? "Nice read." : "Streak broken."}</h2>
-      <div class="card-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr));">
-        <div class="panel"><p>Correct country</p><h3>${current.country}</h3></div>
-        <div class="panel"><p>Your guess</p><h3>${missed ? "No guess" : guess.country}</h3></div>
-        <div class="panel"><p>Distance</p><h3>${distance.toLocaleString()} km</h3></div>
-        <div class="panel"><p>Streak</p><h3>${session.streak}</h3></div>
+      <div class="wide">
+        <p class="eyebrow">Round ${state.round} result</p>
+        <h2 class="${result.correct ? "status-good" : "status-bad"}">${status}</h2>
+        <div id="result-map"></div>
+        <div class="result-grid">
+          <div class="metric"><span>Distance</span><strong>${result.distance} km</strong></div>
+          <div class="metric"><span>Score</span><strong>${result.score}</strong></div>
+          <div class="metric"><span>Correct country</span><strong>${result.correctCountry}</strong></div>
+          <div class="metric"><span>Your guess</span><strong>${result.guessCountry}</strong></div>
+        </div>
+        <div class="button-row">
+          <button class="btn" id="next-round-btn" type="button">Next Round</button>
+          <a class="btn secondary" href="results.html">View Results</a>
+          <a class="btn secondary" href="index.html">Back to Menu</a>
+        </div>
       </div>
-      <div class="actions">
-        ${correct ? `<button class="btn" data-next>Next Round</button>` : `<a class="btn" href="results.html?mode=solo">View Results</a>`}
-        <a class="btn-ghost" href="index.html">Back to Menu</a>
-        <a class="btn-ghost" href="leaderboard.html">Leaderboard</a>
-      </div>
-      <p class="mini-note">Best local streak before this run: ${best}</p>
     `;
-
-    if (!correct) {
-      Storage.saveSoloResult({
-        finalStreak: Math.max(0, session.streak),
-        roundsPlayed: session.round,
-        averageDistance: Math.round(session.totalDistance / session.rounds.length),
-        totalDistance: session.totalDistance,
-        rounds: session.rounds
-      });
-    }
-
-    const modal = UI.openModal(html, { dismissible: false });
-    modal.querySelector("[data-next]")?.addEventListener("click", () => {
+    UI.modal(html, false);
+    GameMaps.showResultMap({ lat: state.currentLocation.lat, lng: state.currentLocation.lng }, guessLatLng);
+    UI.qs("#next-round-btn")?.addEventListener("click", () => {
       UI.closeModal();
       startRound();
     });
   }
 
-  function init() {
-    mapApi = Map.createGuessMap(els.map, {
-      onChange(value) {
-        guess = value;
-        els.guess.disabled = !value;
+  function showRoundIntro(text) {
+    hideRoundIntro();
+    const intro = document.createElement("div");
+    intro.className = "round-intro";
+    intro.innerHTML = `<div class="round-intro-card"><p class="eyebrow">${text}</p><strong>3</strong><p class="muted">Look around. Find clues. Place your guess.</p></div>`;
+    document.body.appendChild(intro);
+
+    const number = intro.querySelector("strong");
+    let step = 3;
+    const interval = window.setInterval(() => {
+      step -= 1;
+      if (step <= 0) {
+        window.clearInterval(interval);
+        number.textContent = "GO";
+        return;
       }
-    });
-    UI.renderCountrySelect(els.select, (code) => {
-      if (code) mapApi.setCountry(code);
-    });
-
-    els.guess.addEventListener("click", () => finishRound(false));
-    els.reset.addEventListener("click", () => {
-      guess = null;
-      els.select.value = "";
-      mapApi.resetPin();
-      els.guess.disabled = true;
-    });
-    els.giveUp.addEventListener("click", () => finishRound(true));
-
-    startRound();
+      number.textContent = step;
+    }, 330);
   }
 
-  document.addEventListener("DOMContentLoaded", init);
+  function hideRoundIntro() {
+    UI.qs(".round-intro")?.remove();
+  }
+
+  document.addEventListener("DOMContentLoaded", startGame);
+
+  window.SoloGame = { startGame, startRound, handleGuess };
 })();

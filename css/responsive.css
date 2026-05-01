@@ -1,167 +1,167 @@
-@media (max-width: 980px) {
-  .hero-grid,
+@media (max-width: 920px) {
+  .nav-toggle {
+    display: grid;
+  }
+
+  .nav {
+    position: absolute;
+    top: 76px;
+    right: 20px;
+    left: 20px;
+    display: none;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--panel-strong);
+    box-shadow: var(--shadow);
+  }
+
+  .nav.open {
+    display: grid;
+  }
+
+  .nav a {
+    border-radius: 12px;
+  }
+
+  .hero-layout,
   .split-grid,
+  .settings-grid,
+  .mode-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
   .lobby-grid {
     grid-template-columns: 1fr;
   }
 
   .vs {
-    margin: 0 auto;
+    width: 82px;
+    height: 82px;
   }
 
-  .card-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
+  .game-hud,
   .duel-hud {
     grid-template-columns: 1fr;
+    left: 12px;
+    right: 12px;
+    top: 10px;
   }
 
-  .game-topbar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .hud-left,
+  .hud-center,
+  .hud-right {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .hp-card {
+    width: 100%;
+    min-width: 0;
+  }
+
+  #guess-map-panel {
+    right: 12px;
+    left: 12px;
+    bottom: 12px;
+    width: auto;
+    height: 312px;
+    border-radius: 20px;
+  }
+
+  #guess-map-panel:hover {
+    width: auto;
+    height: 312px;
+  }
+
+  #guess-map,
+  #guess-map-panel:hover #guess-map {
+    height: 232px;
+  }
+
+  .game-back {
+    left: 12px;
+    bottom: 338px;
+  }
+
+  .hint-panel {
+    display: none;
+  }
+
+  .duel-status {
+    bottom: 334px;
+    border-radius: 18px;
+  }
+
+  .result-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 560px) {
   .container {
-    width: min(100% - 20px, 1180px);
+    width: min(100% - 24px, 1180px);
   }
 
-  .nav-toggle {
-    display: inline-grid;
-    place-items: center;
-  }
-
-  .nav {
-    position: fixed;
-    top: 72px;
-    right: 10px;
-    left: 10px;
-    display: none;
-    flex-direction: column;
-    align-items: stretch;
-    padding: 12px;
-    border: 1px solid var(--line);
-    border-radius: 20px;
-    background: var(--card-strong);
-    box-shadow: var(--shadow);
-  }
-
-  .nav.open {
-    display: flex;
-  }
-
-  .nav a {
-    border-radius: 14px;
+  .section,
+  .page-shell {
+    padding: 44px 0;
   }
 
   .hero {
-    min-height: auto;
-    padding-top: 52px;
-  }
-
-  h1 {
-    font-size: clamp(2.8rem, 16vw, 4.7rem);
-  }
-
-  .card-grid,
-  .option-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-preview {
-    min-height: 360px;
-  }
-
-  .game-body {
-    overflow-y: auto;
-  }
-
-  .game-screen {
-    min-height: 100svh;
-    grid-template-rows: auto minmax(420px, 1fr) auto;
-  }
-
-  .panorama-shell {
-    position: relative;
-    min-height: 58svh;
-  }
-
-  .guess-dock {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    width: 100%;
-    margin: 0;
-    border-radius: 24px 24px 0 0;
-  }
-
-  .wg-map {
-    min-height: 230px;
-  }
-
-  .pano-overlay {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .clue-row {
-    justify-content: flex-start;
-  }
-
-  .summary-panel,
-  .round-alert {
-    position: relative;
-    left: auto;
-    top: auto;
-    bottom: auto;
-    width: calc(100% - 24px);
-    margin: 12px;
-    transform: none;
-  }
-}
-
-@media (max-width: 520px) {
-  .section {
     padding: 48px 0;
   }
 
-  .actions,
+  .hero-actions,
+  .button-row,
   .footer-inner {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .btn,
-  .btn-ghost,
-  .btn-danger {
+  .btn {
     width: 100%;
   }
 
-  .game-topbar {
-    gap: 8px;
-    padding: 8px;
+  .mini-stats,
+  .result-grid {
+    grid-template-columns: 1fr;
   }
 
-  .hud-chip {
-    min-width: 0;
-    padding: 10px;
+  .modal-card {
+    padding: 20px;
   }
 
-  .hud-chip strong {
-    font-size: 1.05rem;
+  #result-map {
+    height: 280px;
   }
 
-  .pano-sign.side,
-  .pano-building.right,
-  .pano-tree.t2 {
-    display: none;
+  .hud-pill {
+    min-height: 38px;
+    padding: 0 10px;
+    font-size: 0.86rem;
   }
 
-  .pano-overlay {
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    padding: 12px;
+  .timer-pill {
+    min-width: 96px;
+    font-size: 1.1rem;
+  }
+
+  #guess-map-panel {
+    height: 290px;
+  }
+
+  #guess-map,
+  #guess-map-panel:hover #guess-map {
+    height: 210px;
+  }
+
+  .game-back,
+  .duel-status {
+    bottom: 314px;
   }
 }

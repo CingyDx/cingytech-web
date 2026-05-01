@@ -1,110 +1,59 @@
 (function () {
-  function qs(selector, parent = document) {
-    return parent.querySelector(selector);
+  function qs(selector, root = document) {
+    return root.querySelector(selector);
   }
 
-  function qsa(selector, parent = document) {
-    return Array.from(parent.querySelectorAll(selector));
+  function qsa(selector, root = document) {
+    return Array.from(root.querySelectorAll(selector));
   }
 
-  function showToast(message, type = "info") {
+  function toast(message) {
     let stack = qs(".toast-stack");
     if (!stack) {
       stack = document.createElement("div");
       stack.className = "toast-stack";
       document.body.appendChild(stack);
     }
-
-    const toast = document.createElement("div");
-    toast.className = `toast ${type}`;
-    toast.textContent = message;
-    stack.appendChild(toast);
-    window.setTimeout(() => toast.remove(), 3200);
+    const item = document.createElement("div");
+    item.className = "toast";
+    item.textContent = message;
+    stack.appendChild(item);
+    setTimeout(() => item.remove(), 3200);
   }
 
-  function openModal(content, options = {}) {
+  function modal(html, dismissible = true) {
     closeModal();
-    const overlay = document.createElement("div");
-    overlay.className = "modal-backdrop";
-    overlay.innerHTML = `<section class="modal-card">${content}</section>`;
-    document.body.appendChild(overlay);
-
-    overlay.addEventListener("click", (event) => {
-      if (event.target === overlay && options.dismissible !== false) closeModal();
-    });
-
-    return overlay;
+    const node = document.createElement("div");
+    node.className = "modal-backdrop";
+    node.innerHTML = `<section class="modal-card">${html}</section>`;
+    if (dismissible) {
+      node.addEventListener("click", (event) => {
+        if (event.target === node) closeModal();
+      });
+    }
+    document.body.appendChild(node);
+    return node;
   }
 
   function closeModal() {
     qs(".modal-backdrop")?.remove();
   }
 
-  function startCountdown(target, onDone) {
-    let count = 3;
-    const overlay = document.createElement("div");
-    overlay.className = "countdown-overlay";
-    overlay.textContent = count;
-    target.appendChild(overlay);
-
-    const interval = window.setInterval(() => {
-      count -= 1;
-      if (count <= 0) {
-        window.clearInterval(interval);
-        overlay.textContent = "Go";
-        window.setTimeout(() => {
-          overlay.remove();
-          onDone?.();
-        }, 450);
-      } else {
-        overlay.textContent = count;
-      }
-    }, 700);
+  function setTimer(element, seconds) {
+    element.textContent = GameTimer.formatTime(seconds);
+    element.classList.toggle("timer-danger", seconds <= 15);
   }
 
-  function setTimerText(element, seconds) {
-    element.textContent = window.WorldGuessTimer.formatTime(seconds);
-    element.classList.toggle("danger-pulse", seconds <= 15);
-  }
-
-  function applySettings() {
-    const settings = window.WorldGuessStorage.getSettings();
-    document.documentElement.dataset.theme = settings.theme;
-    document.documentElement.dataset.mapStyle = settings.mapStyle;
-  }
-
-  function setupNav() {
-    const toggle = qs("[data-nav-toggle]");
-    const nav = qs("[data-nav]");
-    if (!toggle || !nav) return;
-
+  function nav() {
+    const toggle = qs("#nav-toggle");
+    const menu = qs("#site-nav");
+    if (!toggle || !menu) return;
     toggle.addEventListener("click", () => {
-      nav.classList.toggle("open");
-      toggle.setAttribute("aria-expanded", nav.classList.contains("open") ? "true" : "false");
+      const open = !menu.classList.contains("open");
+      menu.classList.toggle("open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
     });
   }
 
-  function renderCountrySelect(select, onChange) {
-    select.innerHTML = `<option value="">Choose country</option>`;
-    window.WorldGuessData.countries.forEach((country) => {
-      const option = document.createElement("option");
-      option.value = country.code;
-      option.textContent = country.name;
-      select.appendChild(option);
-    });
-    select.addEventListener("change", () => onChange?.(select.value));
-  }
-
-  window.WorldGuessUI = {
-    qs,
-    qsa,
-    showToast,
-    openModal,
-    closeModal,
-    startCountdown,
-    setTimerText,
-    applySettings,
-    setupNav,
-    renderCountrySelect
-  };
+  window.UI = { qs, qsa, toast, modal, closeModal, setTimer, nav };
 })();

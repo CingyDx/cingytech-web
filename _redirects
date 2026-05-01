@@ -16,14 +16,13 @@
 /privacy             /pages/privacy.html             200
 /zabava              /zabava/index.html              200
 /zabava/solo         /zabava/solo.html               200
-/zabava/duel         /zabava/duel-lobby.html         200
+/zabava/duel         /zabava/duel.html               200
 /zabava/duel-lobby   /zabava/duel-lobby.html         200
 /zabava/results      /zabava/results.html            200
 /zabava/leaderboard  /zabava/leaderboard.html        200
-/zabava/profile      /zabava/profile.html            200
 /zabava/settings     /zabava/settings.html           200
 /zabava/rules        /zabava/rules.html              200
-/zabava/about        /zabava/about.html              200
+/zabava/login        /zabava/login.html              200
 
 /kontakt.html        /pages/kontakt.html             301
 /sluzby.html         /pages/sluzby.html              301

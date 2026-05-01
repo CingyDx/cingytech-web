@@ -1,161 +1,178 @@
 (function () {
-  const { qs, qsa, setupNav, applySettings } = window.WorldGuessUI;
+  function applyTheme() {
+    const settings = Store.state().settings;
+    const prefersLight = window.matchMedia?.("(prefers-color-scheme: light)").matches;
+    const light = settings.theme === "light" || (settings.theme === "system" && prefersLight);
+    document.body.classList.toggle("light-theme", light);
+  }
 
   function initCommon() {
-    applySettings();
-    setupNav();
+    UI.nav();
+    UI.qsa("[data-year]").forEach((node) => {
+      node.textContent = new Date().getFullYear();
+    });
+    applyTheme();
+  }
 
-    const year = qs("[data-year]");
-    if (year) year.textContent = new Date().getFullYear();
+  function initSettings() {
+    const form = UI.qs("#settings-form");
+    if (!form) return;
 
-    qsa("[data-profile-name]").forEach((element) => {
-      element.textContent = window.WorldGuessStorage.getProfile().name;
+    const settings = Store.state().settings;
+    form.timeLimit.value = settings.timeLimit || 180;
+    form.units.value = settings.units || "km";
+    form.mapType.value = settings.mapType || "roadmap";
+    form.theme.value = settings.theme || "dark";
+    form.movementAllowed.checked = settings.movementAllowed !== false;
+    form.allowZoom.checked = settings.allowZoom !== false;
+    form.allowPan.checked = settings.allowPan !== false;
+    form.sound.checked = Boolean(settings.sound);
+    form.timerSounds.checked = Boolean(settings.timerSounds);
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      Store.update((current) => {
+        current.settings = {
+          ...current.settings,
+          timeLimit: Number(form.timeLimit.value) || 180,
+          units: form.units.value,
+          mapType: form.mapType.value,
+          theme: form.theme.value,
+          movementAllowed: form.movementAllowed.checked,
+          allowZoom: form.allowZoom.checked,
+          allowPan: form.allowPan.checked,
+          sound: form.sound.checked,
+          timerSounds: form.timerSounds.checked
+        };
+        return current;
+      });
+      applyTheme();
+      UI.toast("Settings saved.");
     });
 
-    qsa("[data-clear-data]").forEach((button) => {
-      button.addEventListener("click", () => {
-        if (!window.confirm("Reset all local WorldGuess data?")) return;
-        window.WorldGuessStorage.resetAllData();
-        window.location.reload();
+    UI.qs("#reset-data-btn")?.addEventListener("click", () => {
+      if (!confirm("Reset all StreetGuess local data?")) return;
+      localStorage.removeItem("streetguess-v1");
+      UI.toast("Local data cleared.");
+      window.setTimeout(() => location.reload(), 700);
+    });
+  }
+
+  function initLeaderboard() {
+    const body = UI.qs("#leaderboard-body");
+    if (!body) return;
+    const tabs = UI.qsa("[data-leaderboard-tab]");
+    let active = "Solo";
+
+    function render() {
+      tabs.forEach((tab) => tab.classList.toggle("active", tab.dataset.leaderboardTab === active));
+      const rows = Store.state().leaderboard
+        .filter((entry) => active === "Accuracy" ? true : entry.mode === active)
+        .sort((a, b) => {
+          if (active === "Accuracy") return (a.distance || 999999) - (b.distance || 999999);
+          return (b.score || 0) - (a.score || 0);
+        });
+
+      if (!rows.length) {
+        body.innerHTML = `<tr><td colspan="5" class="empty-state">No local results yet.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = rows.map((entry, index) => `
+        <tr>
+          <td>#${index + 1}</td>
+          <td>${entry.player || "You"}</td>
+          <td>${entry.mode}</td>
+          <td>${entry.mode === "Solo" ? `${entry.score || 0} pts / ${entry.streak || 0} streak` : `${entry.score || 0} rounds`}</td>
+          <td>${new Date(entry.date).toLocaleDateString()}</td>
+        </tr>
+      `).join("");
+    }
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        active = tab.dataset.leaderboardTab;
+        render();
       });
     });
 
-    initResultsPage();
-    initLeaderboardPage();
-    initProfilePage();
-    initSettingsPage();
-    initHomePreview();
+    UI.qs("#clear-leaderboard-btn")?.addEventListener("click", () => {
+      Store.update((current) => {
+        current.leaderboard = [];
+        return current;
+      });
+      render();
+    });
+
+    render();
   }
 
-  function initHomePreview() {
-    const preview = qs("[data-home-map]");
-    if (!preview) return;
-    window.WorldGuessMap.createGuessMap(preview);
-  }
-
-  function initResultsPage() {
-    if (document.body.dataset.page !== "results") return;
-    const result = window.WorldGuessStorage.getState().lastResult;
-    const root = qs("#results-root");
-    if (!root) return;
-
+  function initResults() {
+    const target = UI.qs("#results-root");
+    if (!target) return;
+    const result = Store.state().lastResult;
     if (!result) {
-      root.innerHTML = `<div class="panel"><h2>No results yet</h2><p>Play Solo or Duel first.</p><div class="actions"><a class="btn" href="solo.html">Play Solo</a><a class="btn-ghost" href="duel-lobby.html">Start Duel</a></div></div>`;
+      target.innerHTML = `
+        <section class="panel card">
+          <p class="eyebrow">No result</p>
+          <h1>No finished game yet.</h1>
+          <div class="button-row"><a class="btn" href="solo.html">Play Solo</a><a class="btn secondary" href="duel-lobby.html">Start Online Duel</a></div>
+        </section>
+      `;
       return;
     }
 
     if (result.type === "duel") {
-      root.innerHTML = `
-        <div class="panel">
-          <p class="eyebrow">Victory screen</p>
-          <h1>${result.winner || "Winner"} survives.</h1>
-          <p class="lead">Rounds: ${result.rounds || 0}. Biggest damage: ${(result.biggestDamage || 0).toLocaleString()}.</p>
-          <div class="actions"><a class="btn" href="duel-lobby.html">Rematch</a><a class="btn-ghost" href="index.html">Back to Home</a></div>
-        </div>
-        <div class="confetti"></div>
+      createConfetti();
+      target.innerHTML = `
+        <section class="panel card">
+          <p class="eyebrow">Duel complete</p>
+          <h1>${result.winner} wins</h1>
+          <div class="result-grid">
+            <div class="metric"><span>Rounds</span><strong>${result.rounds}</strong></div>
+            <div class="metric"><span>${result.player1}</span><strong>${result.hp1} HP</strong></div>
+            <div class="metric"><span>${result.player2}</span><strong>${result.hp2} HP</strong></div>
+            <div class="metric"><span>Biggest damage</span><strong>${result.biggestDamage}</strong></div>
+          </div>
+          <div class="button-row"><a class="btn" href="duel-lobby.html">New Online Room</a><a class="btn secondary" href="../">Back Home</a></div>
+        </section>
       `;
       return;
     }
 
-    const rows = (result.rounds || []).map((round) => `
-      <tr><td>${round.round}</td><td>${round.country}</td><td>${round.guess}</td><td>${round.distance.toLocaleString()} km</td><td>${round.correct ? "Correct" : "Wrong"}</td></tr>
-    `).join("");
-    root.innerHTML = `
-      <div class="panel">
-        <p class="eyebrow">Solo results</p>
-        <h1>${result.finalStreak || 0} country streak</h1>
-        <p class="lead">Average distance: ${(result.averageDistance || 0).toLocaleString()} km. Rounds played: ${result.roundsPlayed || 0}.</p>
-        <div class="actions"><a class="btn" href="solo.html">Play Again</a><a class="btn-ghost" href="leaderboard.html">Leaderboard</a><a class="btn-ghost" href="index.html">Back to Home</a></div>
-      </div>
-      <div class="panel table-wrap"><table class="data-table"><thead><tr><th>Round</th><th>Country</th><th>Guess</th><th>Distance</th><th>Status</th></tr></thead><tbody>${rows}</tbody></table></div>
+    target.innerHTML = `
+      <section class="panel card">
+        <p class="eyebrow">Solo result</p>
+        <h1>${result.correct ? "Country locked." : "Streak ended."}</h1>
+        <div class="result-grid">
+          <div class="metric"><span>Total score</span><strong>${result.totalScore || 0}</strong></div>
+          <div class="metric"><span>Streak</span><strong>${result.streak || 0}</strong></div>
+          <div class="metric"><span>Distance</span><strong>${result.distance || 0} km</strong></div>
+          <div class="metric"><span>Best streak</span><strong>${Store.state().stats.soloBestStreak || 0}</strong></div>
+        </div>
+        <div class="button-row"><a class="btn" href="solo.html">Play Again</a><a class="btn secondary" href="leaderboard.html">Leaderboard</a><a class="btn secondary" href="../">Back Home</a></div>
+      </section>
     `;
   }
 
-  function initLeaderboardPage() {
-    if (document.body.dataset.page !== "leaderboard") return;
-    const table = qs("#leaderboard-table");
-    const tabs = qsa("[data-board-tab]");
-    const clear = qs("#clear-board");
-    let active = "Solo";
-
-    function render() {
-      const entries = window.WorldGuessStorage.getState().leaderboard.filter((entry) => active === "Accuracy" ? true : entry.mode === active);
-      if (!entries.length) {
-        table.innerHTML = `<tr><td colspan="5">No local leaderboard data yet.</td></tr>`;
-        return;
-      }
-      table.innerHTML = entries.map((entry, index) => `
-        <tr><td>#${index + 1}</td><td>${entry.player}</td><td>${entry.mode}</td><td>${entry.score}</td><td>${new Date(entry.date).toLocaleDateString()}</td></tr>
-      `).join("");
+  function createConfetti() {
+    const confetti = document.createElement("div");
+    confetti.className = "confetti";
+    for (let i = 0; i < 80; i += 1) {
+      const piece = document.createElement("i");
+      piece.style.left = `${Math.random() * 100}%`;
+      piece.style.animationDelay = `${Math.random() * 1.4}s`;
+      piece.style.background = ["#1de9b6", "#39ff88", "#f9c74f", "#8ab4f8", "#ff4d5e"][i % 5];
+      confetti.appendChild(piece);
     }
-
-    tabs.forEach((tab) => tab.addEventListener("click", () => {
-      active = tab.dataset.boardTab;
-      tabs.forEach((item) => item.classList.toggle("active", item === tab));
-      render();
-    }));
-    clear?.addEventListener("click", () => {
-      window.WorldGuessStorage.updateState((state) => {
-        state.leaderboard = [];
-        return state;
-      });
-      render();
-    });
-    render();
+    document.body.appendChild(confetti);
+    window.setTimeout(() => confetti.remove(), 4400);
   }
 
-  function initProfilePage() {
-    if (document.body.dataset.page !== "profile") return;
-    const profile = window.WorldGuessStorage.getProfile();
-    const form = qs("#profile-form");
-    const stats = qs("#profile-stats");
-    if (form) form.name.value = profile.name;
-    if (stats) {
-      const average = profile.guesses ? Math.round(profile.totalDistance / profile.guesses) : 0;
-      stats.innerHTML = `
-        <div class="panel"><p>Games played</p><h3>${profile.gamesPlayed}</h3></div>
-        <div class="panel"><p>Best solo streak</p><h3>${profile.bestSoloStreak}</h3></div>
-        <div class="panel"><p>Duel wins</p><h3>${profile.duelWins}</h3></div>
-        <div class="panel"><p>Duel losses</p><h3>${profile.duelLosses}</h3></div>
-        <div class="panel"><p>Average distance</p><h3>${average} km</h3></div>
-        <div class="panel"><p>Favorite mode</p><h3>${profile.favoriteMode}</h3></div>
-      `;
-    }
-    form?.addEventListener("submit", (event) => {
-      event.preventDefault();
-      window.WorldGuessStorage.saveProfile({ name: form.name.value.trim() || "Explorer" });
-      window.WorldGuessUI.showToast("Profile saved.", "success");
-    });
-  }
-
-  function initSettingsPage() {
-    if (document.body.dataset.page !== "settings") return;
-    const settings = window.WorldGuessStorage.getSettings();
-    const form = qs("#settings-form");
-    if (!form) return;
-    Object.entries(settings).forEach(([key, value]) => {
-      const field = form.elements[key];
-      if (!field) return;
-      if (field.type === "checkbox") field.checked = Boolean(value);
-      else field.value = String(value);
-    });
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      const data = new FormData(form);
-      window.WorldGuessStorage.saveSettings({
-        theme: data.get("theme"),
-        units: data.get("units"),
-        mapStyle: data.get("mapStyle"),
-        sound: data.get("sound") === "on",
-        timerSounds: data.get("timerSounds") === "on",
-        allowMoving: data.get("allowMoving") === "on",
-        allowZoom: data.get("allowZoom") === "on",
-        allowPan: data.get("allowPan") === "on"
-      });
-      window.WorldGuessUI.showToast("Settings saved.", "success");
-      window.WorldGuessUI.applySettings();
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", initCommon);
+  document.addEventListener("DOMContentLoaded", () => {
+    initCommon();
+    initSettings();
+    initLeaderboard();
+    initResults();
+  });
 })();

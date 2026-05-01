@@ -1,16 +1,15 @@
 {
-  "name": "worldguess",
-  "private": true,
+  "name": "cingytech-streetguess",
   "version": "1.0.0",
-  "type": "module",
+  "private": true,
   "scripts": {
-    "check": "tsc --noEmit"
+    "dev": "netlify dev"
   },
   "dependencies": {
-    "@netlify/blobs": "latest"
+    "@netlify/blobs": "latest",
+    "@netlify/identity": "latest"
   },
   "devDependencies": {
-    "@netlify/functions": "latest",
-    "typescript": "latest"
+    "@netlify/functions": "latest"
   }
 }

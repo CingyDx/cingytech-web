@@ -1,153 +1,82 @@
 (function () {
-  const KEY = "worldguess-state-v1";
+  const KEY = "streetguess-v1";
 
   const defaults = {
     settings: {
-      theme: "dark",
-      units: "kilometers",
-      mapStyle: "dark",
-      sound: false,
-      timerSounds: true,
-      allowMoving: true,
+      timeLimit: 180,
+      units: "km",
+      movementAllowed: true,
       allowZoom: true,
-      allowPan: true
+      allowPan: true,
+      mapType: "roadmap",
+      sound: false,
+      timerSounds: false,
+      theme: "dark"
     },
-    profile: {
-      name: "Explorer",
-      avatar: "assets/avatar-player1.svg",
-      gamesPlayed: 0,
-      bestSoloStreak: 0,
+    stats: {
+      soloBestScore: 0,
+      soloBestStreak: 0,
       duelWins: 0,
-      duelLosses: 0,
-      totalDistance: 0,
+      averageDistance: 0,
       guesses: 0,
-      favoriteMode: "Solo"
+      totalDistance: 0
     },
     leaderboard: [],
-    soloSession: null,
-    duelSession: null,
-    lastResult: null
+    lastResult: null,
+    duelLobby: { player1: "Player 1", player2: "Player 2" }
   };
 
-  function clone(value) {
-    return JSON.parse(JSON.stringify(value));
-  }
-
-  function getState() {
+  function state() {
     try {
-      const stored = JSON.parse(localStorage.getItem(KEY) || "{}");
+      const parsed = JSON.parse(localStorage.getItem(KEY) || "{}");
       return {
-        ...clone(defaults),
-        ...stored,
-        settings: { ...defaults.settings, ...(stored.settings || {}) },
-        profile: { ...defaults.profile, ...(stored.profile || {}) },
-        leaderboard: Array.isArray(stored.leaderboard) ? stored.leaderboard : []
+        ...defaults,
+        ...parsed,
+        settings: { ...defaults.settings, ...(parsed.settings || {}) },
+        stats: { ...defaults.stats, ...(parsed.stats || {}) },
+        leaderboard: Array.isArray(parsed.leaderboard) ? parsed.leaderboard : []
       };
     } catch {
-      return clone(defaults);
+      return JSON.parse(JSON.stringify(defaults));
     }
   }
 
-  function setState(nextState) {
-    localStorage.setItem(KEY, JSON.stringify(nextState));
-    return nextState;
+  function save(next) {
+    localStorage.setItem(KEY, JSON.stringify(next));
+    return next;
   }
 
-  function updateState(updater) {
-    const state = getState();
-    const nextState = updater(state) || state;
-    return setState(nextState);
-  }
-
-  function getSettings() {
-    return getState().settings;
-  }
-
-  function saveSettings(settings) {
-    updateState((state) => {
-      state.settings = { ...state.settings, ...settings };
-      return state;
-    });
-  }
-
-  function getProfile() {
-    return getState().profile;
-  }
-
-  function saveProfile(profile) {
-    updateState((state) => {
-      state.profile = { ...state.profile, ...profile };
-      return state;
-    });
+  function update(fn) {
+    const current = state();
+    return save(fn(current) || current);
   }
 
   function saveSoloResult(result) {
-    updateState((state) => {
-      state.lastResult = { type: "solo", ...result };
-      state.profile.gamesPlayed += 1;
-      state.profile.bestSoloStreak = Math.max(state.profile.bestSoloStreak, result.finalStreak || 0);
-      state.profile.totalDistance += result.totalDistance || 0;
-      state.profile.guesses += result.rounds?.length || 0;
-      state.profile.favoriteMode = "Solo";
-      state.leaderboard.push({
-        id: Date.now(),
-        player: state.profile.name,
-        mode: "Solo",
-        metric: "streak",
-        score: result.finalStreak || 0,
-        distance: result.averageDistance || 0,
-        date: new Date().toISOString()
-      });
-      state.leaderboard = updateLeaderboard(state.leaderboard);
-      return state;
+    update((current) => {
+      current.lastResult = { type: "solo", ...result };
+      current.stats.soloBestScore = Math.max(current.stats.soloBestScore, result.totalScore || 0);
+      current.stats.soloBestStreak = Math.max(current.stats.soloBestStreak, result.streak || 0);
+      current.stats.totalDistance += result.distance || 0;
+      current.stats.guesses += 1;
+      current.stats.averageDistance = Math.round(current.stats.totalDistance / current.stats.guesses);
+      current.leaderboard.push({ mode: "Solo", player: "You", score: result.totalScore || 0, streak: result.streak || 0, distance: result.distance || 0, date: new Date().toISOString() });
+      current.leaderboard = current.leaderboard.sort((a, b) => b.score - a.score).slice(0, 50);
+      return current;
     });
   }
 
   function saveDuelResult(result) {
-    updateState((state) => {
-      state.lastResult = { type: "duel", ...result };
-      state.profile.gamesPlayed += 1;
-      if (result.winner === state.profile.name || result.winner === "Player 1") {
-        state.profile.duelWins += 1;
-      } else {
-        state.profile.duelLosses += 1;
-      }
-      state.profile.favoriteMode = "Duel";
-      state.leaderboard.push({
-        id: Date.now(),
-        player: result.winner,
-        mode: "Duel",
-        metric: "wins",
-        score: 1,
-        damage: result.biggestDamage || 0,
-        date: new Date().toISOString()
-      });
-      state.leaderboard = updateLeaderboard(state.leaderboard);
-      return state;
+    update((current) => {
+      current.lastResult = { type: "duel", ...result };
+      if (result.winner === result.player1) current.stats.duelWins += 1;
+      current.leaderboard.push({ mode: "Duel", player: result.winner, score: result.rounds || 1, streak: 0, distance: result.biggestDamage || 0, date: new Date().toISOString() });
+      current.leaderboard = current.leaderboard.slice(-50);
+      return current;
     });
   }
 
-  function updateLeaderboard(entries) {
-    return [...entries]
-      .sort((a, b) => (b.score || 0) - (a.score || 0) || new Date(b.date) - new Date(a.date))
-      .slice(0, 50);
-  }
-
-  function resetAllData() {
-    localStorage.removeItem(KEY);
-  }
-
-  window.WorldGuessStorage = {
-    getState,
-    setState,
-    updateState,
-    getSettings,
-    saveSettings,
-    getProfile,
-    saveProfile,
-    saveSoloResult,
-    saveDuelResult,
-    updateLeaderboard,
-    resetAllData
-  };
+  window.Store = { state, save, update, saveSoloResult, saveDuelResult };
+  window.saveSoloResult = saveSoloResult;
+  window.saveDuelResult = saveDuelResult;
+  window.updateLeaderboard = () => state().leaderboard;
 })();

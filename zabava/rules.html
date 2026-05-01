@@ -1,21 +1,85 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Rules | WorldGuess</title>
-  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/game.css"><link rel="stylesheet" href="../css/responsive.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rules | StreetGuess</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/responsive.css">
 </head>
-<body data-page="rules">
-  <div class="shell">
-    <header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html"><img src="../assets/logo.svg" alt="">WorldGuess</a><button class="nav-toggle" data-nav-toggle>☰</button><nav class="nav" data-nav><a href="index.html">Play</a><a href="solo.html">Solo</a><a href="duel-lobby.html">Duel</a><a href="leaderboard.html">Leaderboard</a><a class="active" href="rules.html">Rules</a><a href="settings.html">Settings</a></nav></div></header>
-    <main class="section"><div class="container form-grid"><p class="eyebrow">Rules</p><h1>Read the world, not the web.</h1>
-      <section class="panel"><h2>Goal</h2><p>You see a Street View style location and must identify the country from visual clues: signs, language, road markings, driving side, plates, domains, flags, architecture, climate and vegetation.</p></section>
-      <section class="panel"><h2>Solo mode</h2><p>You have 3 minutes per round. Guess the country. Correct guesses add to your streak; wrong guesses or timeout end the run. Results show correct country, your guess and distance.</p></section>
-      <section class="panel"><h2>Duel mode</h2><p>Two online players share the same location. Both start with 6000 HP and get one guess. When one player guesses, the opponent has 15 seconds. The farther player takes damage based on distance difference. From round 5 the multiplier rises by 0.5x per round. Duel ends at 0 HP.</p></section>
-      <section class="panel"><h2>Fair play</h2><p>No Google search, translators, external maps or looking up visible names outside the game. Play only from what the scene gives you.</p></section>
-    </div></main>
-  </div>
-  <script src="../js/data.js"></script><script src="../js/storage.js"></script><script src="../js/timer.js"></script><script src="../js/scoring.js"></script><script src="../js/ui.js"></script><script src="../js/api.js"></script><script src="../js/map.js"></script><script src="../js/app.js"></script>
+
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html"><img src="../assets/logo.svg" alt="">StreetGuess</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav class="nav" id="site-nav" aria-label="Game navigation">
+        <a href="index.html">Play</a>
+        <a href="solo.html">Solo</a>
+        <a href="duel-lobby.html">Online Duel</a>
+        <a class="active" href="rules.html">Rules</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a href="settings.html">Settings</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div class="container split-grid">
+      <section class="panel card">
+        <p class="eyebrow">Rules</p>
+        <h1>Guess where the Street View dropped you.</h1>
+        <p class="lead">Use only what you can see in the panorama: signs, languages, road markings, cars, plates, flags, buildings, landscape, domains, climate and vegetation.</p>
+
+        <h2>Solo Country Streak</h2>
+        <ul class="rules-list">
+          <li>You get one real Google Street View location each round.</li>
+          <li>You have 3 minutes by default.</li>
+          <li>Click the real Google map to place or drag a pin.</li>
+          <li>Your distance creates a score from 0 to 5000.</li>
+          <li>The country must match to keep the streak alive.</li>
+          <li>Wrong country or timer expiry resets the streak.</li>
+        </ul>
+
+        <h2>Online 1v1 Duel</h2>
+        <ul class="rules-list">
+          <li>Both players start with 6000 HP.</li>
+          <li>Both players join the same room code with separate `/zabava` accounts.</li>
+          <li>Both players get the same real Street View location.</li>
+          <li>Whoever guesses first starts the 15 second pressure timer for the opponent.</li>
+          <li>If the opponent has a pin when the timer expires, the pin is submitted automatically.</li>
+          <li>The farther player takes damage based on distance difference.</li>
+          <li>Round 1-4 use 1x damage. Round 5 is 1.5x, then +0.5x every round.</li>
+          <li>The duel ends when one player reaches 0 HP.</li>
+        </ul>
+      </section>
+
+      <aside class="panel card">
+        <p class="eyebrow">Fair play</p>
+        <h2>No outside help.</h2>
+        <ul class="rules-list">
+          <li>No Google searching city names, roads or signs.</li>
+          <li>No translator.</li>
+          <li>No external maps.</li>
+          <li>No image search.</li>
+          <li>Play by visual clues only.</li>
+        </ul>
+        <div class="button-row" style="margin-top: 22px;">
+          <a class="btn" href="solo.html">Play Solo</a>
+          <a class="btn secondary" href="duel-lobby.html">Start Online Duel</a>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/timer.js"></script>
+  <script src="../js/scoring.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/app.js"></script>
 </body>
+
 </html>

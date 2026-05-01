@@ -1,60 +1,41 @@
 (function () {
-  function createTimer(durationSeconds, callbacks) {
-    let remaining = durationSeconds;
+  function formatTime(seconds) {
+    const safe = Math.max(0, Math.ceil(seconds));
+    return `${String(Math.floor(safe / 60)).padStart(2, "0")}:${String(safe % 60).padStart(2, "0")}`;
+  }
+
+  function createTimer(seconds, callbacks = {}) {
+    let remaining = seconds;
     let interval = null;
-    let running = false;
 
     function tick() {
       remaining -= 1;
-      callbacks?.onTick?.(remaining);
-
+      callbacks.onTick?.(remaining);
       if (remaining <= 0) {
         stop();
-        callbacks?.onEnd?.();
+        callbacks.onDone?.();
       }
     }
 
     function start() {
       stop();
-      running = true;
-      callbacks?.onTick?.(remaining);
+      callbacks.onTick?.(remaining);
       interval = window.setInterval(tick, 1000);
-    }
-
-    function pause() {
-      if (interval) window.clearInterval(interval);
-      interval = null;
-      running = false;
     }
 
     function stop() {
       if (interval) window.clearInterval(interval);
       interval = null;
-      running = false;
     }
 
-    function reset(nextDuration = durationSeconds) {
+    function reset(next = seconds) {
       stop();
-      remaining = nextDuration;
-      callbacks?.onTick?.(remaining);
+      remaining = next;
+      callbacks.onTick?.(remaining);
     }
 
-    return {
-      start,
-      pause,
-      stop,
-      reset,
-      getRemaining: () => remaining,
-      isRunning: () => running
-    };
+    return { start, stop, reset, getRemaining: () => remaining };
   }
 
-  function formatTime(totalSeconds) {
-    const safe = Math.max(0, Math.ceil(totalSeconds));
-    const minutes = Math.floor(safe / 60);
-    const seconds = safe % 60;
-    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-  }
-
-  window.WorldGuessTimer = { createTimer, formatTime };
+  window.GameTimer = { createTimer, formatTime };
 })();

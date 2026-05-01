@@ -1,22 +1,114 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Settings | WorldGuess</title>
-  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/game.css"><link rel="stylesheet" href="../css/responsive.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings | StreetGuess</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/responsive.css">
 </head>
-<body data-page="settings">
-  <div class="shell">
-    <header class="site-header"><div class="container nav-wrap"><a class="brand" href="index.html"><img src="../assets/logo.svg" alt="">WorldGuess</a><button class="nav-toggle" data-nav-toggle>☰</button><nav class="nav" data-nav><a href="index.html">Play</a><a href="solo.html">Solo</a><a href="duel-lobby.html">Duel</a><a href="leaderboard.html">Leaderboard</a><a href="rules.html">Rules</a><a class="active" href="settings.html">Settings</a></nav></div></header>
-    <main class="section"><div class="container"><p class="eyebrow">Settings</p><h1>Tune the run.</h1><form id="settings-form" class="panel form-grid" style="margin-top:24px">
-      <label>Theme<select name="theme" class="select"><option>dark</option><option>light</option><option>system</option></select></label>
-      <label>Units<select name="units" class="select"><option>kilometers</option><option>miles</option></select></label>
-      <label>Map style<select name="mapStyle" class="select"><option>dark</option><option>satellite</option><option>minimal</option></select></label>
-      <label><input type="checkbox" name="sound"> Sound</label><label><input type="checkbox" name="timerSounds"> Timer sounds</label><label><input type="checkbox" name="allowMoving"> Allow moving</label><label><input type="checkbox" name="allowZoom"> Allow zoom</label><label><input type="checkbox" name="allowPan"> Allow pan</label>
-      <div class="actions"><button class="btn">Save settings</button><button type="button" class="btn-danger" data-clear-data>Reset all data</button></div>
-    </form></div></main>
-  </div>
-  <script src="../js/data.js"></script><script src="../js/storage.js"></script><script src="../js/timer.js"></script><script src="../js/scoring.js"></script><script src="../js/ui.js"></script><script src="../js/api.js"></script><script src="../js/map.js"></script><script src="../js/app.js"></script>
+
+<body>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="index.html"><img src="../assets/logo.svg" alt="">StreetGuess</a>
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
+      <nav class="nav" id="site-nav" aria-label="Game navigation">
+        <a href="index.html">Play</a>
+        <a href="solo.html">Solo</a>
+        <a href="duel-lobby.html">Online Duel</a>
+        <a href="rules.html">Rules</a>
+        <a href="leaderboard.html">Leaderboard</a>
+        <a class="active" href="settings.html">Settings</a>
+        <a href="login.html">Login</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <div class="container">
+      <div class="section-heading">
+        <p class="eyebrow">Settings</p>
+        <h1>Tune the live map experience.</h1>
+        <p class="lead">These settings are saved locally. The Google API key goes in <code>js/config.js</code>.</p>
+      </div>
+
+      <form id="settings-form" class="settings-grid">
+        <section class="panel settings-card form-grid">
+          <h2>Display</h2>
+          <div class="field">
+            <label for="theme">Theme</label>
+            <select class="select" id="theme" name="theme">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="system">System</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="units">Units</label>
+            <select class="select" id="units" name="units">
+              <option value="km">Kilometers</option>
+              <option value="mi">Miles</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="mapType">Guess map type</label>
+            <select class="select" id="mapType" name="mapType">
+              <option value="roadmap">Roadmap</option>
+              <option value="satellite">Satellite</option>
+              <option value="hybrid">Hybrid</option>
+              <option value="terrain">Terrain</option>
+            </select>
+          </div>
+        </section>
+
+        <section class="panel settings-card form-grid">
+          <h2>Gameplay</h2>
+          <div class="field">
+            <label for="timeLimit">Solo time limit</label>
+            <select class="select" id="timeLimit" name="timeLimit">
+              <option value="180">3 minutes</option>
+              <option value="120">2 minutes</option>
+              <option value="60">1 minute</option>
+              <option value="300">5 minutes</option>
+            </select>
+          </div>
+          <label class="toggle-row">
+            <span>Movement allowed in Street View</span>
+            <input type="checkbox" name="movementAllowed">
+          </label>
+          <label class="toggle-row">
+            <span>Zoom controls</span>
+            <input type="checkbox" name="allowZoom">
+          </label>
+          <label class="toggle-row">
+            <span>Pan controls</span>
+            <input type="checkbox" name="allowPan">
+          </label>
+          <label class="toggle-row">
+            <span>Sound</span>
+            <input type="checkbox" name="sound">
+          </label>
+          <label class="toggle-row">
+            <span>Timer sounds</span>
+            <input type="checkbox" name="timerSounds">
+          </label>
+          <div class="button-row">
+            <button class="btn" type="submit">Save Settings</button>
+            <button class="btn danger" id="reset-data-btn" type="button">Reset All Data</button>
+          </div>
+        </section>
+      </form>
+    </div>
+  </main>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/timer.js"></script>
+  <script src="../js/scoring.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/app.js"></script>
 </body>
+
 </html>

@@ -1,26 +1,61 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Online Duel | WorldGuess</title>
-  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../css/style.css"><link rel="stylesheet" href="../css/game.css"><link rel="stylesheet" href="../css/responsive.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Online Duel | StreetGuess</title>
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/game.css">
+  <link rel="stylesheet" href="../css/responsive.css">
 </head>
-<body class="game-body" data-page="duel">
-  <main class="game-screen">
-    <div class="duel-hud">
-      <div class="player-hud"><strong id="p1-name">Player 1</strong><div class="hp-track"><span id="p1-fill" class="hp-fill"></span></div><span id="p1-hp">6000 HP</span></div>
-      <div class="duel-center"><div class="hud-chip"><span>Room</span><strong id="room-code">-----</strong></div><div class="hud-chip"><span>Round</span><strong id="round">1</strong></div><div class="hud-chip"><span>Multiplier</span><strong id="multiplier">1x</strong></div><div class="hud-chip"><span>Timer</span><strong id="duel-timer">--</strong></div></div>
-      <div class="player-hud right"><strong id="p2-name">Player 2</strong><div class="hp-track"><span id="p2-fill" class="hp-fill"></span></div><span id="p2-hp">6000 HP</span></div>
+
+<body class="game-body">
+  <div id="pano"></div>
+  <div class="game-shade"></div>
+
+  <header class="game-hud duel-hud" aria-label="Duel HUD">
+    <div class="hud-left">
+      <section class="hp-card">
+        <div class="hp-top"><strong id="player1-name">Player 1</strong><span><span id="player1-hp">6000</span> HP</span></div>
+        <div class="hp-bar"><div class="hp-fill" id="player1-fill"></div></div>
+      </section>
     </div>
-    <div id="round-alert" class="round-alert">Connecting to online room...</div>
-    <section class="panorama-wrap">
-      <div id="panorama" class="panorama-shell"></div>
-      <aside class="guess-dock glass"><div id="guess-map"></div><select id="country-select" class="select"></select><button id="guess-btn" class="btn" disabled>Guess</button><a class="btn-ghost" href="duel-lobby.html">Leave</a></aside>
-      <aside id="summary-panel" class="summary-panel panel" hidden></aside>
-      <button id="next-round" class="btn" hidden style="position:absolute;z-index:40;left:50%;bottom:28px;transform:translateX(-50%)">Next Round</button>
-    </section>
-  </main>
-  <script src="../js/data.js"></script><script src="../js/storage.js"></script><script src="../js/timer.js"></script><script src="../js/scoring.js"></script><script src="../js/ui.js"></script><script src="../js/api.js"></script><script src="../js/map.js"></script><script src="../js/app.js"></script><script src="../js/duel.js"></script>
+    <div class="hud-center">
+      <div class="hud-pill"><span>Round</span><strong id="round">0</strong></div>
+      <div class="hud-pill"><span>Damage</span><strong id="multiplier">1x</strong></div>
+      <div class="hud-pill timer-pill" id="timer">ONLINE</div>
+    </div>
+    <div class="hud-right">
+      <section class="hp-card">
+        <div class="hp-top"><strong id="player2-name">Player 2</strong><span><span id="player2-hp">6000</span> HP</span></div>
+        <div class="hp-bar"><div class="hp-fill" id="player2-fill"></div></div>
+      </section>
+    </div>
+  </header>
+
+  <div id="guess-map-panel">
+    <div id="guess-map"></div>
+    <div class="map-actions">
+      <button id="duel-guess-btn" class="btn" type="button" disabled>Guess</button>
+      <button id="reset-pin-btn" class="btn secondary" type="button">Reset Pin</button>
+    </div>
+  </div>
+
+  <div class="duel-status" id="duel-status">Connecting online room...</div>
+  <a class="btn secondary game-back" href="duel-lobby.html">Back</a>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/google-loader.js"></script>
+  <script src="../js/locations.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/timer.js"></script>
+  <script src="../js/scoring.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/maps.js"></script>
+  <script src="../js/streetview.js"></script>
+  <script src="../js/duel.js"></script>
 </body>
+
 </html>
