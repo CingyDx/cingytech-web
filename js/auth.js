@@ -2,6 +2,8 @@
   const LOCAL_KEY = "streetguess-local-auth";
   let identityModule = null;
   let identityReady = false;
+  let identityUnavailable = false;
+  let identityStatusPromise = null;
 
   function isLocalhost() {
     return ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
@@ -11,6 +13,31 @@
     if (identityModule) return identityModule;
     identityModule = await import("https://esm.sh/@netlify/identity?bundle");
     return identityModule;
+  }
+
+  async function checkIdentityAvailable() {
+    if (isLocalhost()) return true;
+    if (identityStatusPromise) return identityStatusPromise;
+
+    identityStatusPromise = fetch("/.netlify/identity/settings", { cache: "no-store" })
+      .then((response) => {
+        identityUnavailable = !response.ok;
+        return response.ok;
+      })
+      .catch(() => {
+        identityUnavailable = true;
+        return false;
+      });
+
+    return identityStatusPromise;
+  }
+
+  async function ensureIdentity() {
+    const available = await checkIdentityAvailable();
+    if (!available) {
+      throw new Error("Netlify Identity is not enabled on this site yet.");
+    }
+    return await loadIdentity();
   }
 
   function localUser() {
@@ -35,6 +62,9 @@
     }
 
     try {
+      const available = await checkIdentityAvailable();
+      if (!available) return null;
+
       const identity = await loadIdentity();
       await identity.handleAuthCallback();
       identityReady = true;
@@ -48,6 +78,9 @@
   async function getUser() {
     if (isLocalhost()) return localUser();
     try {
+      const available = await checkIdentityAvailable();
+      if (!available) return null;
+
       const identity = await loadIdentity();
       return await identity.getUser();
     } catch {
@@ -57,13 +90,13 @@
 
   async function login(email, password, name = "") {
     if (isLocalhost()) return saveLocalUser(email, name);
-    const identity = await loadIdentity();
+    const identity = await ensureIdentity();
     return await identity.login(email, password);
   }
 
   async function signup(email, password, name = "") {
     if (isLocalhost()) return saveLocalUser(email, name);
-    const identity = await loadIdentity();
+    const identity = await ensureIdentity();
     return await identity.signup(email, password, { full_name: name || email.split("@")[0] });
   }
 
@@ -72,7 +105,7 @@
       localStorage.removeItem(LOCAL_KEY);
       return;
     }
-    const identity = await loadIdentity();
+    const identity = await ensureIdentity();
     await identity.logout();
   }
 
@@ -96,10 +129,13 @@
 
   function authNote() {
     if (isLocalhost()) {
-      return "Local dev login is only for testing room UI. Real accounts use Netlify Identity after deploy.";
+      return "Local dev login stores only a fake email/name in this browser. Real accounts use Netlify Identity after deploy.";
+    }
+    if (identityUnavailable) {
+      return "Netlify Identity is not enabled on this site yet, so real signups/logins will not work until it is enabled in Netlify.";
     }
     if (!identityReady) {
-      return "Netlify Identity must be enabled on the deployed Netlify site.";
+      return "Checking Netlify Identity status...";
     }
     return "";
   }

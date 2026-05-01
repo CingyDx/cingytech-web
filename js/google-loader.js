@@ -33,15 +33,27 @@
     return "";
   }
 
-  function showGoogleSetupError(message = "Google Maps API key is missing. Add GOOGLE_MAPS_API_KEY in Netlify environment variables or add a local key in /js/config.js.") {
+  function showGoogleSetupError(options = {}) {
+    if (typeof options === "string") {
+      options = { message: options };
+    }
+
+    const {
+      title = "Missing Google Maps API key",
+      eyebrow = "Setup required",
+      message = "Google Maps API key is missing. Add GOOGLE_MAPS_API_KEY in Netlify environment variables or add a local key in /js/config.js.",
+      details = ""
+    } = options;
+
     document.body.innerHTML = `
       <main class="setup-error">
         <section class="setup-error-card">
-          <p class="eyebrow">Setup required</p>
-          <h1>Missing Google Maps API key</h1>
+          <p class="eyebrow">${eyebrow}</p>
+          <h1>${title}</h1>
           <p>${message}</p>
           <p>Enable Google Maps JavaScript API and Geocoding API, then set the browser key here:</p>
           <code>Netlify env: GOOGLE_MAPS_API_KEY<br>Local fallback: js/config.js</code>
+          ${details ? `<p class="muted">${details}</p>` : ""}
           <a class="btn" href="../zabava/">Back to game menu</a>
         </section>
       </main>
@@ -61,7 +73,12 @@
     loadPromise = new Promise((resolve, reject) => {
       window.__streetGuessMapsReady = () => resolve(window.google.maps);
       window.gm_authFailure = () => {
-        showGoogleSetupError("Google Maps API key is invalid or this domain is not allowed.");
+        showGoogleSetupError({
+          title: "Google Maps key rejected",
+          eyebrow: "Google blocked the map",
+          message: "The key was loaded from Netlify, but Google rejected it. Check that the copied key is complete, Maps JavaScript API is enabled, billing/trial is active, and website restrictions allow this domain.",
+          details: `Current origin: ${location.origin}. Add https://cingy.tech/*, https://www.cingy.tech/* and http://localhost:8888/* in Google Cloud HTTP referrer restrictions.`
+        });
         reject(new Error("Google Maps auth failure"));
       };
 
@@ -70,7 +87,10 @@
       script.defer = true;
       script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&libraries=marker&callback=__streetGuessMapsReady`;
       script.onerror = () => {
-        showGoogleSetupError("Google Maps JavaScript API could not be loaded.");
+        showGoogleSetupError({
+          title: "Google Maps failed to load",
+          message: "Google Maps JavaScript API could not be loaded. Check the API key, network connection and Google Cloud API restrictions."
+        });
         reject(new Error("Google Maps load error"));
       };
       document.head.appendChild(script);
