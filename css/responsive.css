@@ -80,9 +80,24 @@
     height: 312px;
   }
 
+  #guess-map-panel.map-expanded,
+  #guess-map-panel.map-expanded:hover {
+    right: 12px;
+    left: 12px;
+    bottom: 12px;
+    width: auto;
+    height: calc(100vh - 112px);
+    transform: none;
+  }
+
   #guess-map,
   #guess-map-panel:hover #guess-map {
     height: 232px;
+  }
+
+  #guess-map-panel.map-expanded #guess-map,
+  #guess-map-panel.map-expanded:hover #guess-map {
+    height: calc(100% - 70px);
   }
 
   .game-back {
@@ -167,9 +182,19 @@
     height: 290px;
   }
 
+  #guess-map-panel.map-expanded,
+  #guess-map-panel.map-expanded:hover {
+    height: calc(100vh - 102px);
+  }
+
   #guess-map,
   #guess-map-panel:hover #guess-map {
     height: 210px;
+  }
+
+  #guess-map-panel.map-expanded #guess-map,
+  #guess-map-panel.map-expanded:hover #guess-map {
+    height: calc(100% - 70px);
   }
 
   .game-back,

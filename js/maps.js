@@ -5,6 +5,8 @@
   let resultMap = null;
   let resultLine = null;
   let geocoder = null;
+  let expansionKeyInstalled = false;
+  let activeExpandedPanel = null;
 
   function initGuessMap(options = {}) {
     const mapEl = document.getElementById("guess-map");
@@ -26,7 +28,43 @@
       options.onPin?.(event.latLng);
     });
 
+    setupMapExpansion();
     return guessMap;
+  }
+
+  function setupMapExpansion() {
+    const panel = document.getElementById("guess-map-panel");
+    const expandButton = panel?.querySelector("[data-map-expand]");
+    const closeButton = panel?.querySelector("[data-map-close]");
+    if (!panel || !expandButton || !closeButton) return;
+
+    function refreshMapSize() {
+      if (!guessMap) return;
+      const center = guessLatLng || guessMap.getCenter();
+      google.maps.event.trigger(guessMap, "resize");
+      if (center) guessMap.panTo(center);
+    }
+
+    function setExpanded(value) {
+      panel.classList.toggle("map-expanded", value);
+      document.body.classList.toggle("guess-map-open", value);
+      activeExpandedPanel = value ? panel : null;
+      window.setTimeout(refreshMapSize, 230);
+    }
+
+    expandButton.onclick = () => setExpanded(true);
+    closeButton.onclick = () => setExpanded(false);
+    if (!expansionKeyInstalled) {
+      expansionKeyInstalled = true;
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && activeExpandedPanel) {
+          activeExpandedPanel.classList.remove("map-expanded");
+          document.body.classList.remove("guess-map-open");
+          activeExpandedPanel = null;
+          window.setTimeout(refreshMapSize, 230);
+        }
+      });
+    }
   }
 
   function placeGuessMarker(latLng) {
