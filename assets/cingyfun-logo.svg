@@ -1,20 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="CingyFun logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="CingyFun CingyTech logo">
   <defs>
-    <linearGradient id="fun-a" x1="16" y1="18" x2="112" y2="112" gradientUnits="userSpaceOnUse">
+    <linearGradient id="cg" x1="18" y1="18" x2="108" y2="112" gradientUnits="userSpaceOnUse">
       <stop stop-color="#1de9b6"/>
-      <stop offset=".52" stop-color="#8ab4f8"/>
-      <stop offset="1" stop-color="#f9c74f"/>
+      <stop offset="1" stop-color="#39ff88"/>
     </linearGradient>
-    <linearGradient id="fun-b" x1="28" y1="102" x2="102" y2="28" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#39ff88"/>
-      <stop offset="1" stop-color="#ff4d5e"/>
+    <linearGradient id="tg" x1="42" y1="42" x2="94" y2="104" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f4fff9"/>
+      <stop offset="1" stop-color="#9fffd1"/>
     </linearGradient>
   </defs>
-  <rect width="128" height="128" rx="30" fill="#071016"/>
-  <path d="M32 38c8-11 20-17 34-17 19 0 35 11 42 28" fill="none" stroke="url(#fun-a)" stroke-width="10" stroke-linecap="round"/>
-  <path d="M96 90c-8 11-20 17-34 17-19 0-35-11-42-28" fill="none" stroke="url(#fun-a)" stroke-width="10" stroke-linecap="round"/>
-  <circle cx="41" cy="68" r="14" fill="url(#fun-b)"/>
-  <circle cx="87" cy="68" r="14" fill="#1de9b6"/>
-  <path d="M48 87c9 7 23 7 32 0" fill="none" stroke="#f4f7fb" stroke-width="7" stroke-linecap="round"/>
-  <path d="M32 27l-10-8M96 27l10-8M25 103l-9 7M103 103l9 7" stroke="#f9c74f" stroke-width="6" stroke-linecap="round"/>
+  <rect width="128" height="128" rx="28" fill="#071016"/>
+  <path d="M91 23H56L25 42v46l31 18h23V88L59 76V54l26-15h30c-5-10-13-16-24-16Z" fill="url(#cg)"/>
+  <path d="M43 47h70c3 0 5 3 3 6L103 70c-1 2-3 3-6 3H76v31c0 2-1 4-3 5l-9 8c-4 3-10 0-10-5V73H39c-4 0-6-4-4-7l10-15c1-2 3-4 6-4Z" fill="url(#tg)" stroke="#06202a" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="88" cy="106" r="11" fill="#1de9b6" stroke="#f4fff9" stroke-width="5"/>
 </svg>

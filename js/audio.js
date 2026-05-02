@@ -2,6 +2,7 @@
   let context = null;
   let master = null;
   let ambientNodes = [];
+  let ambientTimers = [];
   let dramaTimer = null;
   let ambientWanted = false;
   let unlocked = false;
@@ -25,7 +26,7 @@
     if (!AudioContext) return null;
     context = new AudioContext();
     master = context.createGain();
-    master.gain.value = 0.18;
+    master.gain.value = 0.24;
     master.connect(context.destination);
     return context;
   }
@@ -36,12 +37,16 @@
     if (ctx.state === "suspended") await ctx.resume();
     unlocked = true;
     if (ambientWanted && !ambientNodes.length) startAmbient();
+    updateControls();
   }
 
   function installUnlock() {
     if (unlockInstalled) return;
     unlockInstalled = true;
-    const handler = () => unlock();
+    const handler = (event) => {
+      if (event.target?.closest?.("[data-audio-toggle]")) return;
+      unlock();
+    };
     window.addEventListener("pointerdown", handler, { passive: true });
     window.addEventListener("keydown", handler);
   }
@@ -49,9 +54,10 @@
   function updateControls() {
     document.querySelectorAll("[data-audio-toggle]").forEach((button) => {
       const on = enabled();
+      const running = Boolean(ambientNodes.length || ambientTimers.length);
       button.classList.toggle("active", on);
       button.setAttribute("aria-pressed", String(on));
-      button.textContent = on ? "Sound On" : "Sound Off";
+      button.textContent = !on ? "Music Off" : running && unlocked ? "Music On" : "Start Music";
     });
   }
 
@@ -66,7 +72,6 @@
       return current;
     });
 
-    updateControls();
     if (value) {
       await unlock();
       startAmbient();
@@ -76,13 +81,24 @@
       stopDrama(false);
       stopAmbient();
     }
+    updateControls();
   }
 
   function initControls() {
     updateControls();
     document.querySelectorAll("[data-audio-toggle]").forEach((button) => {
       button.addEventListener("click", async () => {
-        await setEnabled(!enabled());
+        if (!enabled()) {
+          await setEnabled(true);
+          return;
+        }
+        if (!unlocked || (!ambientNodes.length && !ambientTimers.length)) {
+          await unlock();
+          startAmbient();
+          updateControls();
+          return;
+        }
+        await setEnabled(false);
       });
     });
   }
@@ -104,38 +120,108 @@
     gain.connect(master);
     osc.start(start);
     osc.stop(start + duration + 0.04);
+    osc.onended = () => {
+      try {
+        osc.disconnect();
+        gain.disconnect();
+      } catch {
+        // One-shot nodes may already be cleaned up.
+      }
+    };
+  }
+
+  function musicTone(freq, duration = 0.6, type = "triangle", volume = 0.045, when = 0) {
+    if (!enabled() || !unlocked) return;
+    const ctx = getContext();
+    if (!ctx || !master) return;
+
+    const start = ctx.currentTime + when;
+    const osc = ctx.createOscillator();
+    const filter = ctx.createBiquadFilter();
+    const gain = ctx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, start);
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(1200, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.linearRampToValueAtTime(volume, start + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(master);
+    osc.start(start);
+    osc.stop(start + duration + 0.08);
+    osc.onended = () => {
+      try {
+        osc.disconnect();
+        filter.disconnect();
+        gain.disconnect();
+      } catch {
+        // One-shot music nodes may already be cleaned up.
+      }
+    };
   }
 
   function startAmbient() {
     ambientWanted = true;
     if (!enabled()) return;
     const ctx = getContext();
-    if (!ctx || ambientNodes.length) return;
+    if (!ctx || ambientNodes.length || ambientTimers.length) return;
     if (!unlocked && ctx.state === "suspended") return;
 
     const filter = ctx.createBiquadFilter();
     filter.type = "lowpass";
-    filter.frequency.value = 820;
-    const gain = ctx.createGain();
-    gain.gain.value = 0.035;
-    filter.connect(gain);
-    gain.connect(master);
+    filter.frequency.value = 720;
+    const padGain = ctx.createGain();
+    padGain.gain.value = 0.038;
+    filter.connect(padGain);
+    padGain.connect(master);
 
     const a = ctx.createOscillator();
     a.type = "sine";
-    a.frequency.value = 110;
+    a.frequency.value = 98;
     const b = ctx.createOscillator();
     b.type = "triangle";
-    b.frequency.value = 165;
+    b.frequency.value = 146.83;
+    const c = ctx.createOscillator();
+    c.type = "sine";
+    c.frequency.value = 196;
     a.connect(filter);
     b.connect(filter);
+    c.connect(filter);
     a.start();
     b.start();
-    ambientNodes = [a, b, filter, gain];
+    c.start();
+    ambientNodes = [a, b, c, filter, padGain];
+
+    let step = 0;
+    const arp = [392, 493.88, 587.33, 659.25, 587.33, 493.88, 440, 523.25];
+    const bass = [98, 130.81, 146.83, 123.47];
+    const playLoop = () => {
+      if (!enabled() || !unlocked) return;
+      const baseIndex = step % arp.length;
+      musicTone(arp[baseIndex], 0.42, "triangle", 0.052, 0);
+      musicTone(arp[(baseIndex + 2) % arp.length], 0.38, "sine", 0.026, 0.22);
+      if (step % 2 === 0) musicTone(bass[Math.floor(step / 2) % bass.length], 0.95, "sine", 0.04, 0.02);
+      step += 1;
+    };
+    playLoop();
+    ambientTimers = [
+      window.setInterval(playLoop, 780),
+      window.setInterval(() => {
+        if (!enabled() || !unlocked) return;
+        musicTone(261.63, 1.2, "sine", 0.018, 0);
+        musicTone(329.63, 1.2, "sine", 0.014, 0.08);
+        musicTone(392, 1.2, "sine", 0.012, 0.16);
+      }, 3120)
+    ];
+    updateControls();
   }
 
   function stopAmbient() {
     ambientWanted = false;
+    ambientTimers.forEach((timer) => window.clearInterval(timer));
+    ambientTimers = [];
     ambientNodes.forEach((node) => {
       try {
         node.stop?.();
@@ -145,6 +231,7 @@
       }
     });
     ambientNodes = [];
+    updateControls();
   }
 
   function startDrama() {
