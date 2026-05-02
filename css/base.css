@@ -331,6 +331,50 @@ h3 {
   flex-wrap: wrap;
 }
 
+.fun-footer {
+  border-top: 1px solid var(--line);
+  padding: 28px 0;
+  color: var(--muted);
+  background: rgba(5, 11, 17, 0.56);
+}
+
+.fun-footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.fun-footer-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.fun-footer-brand img {
+  width: 40px;
+  height: 40px;
+}
+
+.fun-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+  font-weight: 800;
+}
+
+.fun-footer-links a {
+  color: var(--muted);
+}
+
+.fun-footer-links a:hover {
+  color: var(--primary);
+}
+
 .table-wrap {
   overflow: auto;
   border: 1px solid var(--line);

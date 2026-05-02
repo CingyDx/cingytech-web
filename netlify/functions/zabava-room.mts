@@ -338,5 +338,12 @@ export default async (req: Request, context: Context) => {
 };
 
 export const config: Config = {
-  path: ["/api/zabava/rooms", "/api/zabava/rooms/:code", "/api/zabava/rooms/:code/:action"]
+  path: [
+    "/api/zabava/rooms",
+    "/api/zabava/rooms/:code",
+    "/api/zabava/rooms/:code/:action",
+    "/api/cingyfun/streetguess/rooms",
+    "/api/cingyfun/streetguess/rooms/:code",
+    "/api/cingyfun/streetguess/rooms/:code/:action"
+  ]
 };

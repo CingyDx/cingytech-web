@@ -56,6 +56,207 @@
   position: relative;
 }
 
+.fun-page .site-header {
+  background: rgba(7, 16, 22, 0.82);
+}
+
+.fun-hero h1 {
+  background: linear-gradient(135deg, var(--text), var(--primary), var(--warning));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.fun-orbit-card {
+  min-height: 390px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 30px;
+  overflow: hidden;
+}
+
+.fun-orbit-card::before {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  background:
+    radial-gradient(circle at 28% 22%, rgba(249, 199, 79, 0.24), transparent 18rem),
+    radial-gradient(circle at 72% 34%, rgba(29, 233, 182, 0.22), transparent 18rem),
+    radial-gradient(circle at 54% 84%, rgba(138, 180, 248, 0.2), transparent 18rem);
+}
+
+.fun-orbit-logo {
+  position: absolute;
+  top: 28px;
+  right: 30px;
+  width: 126px;
+  height: 126px;
+  filter: drop-shadow(0 24px 42px rgba(29, 233, 182, 0.24));
+}
+
+.fun-game-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(220px, 0.65fr) minmax(220px, 0.65fr);
+  gap: 18px;
+}
+
+.fun-game-card {
+  position: relative;
+  min-height: 300px;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  transition: transform 180ms ease, border-color 180ms ease;
+}
+
+.fun-game-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(29, 233, 182, 0.42);
+}
+
+.fun-game-card.featured {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(280px, 1fr);
+  gap: 24px;
+  align-items: end;
+}
+
+.fun-game-copy {
+  position: relative;
+  z-index: 2;
+}
+
+.fun-game-copy h3,
+.fun-game-card h3 {
+  font-size: clamp(1.8rem, 3vw, 3rem);
+  line-height: 1;
+  margin-bottom: 14px;
+}
+
+.fun-game-copy p,
+.fun-game-card p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.streetguess-preview {
+  position: relative;
+  min-height: 310px;
+  border: 1px solid var(--line-strong);
+  border-radius: 26px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 24% 20%, rgba(138, 180, 248, 0.42), transparent 18rem),
+    linear-gradient(180deg, #163148, #122431 48%, #0b1117);
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.46);
+}
+
+.preview-sky {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 48%;
+  background:
+    linear-gradient(90deg, transparent 0 12%, rgba(255, 255, 255, 0.22) 12% 13%, transparent 13% 48%, rgba(255, 255, 255, 0.18) 48% 49%, transparent 49%),
+    radial-gradient(circle at 20% 60%, rgba(255, 255, 255, 0.28), transparent 7rem);
+}
+
+.preview-road {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -8%;
+  height: 46%;
+  clip-path: polygon(36% 0, 64% 0, 82% 100%, 18% 100%);
+  background:
+    linear-gradient(90deg, transparent 49%, rgba(249, 199, 79, 0.75) 49% 51%, transparent 51%),
+    linear-gradient(180deg, #313c46, #111820);
+}
+
+.preview-sign {
+  position: absolute;
+  left: 22px;
+  top: 24px;
+  padding: 10px 14px;
+  border: 2px solid rgba(244, 247, 251, 0.8);
+  border-radius: 14px;
+  color: #06120f;
+  background: linear-gradient(135deg, var(--primary), var(--success));
+  font-weight: 1000;
+}
+
+.preview-map {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  width: 130px;
+  height: 98px;
+  border: 1px solid var(--line-strong);
+  border-radius: 18px;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px),
+    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
+    rgba(7, 16, 22, 0.82);
+  background-size: 22px 22px;
+}
+
+.preview-map span {
+  position: absolute;
+  left: 22px;
+  top: 42px;
+  right: 22px;
+  height: 3px;
+  transform: rotate(-18deg);
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.preview-map i {
+  position: absolute;
+  left: 64px;
+  top: 32px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px 999px 999px 0;
+  transform: rotate(-45deg);
+  background: var(--danger);
+}
+
+.future-badge {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  padding: 0 12px;
+  margin-bottom: 56px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--warning);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(249, 199, 79, 0.08);
+}
+
+.fun-game-card.locked {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.fun-game-card.locked::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(138, 180, 248, 0.16), transparent 14rem),
+    radial-gradient(circle at 80% 60%, rgba(249, 199, 79, 0.12), transparent 14rem);
+  pointer-events: none;
+}
+
 .mini-stats {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

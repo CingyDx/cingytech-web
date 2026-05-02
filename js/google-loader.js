@@ -13,7 +13,7 @@
 
   async function fetchRemoteKey() {
     if (remoteKeyPromise) return remoteKeyPromise;
-    remoteKeyPromise = fetch("/api/zabava/config", { cache: "no-store" })
+    remoteKeyPromise = fetch("/api/cingyfun/streetguess/config", { cache: "no-store" })
       .then((response) => response.ok ? response.json() : null)
       .then((data) => data?.googleMapsApiKey || "")
       .catch(() => "");
@@ -54,7 +54,7 @@
           <p>Enable Google Maps JavaScript API and Geocoding API, then set the browser key here:</p>
           <code>Netlify env: GOOGLE_MAPS_API_KEY<br>Local fallback: js/config.js</code>
           ${details ? `<p class="muted">${details}</p>` : ""}
-          <a class="btn" href="../zabava/">Back to game menu</a>
+          <a class="btn" href="/CingyFun/">Back to game menu</a>
         </section>
       </main>
     `;

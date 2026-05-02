@@ -5,18 +5,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login | StreetGuess</title>
-  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/layout.css">
-  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/layout.css">
+  <link rel="stylesheet" href="../../css/responsive.css">
 </head>
 
 <body>
   <header class="site-header">
     <div class="container nav-wrap">
-      <a class="brand" href="index.html"><img src="../assets/logo.svg" alt="">StreetGuess</a>
+      <a class="brand" href="index.html"><img src="../../assets/logo.svg" alt="">StreetGuess</a>
       <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
       <nav class="nav" id="site-nav" aria-label="Game navigation">
+        <a href="../">Hub</a>
         <a href="index.html">Play</a>
         <a href="solo.html">Solo</a>
         <a href="duel-lobby.html">Online Duel</a>
@@ -31,9 +32,9 @@
   <main class="page-shell">
     <div class="container split-grid">
       <section>
-        <p class="eyebrow">Zabava account</p>
+        <p class="eyebrow">CingyFun account</p>
         <h1>One login for StreetGuess and future games.</h1>
-        <p class="lead">This account is only for the games inside `/Zabava`. Production accounts are managed by Netlify Identity, separate from the rest of Cingy.Tech.</p>
+        <p class="lead">This account is only for the games inside `/CingyFun`. Production accounts are managed by Netlify Identity, separate from the rest of Cingy.Tech.</p>
       </section>
 
       <aside class="panel card form-grid">
@@ -50,6 +51,26 @@
             <input class="input" id="login-password" name="password" type="password" autocomplete="current-password" required>
           </div>
           <button class="btn" type="submit">Log In</button>
+          <button class="btn secondary" id="show-recovery-btn" type="button">Forgot Password</button>
+        </form>
+
+        <form id="recovery-form" class="form-grid hidden">
+          <h2>Reset password</h2>
+          <div class="field">
+            <label for="recovery-email">Email</label>
+            <input class="input" id="recovery-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <button class="btn secondary" type="submit">Send Reset Email</button>
+          <button class="btn secondary" id="cancel-recovery-btn" type="button">Back to Login</button>
+        </form>
+
+        <form id="password-reset-form" class="form-grid hidden">
+          <h2>Set new password</h2>
+          <div class="field">
+            <label for="new-password">New password</label>
+            <input class="input" id="new-password" name="password" type="password" autocomplete="new-password" minlength="8" required>
+          </div>
+          <button class="btn" type="submit">Update Password</button>
         </form>
 
         <form id="signup-form" class="form-grid">
@@ -74,13 +95,14 @@
     </div>
   </main>
 
-  <script src="../js/storage.js"></script>
-  <script src="../js/timer.js"></script>
-  <script src="../js/scoring.js"></script>
-  <script src="../js/ui.js"></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/app.js"></script>
-  <script src="../js/login.js"></script>
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/timer.js"></script>
+  <script src="../../js/scoring.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/auth.js"></script>
+  <script src="../../js/audio.js"></script>
+  <script src="../../js/app.js"></script>
+  <script src="../../js/login.js"></script>
 </body>
 
 </html>

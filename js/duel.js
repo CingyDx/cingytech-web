@@ -5,6 +5,8 @@
   let currentLocationId = null;
   let lastSummaryKey = "";
   let submittingDeadline = false;
+  let deadlineLastSecond = null;
+  let activeDeadlineAt = null;
 
   async function api(path, options = {}) {
     const headers = {
@@ -53,7 +55,7 @@
       authBox.innerHTML = `
         <p class="eyebrow">Login required</p>
         <h2>Online duel needs a game account.</h2>
-        <p class="muted">The account is only for /zabava games.</p>
+        <p class="muted">The account is only for CingyFun games.</p>
         <a class="btn" href="login.html">Log In / Sign Up</a>
       `;
       return;
@@ -70,7 +72,7 @@
 
   async function createRoom() {
     try {
-      const data = await api("/api/zabava/rooms", { method: "POST" });
+      const data = await api("/api/cingyfun/streetguess/rooms", { method: "POST" });
       activeRoom = data.room;
       sessionStorage.setItem("streetguess-room", activeRoom.code);
       renderLobbyRoom(activeRoom);
@@ -86,7 +88,7 @@
     const code = input.value.trim().toUpperCase();
     if (!code) return;
     try {
-      const data = await api(`/api/zabava/rooms/${code}/join`, { method: "POST" });
+      const data = await api(`/api/cingyfun/streetguess/rooms/${code}/join`, { method: "POST" });
       sessionStorage.setItem("streetguess-room", data.room.code);
       location.href = `duel.html?room=${data.room.code}`;
     } catch (error) {
@@ -97,7 +99,7 @@
   async function startRoomFromLobby() {
     if (!activeRoom) return;
     try {
-      const data = await api(`/api/zabava/rooms/${activeRoom.code}/start`, { method: "POST" });
+      const data = await api(`/api/cingyfun/streetguess/rooms/${activeRoom.code}/start`, { method: "POST" });
       sessionStorage.setItem("streetguess-room", data.room.code);
       location.href = `duel.html?room=${data.room.code}`;
     } catch (error) {
@@ -109,7 +111,7 @@
     window.clearInterval(pollTimer);
     pollTimer = window.setInterval(async () => {
       try {
-        const data = await api(`/api/zabava/rooms/${code}`);
+        const data = await api(`/api/cingyfun/streetguess/rooms/${code}`);
         activeRoom = data.room;
         renderLobbyRoom(activeRoom);
         if (activeRoom.status !== "waiting") {
@@ -156,6 +158,8 @@
     }
 
     try {
+      window.AudioManager?.installUnlock?.();
+      window.AudioManager?.startAmbient?.();
       await GoogleLoader.loadGoogleMaps();
       GameMaps.initGuessMap({ onPin: updateGuessButton });
       document.addEventListener("streetguess:pin", () => updateGuessButton());
@@ -177,7 +181,7 @@
   }
 
   async function pollRoom(code, firstLoad = false) {
-    const data = await api(`/api/zabava/rooms/${code}`);
+    const data = await api(`/api/cingyfun/streetguess/rooms/${code}`);
     activeRoom = data.room;
     renderDuelRoom(firstLoad);
   }
@@ -242,6 +246,7 @@
     if (opponentGuess && room.deadlineAt) {
       setStatus("Opponent guessed. You have 15 seconds left.");
       startDeadlineTimer(room.deadlineAt);
+      window.AudioManager?.startDrama?.();
       return;
     }
 
@@ -255,9 +260,10 @@
     if (!missed && !pin) return;
 
     try {
+      window.AudioManager?.guess?.();
       updateGuessButton(true);
       const body = missed ? { missed: true } : { lat: pin.lat(), lng: pin.lng() };
-      const data = await api(`/api/zabava/rooms/${activeRoom.code}/guess`, { method: "POST", body });
+      const data = await api(`/api/cingyfun/streetguess/rooms/${activeRoom.code}/guess`, { method: "POST", body });
       activeRoom = data.room;
       renderDuelRoom();
     } catch (error) {
@@ -268,13 +274,20 @@
   }
 
   function startDeadlineTimer(deadlineAt) {
+    if (activeDeadlineAt === deadlineAt && deadlineTimer) return;
     stopDeadlineTimer(false);
     submittingDeadline = false;
+    deadlineLastSecond = null;
+    activeDeadlineAt = deadlineAt;
     const timer = UI.qs("#timer");
 
     deadlineTimer = window.setInterval(() => {
       const remaining = Math.max(0, Math.ceil((new Date(deadlineAt).getTime() - Date.now()) / 1000));
       UI.setTimer(timer, remaining);
+      if (remaining !== deadlineLastSecond) {
+        deadlineLastSecond = remaining;
+        window.AudioManager?.tick?.(remaining);
+      }
       if (remaining <= 0 && !submittingDeadline) {
         submittingDeadline = true;
         stopDeadlineTimer(false);
@@ -286,6 +299,9 @@
   function stopDeadlineTimer(reset = true) {
     if (deadlineTimer) window.clearInterval(deadlineTimer);
     deadlineTimer = null;
+    deadlineLastSecond = null;
+    activeDeadlineAt = null;
+    window.AudioManager?.stopDrama?.(true);
     if (reset) {
       const timer = UI.qs("#timer");
       timer.textContent = "ONLINE";
@@ -299,6 +315,8 @@
     lastSummaryKey = key;
 
     const result = room.roundResult;
+    window.AudioManager?.stopDrama?.(true);
+    window.AudioManager?.damage?.();
     const winnerName = result.winnerSlot ? room.players[result.winnerSlot].name : "Tie";
     const loserName = result.loserSlot === "player1" || result.loserSlot === "player2" ? room.players[result.loserSlot].name : "Nobody";
     const html = `
@@ -327,7 +345,7 @@
   async function nextRound() {
     if (!activeRoom) return;
     try {
-      const data = await api(`/api/zabava/rooms/${activeRoom.code}/next`, { method: "POST" });
+      const data = await api(`/api/cingyfun/streetguess/rooms/${activeRoom.code}/next`, { method: "POST" });
       activeRoom = data.room;
       UI.closeModal();
       renderDuelRoom();
@@ -384,6 +402,8 @@
       biggestDamage: Math.max(...room.history.map((entry) => entry.damage?.finalDamage || 0), 0)
     });
     window.clearInterval(pollTimer);
+    window.AudioManager?.stopDrama?.(false);
+    window.AudioManager?.success?.();
     location.href = "results.html";
   }
 

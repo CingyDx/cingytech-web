@@ -12,6 +12,40 @@
       node.textContent = new Date().getFullYear();
     });
     applyTheme();
+    injectFunFooter();
+    window.AudioManager?.installUnlock?.();
+  }
+
+  function injectFunFooter() {
+    if (document.body.classList.contains("game-body") || UI.qs("footer")) return;
+    const path = location.pathname.toLowerCase();
+    const inFun = path.includes("/cingyfun");
+    if (!inFun) return;
+
+    const footer = document.createElement("footer");
+    footer.className = "fun-footer";
+    footer.innerHTML = `
+      <div class="container fun-footer-inner">
+        <div>
+          <a class="fun-footer-brand" href="/CingyFun/">
+            <img src="/assets/cingyfun-logo.svg" alt="">
+            <span>CingyFun</span>
+          </a>
+          <p class="muted">&copy; <span data-year></span> | Vytvořil Kryštof Cingálek</p>
+        </div>
+        <nav class="fun-footer-links" aria-label="CingyFun footer">
+          <a href="/">Cingy.Tech</a>
+          <a href="/CingyFun/">Game hub</a>
+          <a href="/CingyFun/Streetguess/">StreetGuess</a>
+          <a href="/CingyFun/Streetguess/login.html">Login</a>
+          <a href="/pages/privacy.html">Privacy</a>
+        </nav>
+      </div>
+    `;
+    document.body.appendChild(footer);
+    footer.querySelectorAll("[data-year]").forEach((node) => {
+      node.textContent = new Date().getFullYear();
+    });
   }
 
   function initSettings() {
@@ -134,7 +168,7 @@
             <div class="metric"><span>${result.player2}</span><strong>${result.hp2} HP</strong></div>
             <div class="metric"><span>Biggest damage</span><strong>${result.biggestDamage}</strong></div>
           </div>
-          <div class="button-row"><a class="btn" href="duel-lobby.html">New Online Room</a><a class="btn secondary" href="../">Back Home</a></div>
+          <div class="button-row"><a class="btn" href="duel-lobby.html">New Online Room</a><a class="btn secondary" href="../">Back to CingyFun</a></div>
         </section>
       `;
       return;
@@ -150,7 +184,7 @@
           <div class="metric"><span>Distance</span><strong>${result.distance || 0} km</strong></div>
           <div class="metric"><span>Best streak</span><strong>${Store.state().stats.soloBestStreak || 0}</strong></div>
         </div>
-        <div class="button-row"><a class="btn" href="solo.html">Play Again</a><a class="btn secondary" href="leaderboard.html">Leaderboard</a><a class="btn secondary" href="../">Back Home</a></div>
+        <div class="button-row"><a class="btn" href="solo.html">Play Again</a><a class="btn secondary" href="leaderboard.html">Leaderboard</a><a class="btn secondary" href="../">Back to CingyFun</a></div>
       </section>
     `;
   }

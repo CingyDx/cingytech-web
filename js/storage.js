@@ -9,8 +9,8 @@
       allowZoom: true,
       allowPan: true,
       mapType: "roadmap",
-      sound: false,
-      timerSounds: false,
+      sound: true,
+      timerSounds: true,
       theme: "dark"
     },
     stats: {

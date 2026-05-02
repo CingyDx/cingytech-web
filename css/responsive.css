@@ -27,7 +27,9 @@
   .hero-layout,
   .split-grid,
   .settings-grid,
-  .mode-grid {
+  .mode-grid,
+  .fun-game-grid,
+  .fun-game-card.featured {
     grid-template-columns: 1fr;
   }
 
@@ -118,7 +120,9 @@
 
   .hero-actions,
   .button-row,
-  .footer-inner {
+  .footer-inner,
+  .fun-footer-inner,
+  .fun-footer-links {
     flex-direction: column;
     align-items: stretch;
   }
@@ -130,6 +134,14 @@
   .mini-stats,
   .result-grid {
     grid-template-columns: 1fr;
+  }
+
+  .streetguess-preview {
+    min-height: 250px;
+  }
+
+  .fun-orbit-card {
+    min-height: 300px;
   }
 
   .modal-card {

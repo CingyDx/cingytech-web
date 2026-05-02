@@ -4,20 +4,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>StreetGuess | Cingy.Tech Zabava</title>
-  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+  <title>StreetGuess | CingyFun</title>
+  <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
   <meta name="description" content="StreetGuess is a real Google Street View geography guessing game with solo streaks and online 1v1 duels.">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/layout.css">
-  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/layout.css">
+  <link rel="stylesheet" href="../../css/responsive.css">
 </head>
 
 <body>
   <header class="site-header">
     <div class="container nav-wrap">
-      <a class="brand" href="index.html"><img src="../assets/logo.svg" alt="">StreetGuess</a>
+      <a class="brand" href="index.html"><img src="../../assets/logo.svg" alt="">StreetGuess</a>
       <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
       <nav class="nav" id="site-nav" aria-label="Game navigation">
+        <a href="../">Hub</a>
         <a class="active" href="index.html">Play</a>
         <a href="solo.html">Solo</a>
         <a href="duel-lobby.html">Online Duel</a>
@@ -45,7 +46,7 @@
         <aside class="panel hero-panel">
           <p class="eyebrow">Game modes</p>
           <h2>Real panorama. Real map. Real distance.</h2>
-          <p class="lead">No drawn world map. Add your Google Maps API key in <code>js/config.js</code> and play with live Street View.</p>
+          <p class="lead">No drawn world map. Google Maps runs through the Netlify environment key, with local <code>js/config.js</code> only for development.</p>
           <div class="mini-stats">
             <div class="mini-stat"><strong>3:00</strong><span>solo timer</span></div>
             <div class="mini-stat"><strong>6000</strong><span>duel HP</span></div>
@@ -101,16 +102,28 @@
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <span>&copy; <span data-year></span> StreetGuess</span>
-      <a href="../">Back to Cingy.Tech</a>
+  <footer class="fun-footer">
+    <div class="container fun-footer-inner">
+      <div>
+        <a class="fun-footer-brand" href="../">
+          <img src="../../assets/cingyfun-logo.svg" alt="">
+          <span>CingyFun</span>
+        </a>
+        <p class="muted">&copy; <span data-year></span> | Vytvořil Kryštof Cingálek</p>
+      </div>
+      <div class="fun-footer-links">
+        <a href="../../">Cingy.Tech</a>
+        <a href="../">Game hub</a>
+        <a href="login.html">Login</a>
+        <a href="../../pages/privacy.html">Privacy</a>
+      </div>
     </div>
   </footer>
 
-  <script src="../js/storage.js"></script>
-  <script src="../js/ui.js"></script>
-  <script src="../js/app.js"></script>
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/audio.js"></script>
+  <script src="../../js/app.js"></script>
 </body>
 
 </html>

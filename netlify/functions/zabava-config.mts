@@ -28,5 +28,5 @@ export default async () => {
 };
 
 export const config: Config = {
-  path: "/api/zabava/config"
+  path: ["/api/zabava/config", "/api/cingyfun/streetguess/config"]
 };

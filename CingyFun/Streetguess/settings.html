@@ -5,18 +5,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Settings | StreetGuess</title>
-  <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/layout.css">
-  <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="icon" href="../../assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/layout.css">
+  <link rel="stylesheet" href="../../css/responsive.css">
 </head>
 
 <body>
   <header class="site-header">
     <div class="container nav-wrap">
-      <a class="brand" href="index.html"><img src="../assets/logo.svg" alt="">StreetGuess</a>
+      <a class="brand" href="index.html"><img src="../../assets/logo.svg" alt="">StreetGuess</a>
       <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
       <nav class="nav" id="site-nav" aria-label="Game navigation">
+        <a href="../">Hub</a>
         <a href="index.html">Play</a>
         <a href="solo.html">Solo</a>
         <a href="duel-lobby.html">Online Duel</a>
@@ -33,7 +34,7 @@
       <div class="section-heading">
         <p class="eyebrow">Settings</p>
         <h1>Tune the live map experience.</h1>
-        <p class="lead">These settings are saved locally. The Google API key goes in <code>js/config.js</code>.</p>
+        <p class="lead">These settings are saved locally. Production Google Maps uses the Netlify environment key.</p>
       </div>
 
       <form id="settings-form" class="settings-grid">
@@ -89,11 +90,11 @@
             <input type="checkbox" name="allowPan">
           </label>
           <label class="toggle-row">
-            <span>Sound</span>
+            <span>Sound effects and ambient music</span>
             <input type="checkbox" name="sound">
           </label>
           <label class="toggle-row">
-            <span>Timer sounds</span>
+            <span>Timer and duel pressure sounds</span>
             <input type="checkbox" name="timerSounds">
           </label>
           <div class="button-row">
@@ -105,11 +106,12 @@
     </div>
   </main>
 
-  <script src="../js/storage.js"></script>
-  <script src="../js/timer.js"></script>
-  <script src="../js/scoring.js"></script>
-  <script src="../js/ui.js"></script>
-  <script src="../js/app.js"></script>
+  <script src="../../js/storage.js"></script>
+  <script src="../../js/timer.js"></script>
+  <script src="../../js/scoring.js"></script>
+  <script src="../../js/ui.js"></script>
+  <script src="../../js/audio.js"></script>
+  <script src="../../js/app.js"></script>
 </body>
 
 </html>

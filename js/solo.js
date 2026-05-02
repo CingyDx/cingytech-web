@@ -11,6 +11,8 @@
 
   async function startGame() {
     try {
+      window.AudioManager?.installUnlock?.();
+      window.AudioManager?.startAmbient?.();
       await GoogleLoader.loadGoogleMaps();
       GameMaps.initGuessMap({
         onPin: () => updateGuessButton()
@@ -55,7 +57,10 @@
     state.timer?.stop();
     const seconds = Store.state().settings.timeLimit || 180;
     state.timer = GameTimer.createTimer(seconds, {
-      onTick: (remaining) => UI.setTimer(UI.qs("#timer"), remaining),
+      onTick: (remaining) => {
+        UI.setTimer(UI.qs("#timer"), remaining);
+        window.AudioManager?.tick?.(remaining);
+      },
       onDone: () => handleRoundFail("Time out")
     });
     state.timer.start();
@@ -77,6 +82,7 @@
     if (state.locked) return;
     const guess = GameMaps.getGuessLatLng();
     if (!guess) return;
+    window.AudioManager?.guess?.();
     await resolveRound(guess);
   }
 
@@ -85,6 +91,7 @@
     state.locked = true;
     state.timer?.stop();
     state.streak = 0;
+    window.AudioManager?.fail?.();
     updateHud();
     const location = state.currentLocation;
     const result = {
@@ -120,8 +127,10 @@
     if (correct) {
       state.streak += 1;
       state.totalScore += score;
+      window.AudioManager?.success?.();
     } else {
       state.streak = 0;
+      window.AudioManager?.fail?.();
     }
 
     updateHud();

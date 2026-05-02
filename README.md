@@ -1,13 +1,13 @@
 # StreetGuess on Cingy.Tech
 
-StreetGuess is a static HTML/CSS/JavaScript geography game under `/zabava/`.
+StreetGuess is a static HTML/CSS/JavaScript geography game under `/CingyFun/Streetguess/`.
 
 It uses:
 
 - Google Maps JavaScript API for `google.maps.Map`
 - Google Street View through `google.maps.StreetViewPanorama`
 - Google reverse geocoding for guessed countries
-- Netlify Identity for `/zabava` game accounts
+- Netlify Identity for `/CingyFun` game accounts
 - Netlify Functions + Netlify Blobs for online duel rooms
 
 ## Google Maps Setup
@@ -19,7 +19,7 @@ It uses:
 
 `GOOGLE_MAPS_API_KEY`
 
-The browser fetches it from `/api/zabava/config`, so the key does not need to be committed to Git.
+The browser fetches it from `/api/cingyfun/streetguess/config`, so the key does not need to be committed to Git.
 
 For localhost-only testing, you can also edit `js/config.js`:
 
@@ -37,14 +37,14 @@ If the key is missing, the game intentionally stops and shows:
 
 ## Accounts And Online Duel
 
-`/zabava/login.html` is only for game accounts. It is separate from the rest of Cingy.Tech.
+`/CingyFun/Streetguess/login.html` is only for game accounts. It is separate from the rest of Cingy.Tech.
 
 Production accounts use Netlify Identity. Enable Identity in Netlify project settings before using the deployed login.
 
 Online duel flow:
 
-1. Log in at `/zabava/login.html`.
-2. Open `/zabava/duel-lobby.html`.
+1. Log in at `/CingyFun/Streetguess/login.html`.
+2. Open `/CingyFun/Streetguess/duel-lobby.html`.
 3. Create a room and send the six-character room code to a friend.
 4. The friend logs in, enters the room code and joins.
 5. Start the duel and play from two browsers.

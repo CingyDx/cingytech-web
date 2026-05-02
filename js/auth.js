@@ -4,6 +4,7 @@
   let identityReady = false;
   let identityUnavailable = false;
   let identityStatusPromise = null;
+  let lastCallback = null;
 
   function isLocalhost() {
     return ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
@@ -66,7 +67,8 @@
       if (!available) return null;
 
       const identity = await loadIdentity();
-      await identity.handleAuthCallback();
+      const callback = await identity.handleAuthCallback();
+      if (callback) lastCallback = callback;
       identityReady = true;
       return await identity.getUser();
     } catch (error) {
@@ -98,6 +100,20 @@
     if (isLocalhost()) return saveLocalUser(email, name);
     const identity = await ensureIdentity();
     return await identity.signup(email, password, { full_name: name || email.split("@")[0] });
+  }
+
+  async function requestPasswordRecovery(email) {
+    if (isLocalhost()) throw new Error("Password recovery is available only on the deployed site.");
+    const identity = await ensureIdentity();
+    return await identity.requestPasswordRecovery(email);
+  }
+
+  async function updatePassword(password) {
+    if (isLocalhost()) throw new Error("Password recovery is available only on the deployed site.");
+    const identity = await ensureIdentity();
+    const user = await identity.updateUser({ password });
+    lastCallback = null;
+    return user;
   }
 
   async function logout() {
@@ -140,14 +156,21 @@
     return "";
   }
 
+  function getCallback() {
+    return lastCallback;
+  }
+
   window.GameAuth = {
     init,
     getUser,
     login,
     signup,
+    requestPasswordRecovery,
+    updatePassword,
     logout,
     authHeaders,
     authNote,
+    getCallback,
     isLocalhost
   };
 })();
