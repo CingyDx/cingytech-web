@@ -79,6 +79,19 @@
   color: var(--primary);
 }
 
+.audio-toggle {
+  min-height: 44px;
+  padding: 0 15px;
+  border-radius: 999px;
+}
+
+.audio-toggle.active {
+  color: #05100d;
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--primary), var(--success));
+  box-shadow: 0 14px 34px rgba(29, 233, 182, 0.2);
+}
+
 .timer-danger {
   color: var(--danger) !important;
   animation: timerPulse 0.75s infinite alternate;

@@ -76,7 +76,8 @@
           allowZoom: form.allowZoom.checked,
           allowPan: form.allowPan.checked,
           sound: form.sound.checked,
-          timerSounds: form.timerSounds.checked
+          timerSounds: form.timerSounds.checked,
+          audioVersion: 1
         };
         return current;
       });

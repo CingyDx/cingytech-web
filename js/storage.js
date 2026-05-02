@@ -11,6 +11,7 @@
       mapType: "roadmap",
       sound: true,
       timerSounds: true,
+      audioVersion: 1,
       theme: "dark"
     },
     stats: {
@@ -29,13 +30,20 @@
   function state() {
     try {
       const parsed = JSON.parse(localStorage.getItem(KEY) || "{}");
-      return {
+      const next = {
         ...defaults,
         ...parsed,
         settings: { ...defaults.settings, ...(parsed.settings || {}) },
         stats: { ...defaults.stats, ...(parsed.stats || {}) },
         leaderboard: Array.isArray(parsed.leaderboard) ? parsed.leaderboard : []
       };
+      if (next.settings.audioVersion !== 1) {
+        next.settings.sound = true;
+        next.settings.timerSounds = true;
+        next.settings.audioVersion = 1;
+        localStorage.setItem(KEY, JSON.stringify(next));
+      }
+      return next;
     } catch {
       return JSON.parse(JSON.stringify(defaults));
     }

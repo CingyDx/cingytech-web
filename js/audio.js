@@ -5,6 +5,7 @@
   let dramaTimer = null;
   let ambientWanted = false;
   let unlocked = false;
+  let unlockInstalled = false;
 
   function settings() {
     return window.Store?.state?.().settings || {};
@@ -38,9 +39,52 @@
   }
 
   function installUnlock() {
+    if (unlockInstalled) return;
+    unlockInstalled = true;
     const handler = () => unlock();
     window.addEventListener("pointerdown", handler, { passive: true });
     window.addEventListener("keydown", handler);
+  }
+
+  function updateControls() {
+    document.querySelectorAll("[data-audio-toggle]").forEach((button) => {
+      const on = enabled();
+      button.classList.toggle("active", on);
+      button.setAttribute("aria-pressed", String(on));
+      button.textContent = on ? "Sound On" : "Sound Off";
+    });
+  }
+
+  async function setEnabled(value) {
+    window.Store?.update?.((current) => {
+      current.settings = {
+        ...current.settings,
+        sound: Boolean(value),
+        timerSounds: Boolean(value),
+        audioVersion: 1
+      };
+      return current;
+    });
+
+    updateControls();
+    if (value) {
+      await unlock();
+      startAmbient();
+      tone(660, 0.08, "triangle", 0.12);
+      tone(880, 0.1, "triangle", 0.1, 0.07);
+    } else {
+      stopDrama(false);
+      stopAmbient();
+    }
+  }
+
+  function initControls() {
+    updateControls();
+    document.querySelectorAll("[data-audio-toggle]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        await setEnabled(!enabled());
+      });
+    });
   }
 
   function tone(freq, duration = 0.12, type = "sine", volume = 0.18, when = 0) {
@@ -151,6 +195,9 @@
   window.AudioManager = {
     installUnlock,
     unlock,
+    initControls,
+    setEnabled,
+    isEnabled: enabled,
     startAmbient,
     stopAmbient,
     startDrama,
@@ -161,4 +208,9 @@
     fail,
     damage
   };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    installUnlock();
+    initControls();
+  });
 })();
