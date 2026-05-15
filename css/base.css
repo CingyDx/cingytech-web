@@ -117,6 +117,23 @@ img {
   filter: hue-rotate(98deg) saturate(1.7) brightness(1.08) drop-shadow(0 10px 24px rgba(29, 233, 182, 0.22));
 }
 
+.rainbow-admin {
+  display: inline-block;
+  color: transparent;
+  background: linear-gradient(90deg, #ff4d5e, #f9c74f, #39ff88, #1de9b6, #8ab4f8, #c77dff, #ff4d5e);
+  background-size: 260% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  font-weight: 1000;
+  animation: adminRainbow 5s linear infinite;
+}
+
+@keyframes adminRainbow {
+  to {
+    background-position: 260% 0;
+  }
+}
+
 .nav {
   display: flex;
   align-items: center;

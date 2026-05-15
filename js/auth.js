@@ -1,5 +1,7 @@
 (function () {
   const LOCAL_KEY = "streetguess-local-auth";
+  const ADMIN_EMAIL = "krystofcingalek@gmail.com";
+  const ADMIN_NAME = "👑 Cingy";
   let identityModule = null;
   let identityReady = false;
   let identityUnavailable = false;
@@ -50,9 +52,24 @@
     }
   }
 
+  function isAdminEmail(email) {
+    return String(email || "").trim().toLowerCase() === ADMIN_EMAIL;
+  }
+
+  function decorateUser(user) {
+    if (!user) return user;
+    const email = user.email || user.user_metadata?.email || "";
+    if (!isAdminEmail(email)) return user;
+    return {
+      ...user,
+      name: ADMIN_NAME,
+      isAdmin: true
+    };
+  }
+
   function saveLocalUser(email, name) {
     const id = `local-${btoa(email).replace(/=+$/g, "").slice(0, 18)}`;
-    const user = { id, email, name: name || email.split("@")[0], local: true };
+    const user = decorateUser({ id, email, name: name || email.split("@")[0], local: true });
     localStorage.setItem(LOCAL_KEY, JSON.stringify(user));
     return user;
   }
@@ -80,7 +97,7 @@
         if (location.hash) history.replaceState(null, "", location.pathname);
       }
       identityReady = true;
-      return await identity.getUser();
+      return decorateUser(await identity.getUser());
     } catch (error) {
       console.warn("StreetGuess auth init failed", error);
       return null;
@@ -94,7 +111,7 @@
       if (!available) return null;
 
       const identity = await loadIdentity();
-      return await identity.getUser();
+      return decorateUser(await identity.getUser());
     } catch {
       return null;
     }
@@ -104,7 +121,7 @@
     if (isLocalhost()) return saveLocalUser(email, name);
     const identity = await ensureIdentity();
     try {
-      return await identity.login(email, password);
+      return decorateUser(await identity.login(email, password));
     } catch (error) {
       const message = String(error?.message || "");
       if (message.includes("Email not confirmed") || message.includes("invalid_grant")) {
@@ -117,7 +134,7 @@
   async function signup(email, password, name = "") {
     if (isLocalhost()) return saveLocalUser(email, name);
     const identity = await ensureIdentity();
-    return await identity.signup(email, password, { full_name: name || email.split("@")[0] });
+    return decorateUser(await identity.signup(email, password, { full_name: name || email.split("@")[0] }));
   }
 
   async function requestPasswordRecovery(email) {
@@ -129,7 +146,7 @@
   async function updatePassword(password) {
     if (isLocalhost()) throw new Error("Password recovery is available only on the deployed site.");
     const identity = await ensureIdentity();
-    const user = await identity.updateUser({ password });
+    const user = decorateUser(await identity.updateUser({ password }));
     lastCallback = null;
     return user;
   }
@@ -149,7 +166,8 @@
     if (user.local) {
       return {
         "x-streetguess-dev-user": user.id,
-        "x-streetguess-dev-name": user.name
+        "x-streetguess-dev-name": user.name,
+        "x-streetguess-dev-email": user.email || ""
       };
     }
 

@@ -7,6 +7,7 @@ type Player = {
   id: string;
   name: string;
   email?: string;
+  admin?: boolean;
   dev?: boolean;
 };
 
@@ -38,6 +39,8 @@ type Room = {
 
 const START_HP = 6000;
 const STORE_NAME = "zabava-rooms";
+const ADMIN_EMAIL = "krystofcingalek@gmail.com";
+const ADMIN_NAME = "👑 Cingy";
 
 declare const Netlify: {
   context?: {
@@ -84,13 +87,22 @@ function getDeployContext() {
   }
 }
 
+function isAdminEmail(email?: string) {
+  return String(email || "").trim().toLowerCase() === ADMIN_EMAIL;
+}
+
+function playerName(email: string | undefined, fallback: string) {
+  return isAdminEmail(email) ? ADMIN_NAME : fallback;
+}
+
 async function currentPlayer(req: Request): Promise<Player | null> {
   try {
     const identity = await import("@netlify/identity");
     const user: any = await identity.getUser();
     if (user) {
-      const name = user.name || user.user_metadata?.full_name || user.email?.split("@")[0] || "Player";
-      return { id: user.id || user.sub || user.email, email: user.email, name };
+      const email = user.email || "";
+      const fallback = user.name || user.user_metadata?.full_name || email.split("@")[0] || "Player";
+      return { id: user.id || user.sub || email, email, name: playerName(email, fallback), admin: isAdminEmail(email) };
     }
   } catch {
     // Local Netlify dev currently cannot fully emulate Identity; dev headers handle localhost only.
@@ -99,10 +111,13 @@ async function currentPlayer(req: Request): Promise<Player | null> {
   const devId = req.headers.get("x-streetguess-dev-user");
   const isProduction = getDeployContext() === "production";
   if (!isProduction && devId) {
+    const email = req.headers.get("x-streetguess-dev-email") || `${devId}@local.streetguess`;
+    const fallback = req.headers.get("x-streetguess-dev-name") || "Local Player";
     return {
       id: devId,
-      name: req.headers.get("x-streetguess-dev-name") || "Local Player",
-      email: `${devId}@local.streetguess`,
+      name: playerName(email, fallback),
+      email,
+      admin: isAdminEmail(email),
       dev: true
     };
   }
@@ -133,8 +148,8 @@ function publicRoom(room: Room, player: Player) {
     meSlot,
     isHost: meSlot === "player1",
     players: {
-      player1: { name: room.player1.name },
-      player2: room.player2 ? { name: room.player2.name } : null
+      player1: { name: room.player1.name, admin: Boolean(room.player1.admin) },
+      player2: room.player2 ? { name: room.player2.name, admin: Boolean(room.player2.admin) } : null
     },
     hp1: room.hp1,
     hp2: room.hp2,

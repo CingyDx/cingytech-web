@@ -15,6 +15,15 @@
       resetForm.classList.toggle("hidden", mode !== "reset");
     }
 
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
     async function render() {
       const user = await GameAuth.getUser();
       note.textContent = GameAuth.authNote();
@@ -34,10 +43,12 @@
 
       current.classList.remove("hidden");
       showForms("none");
+      const safeName = escapeHtml(user.name || user.email);
+      const displayName = user.isAdmin ? `<span class="rainbow-admin">${safeName}</span>` : safeName;
       current.innerHTML = `
         <p class="eyebrow">Logged in</p>
-        <h2>${user.name || user.email}</h2>
-        <p class="muted">${user.email || ""}</p>
+        <h2>${displayName}</h2>
+        <p class="muted">${escapeHtml(user.email || "")}</p>
         <div class="button-row">
           <a class="btn" href="duel-lobby.html">Online Duel</a>
           <button class="btn secondary" id="logout-btn" type="button">Log Out</button>

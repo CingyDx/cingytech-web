@@ -27,6 +27,24 @@
     return data;
   }
 
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function playerLabel(player, fallback = "Player") {
+    return player?.name || fallback;
+  }
+
+  function playerHtml(player, fallback = "Player") {
+    const name = escapeHtml(playerLabel(player, fallback));
+    return player?.admin ? `<span class="rainbow-admin">${name}</span>` : name;
+  }
+
   async function initLobby() {
     const root = UI.qs("#online-lobby");
     if (!root) return;
@@ -64,7 +82,7 @@
     actions.classList.remove("hidden");
     authBox.innerHTML = `
       <p class="eyebrow">Logged in</p>
-      <h2>${user.name || user.email}</h2>
+      <h2>${user.isAdmin ? `<span class="rainbow-admin">${escapeHtml(user.name)}</span>` : escapeHtml(user.name || user.email)}</h2>
       <p class="muted">${GameAuth.authNote()}</p>
       <button class="btn secondary" id="logout-lobby-btn" type="button">Log Out</button>
     `;
@@ -130,10 +148,10 @@
     panel.innerHTML = `
       <p class="eyebrow">Room code</p>
       <h2>${room.code}</h2>
-      <p class="muted">${room.players.player2 ? `${room.players.player2.name} joined. Start when ready.` : "Send this code to your friend."}</p>
+      <p class="muted">${room.players.player2 ? `${playerHtml(room.players.player2)} joined. Start when ready.` : "Send this code to your friend."}</p>
       <div class="result-grid">
-        <div class="metric"><span>Player 1</span><strong>${room.players.player1.name}</strong></div>
-        <div class="metric"><span>Player 2</span><strong>${room.players.player2?.name || "Waiting"}</strong></div>
+        <div class="metric"><span>Player 1</span><strong>${playerHtml(room.players.player1)}</strong></div>
+        <div class="metric"><span>Player 2</span><strong>${room.players.player2 ? playerHtml(room.players.player2) : "Waiting"}</strong></div>
       </div>
     `;
     const start = UI.qs("#start-room-btn");
@@ -317,16 +335,17 @@
     const result = room.roundResult;
     window.AudioManager?.stopDrama?.(true);
     window.AudioManager?.damage?.();
-    const winnerName = result.winnerSlot ? room.players[result.winnerSlot].name : "Tie";
-    const loserName = result.loserSlot === "player1" || result.loserSlot === "player2" ? room.players[result.loserSlot].name : "Nobody";
+    const winnerName = result.winnerSlot ? playerLabel(room.players[result.winnerSlot]) : "Tie";
+    const winnerDisplay = result.winnerSlot ? playerHtml(room.players[result.winnerSlot]) : "Tie";
+    const loserName = result.loserSlot === "player1" || result.loserSlot === "player2" ? playerLabel(room.players[result.loserSlot]) : "Nobody";
     const html = `
       <div class="wide">
         <p class="eyebrow">Round ${room.round} summary</p>
-        <h2>${winnerName === "Tie" ? "Round tied" : `${winnerName} wins the round`}</h2>
+        <h2>${winnerName === "Tie" ? "Round tied" : `${winnerDisplay} wins the round`}</h2>
         <div id="result-map"></div>
         <div class="result-grid">
-          <div class="metric"><span>${room.players.player1.name}</span><strong>${result.p1Missed ? "Missed" : `${result.p1Distance} km`}</strong></div>
-          <div class="metric"><span>${room.players.player2.name}</span><strong>${result.p2Missed ? "Missed" : `${result.p2Distance} km`}</strong></div>
+          <div class="metric"><span>${playerHtml(room.players.player1)}</span><strong>${result.p1Missed ? "Missed" : `${result.p1Distance} km`}</strong></div>
+          <div class="metric"><span>${playerHtml(room.players.player2)}</span><strong>${result.p2Missed ? "Missed" : `${result.p2Distance} km`}</strong></div>
           <div class="metric"><span>Damage</span><strong class="damage-pop">${result.damage.finalDamage}</strong></div>
           <div class="metric"><span>Multiplier</span><strong>${result.damage.multiplier}x</strong></div>
         </div>
@@ -379,7 +398,7 @@
     if (!guess || guess.missed || !Number.isFinite(guess.lat) || !Number.isFinite(guess.lng)) return;
     const position = { lat: guess.lat, lng: guess.lng };
     bounds.extend(position);
-    new google.maps.Marker({ map, position, title: room.players[slot].name, label });
+    new google.maps.Marker({ map, position, title: playerLabel(room.players[slot]), label });
     new google.maps.Polyline({
       map,
       path: [{ lat: room.location.lat, lng: room.location.lng }, position],
@@ -391,11 +410,11 @@
   }
 
   function finishOnlineDuel(room) {
-    const winner = room.winnerSlot ? room.players[room.winnerSlot].name : "Tie";
+    const winner = room.winnerSlot ? playerLabel(room.players[room.winnerSlot]) : "Tie";
     Store.saveDuelResult({
       winner,
-      player1: room.players.player1.name,
-      player2: room.players.player2?.name || "Player 2",
+      player1: playerLabel(room.players.player1),
+      player2: playerLabel(room.players.player2, "Player 2"),
       hp1: room.hp1,
       hp2: room.hp2,
       rounds: room.round,
@@ -408,8 +427,8 @@
   }
 
   function updateHud(room) {
-    UI.qs("#player1-name").textContent = room.players.player1.name;
-    UI.qs("#player2-name").textContent = room.players.player2?.name || "Waiting";
+    UI.qs("#player1-name").innerHTML = playerHtml(room.players.player1);
+    UI.qs("#player2-name").innerHTML = room.players.player2 ? playerHtml(room.players.player2) : "Waiting";
     UI.qs("#player1-hp").textContent = room.hp1;
     UI.qs("#player2-hp").textContent = room.hp2;
     UI.qs("#round").textContent = room.round;
