@@ -151,7 +151,7 @@
     grid-template-columns: 1fr;
   }
 
-  .streetguess-preview {
+  .streetguess-live-preview {
     min-height: 250px;
   }
 

@@ -90,6 +90,29 @@
     guessMarker = null;
   }
 
+  function closeGuessMap() {
+    const panel = document.getElementById("guess-map-panel");
+    panel?.classList.remove("map-expanded");
+    document.body.classList.remove("guess-map-open");
+    activeExpandedPanel = null;
+    window.setTimeout(() => {
+      if (!guessMap) return;
+      google.maps.event.trigger(guessMap, "resize");
+    }, 230);
+  }
+
+  function resetGuessMapView() {
+    if (!guessMap) return;
+    guessMap.setCenter({ lat: 20, lng: 0 });
+    guessMap.setZoom(2);
+  }
+
+  function resetRoundMap() {
+    closeGuessMap();
+    resetGuessMarker();
+    window.setTimeout(resetGuessMapView, 240);
+  }
+
   function getGuessLatLng() {
     return guessLatLng;
   }
@@ -160,6 +183,9 @@
     initGuessMap,
     placeGuessMarker,
     resetGuessMarker,
+    closeGuessMap,
+    resetGuessMapView,
+    resetRoundMap,
     getGuessLatLng,
     reverseGeocodeCountry,
     showResultMap,

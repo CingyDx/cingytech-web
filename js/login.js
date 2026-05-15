@@ -51,6 +51,7 @@
     }
 
     await GameAuth.init();
+    if (GameAuth.authNote()) UI.toast(GameAuth.authNote());
     render();
 
     document.getElementById("show-recovery-btn")?.addEventListener("click", () => {

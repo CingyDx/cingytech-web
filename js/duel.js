@@ -200,7 +200,7 @@
 
     if (room.status === "playing" && room.location && currentLocationId !== room.location.id) {
       currentLocationId = room.location.id;
-      GameMaps.resetGuessMarker();
+      GameMaps.resetRoundMap();
       UI.closeModal();
       const ok = await StreetViewGame.initStreetView(room.location);
       if (!ok) {

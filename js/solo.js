@@ -34,7 +34,7 @@
   async function startRound() {
     state.locked = false;
     state.round += 1;
-    GameMaps.resetGuessMarker();
+    GameMaps.resetRoundMap();
     updateGuessButton();
     updateHud();
     showRoundIntro(`Round ${state.round}`);

@@ -5,6 +5,7 @@
   let identityUnavailable = false;
   let identityStatusPromise = null;
   let lastCallback = null;
+  let lastMessage = "";
 
   function isLocalhost() {
     return ["localhost", "127.0.0.1", "::1"].includes(location.hostname);
@@ -67,8 +68,17 @@
       if (!available) return null;
 
       const identity = await loadIdentity();
+      if (!location.hash && location.search && /confirmation_token=|invite_token=|recovery_token=|access_token=|error=/.test(location.search)) {
+        history.replaceState(null, "", `${location.pathname}#${location.search.slice(1)}`);
+      }
       const callback = await identity.handleAuthCallback();
-      if (callback) lastCallback = callback;
+      if (callback) {
+        lastCallback = callback;
+        if (callback.type === "confirmation") lastMessage = "Email confirmed. You can log in now.";
+        if (callback.type === "recovery") lastMessage = "Set a new password to finish recovery.";
+        if (callback.type === "invite") lastMessage = "Invite accepted. Set your password to finish.";
+        if (location.hash) history.replaceState(null, "", location.pathname);
+      }
       identityReady = true;
       return await identity.getUser();
     } catch (error) {
@@ -93,7 +103,15 @@
   async function login(email, password, name = "") {
     if (isLocalhost()) return saveLocalUser(email, name);
     const identity = await ensureIdentity();
-    return await identity.login(email, password);
+    try {
+      return await identity.login(email, password);
+    } catch (error) {
+      const message = String(error?.message || "");
+      if (message.includes("Email not confirmed") || message.includes("invalid_grant")) {
+        throw new Error("Email is not confirmed yet. Open the newest Netlify verification email and confirm it first.");
+      }
+      throw error;
+    }
   }
 
   async function signup(email, password, name = "") {
@@ -144,6 +162,7 @@
   }
 
   function authNote() {
+    if (lastMessage) return lastMessage;
     if (isLocalhost()) {
       return "Local dev login stores only a fake email/name in this browser. Real accounts use Netlify Identity after deploy.";
     }

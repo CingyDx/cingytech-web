@@ -103,9 +103,14 @@
 
 .fun-orbit-logo {
   flex: 0 0 auto;
-  width: 94px;
-  height: 94px;
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
   filter: drop-shadow(0 24px 42px rgba(29, 233, 182, 0.24));
+}
+
+.fun-orbit-logo.green-logo {
+  filter: hue-rotate(98deg) saturate(1.7) brightness(1.08) drop-shadow(0 24px 42px rgba(29, 233, 182, 0.24));
 }
 
 .fun-orbit-card h2 {
@@ -139,7 +144,7 @@
 
 .fun-game-card.featured {
   display: grid;
-  grid-template-columns: minmax(280px, 0.9fr) minmax(280px, 1fr);
+  grid-template-columns: minmax(210px, 0.86fr) minmax(0, 1fr);
   gap: 24px;
   align-items: end;
 }
@@ -147,13 +152,15 @@
 .fun-game-copy {
   position: relative;
   z-index: 2;
+  min-width: 0;
 }
 
 .fun-game-copy h3,
 .fun-game-card h3 {
-  font-size: clamp(1.8rem, 3vw, 3rem);
+  font-size: clamp(1.72rem, 2.7vw, 2.75rem);
   line-height: 1;
   margin-bottom: 14px;
+  overflow-wrap: normal;
 }
 
 .fun-game-copy p,
@@ -162,86 +169,120 @@
   line-height: 1.6;
 }
 
-.streetguess-preview {
+.streetguess-live-preview {
   position: relative;
   min-height: 310px;
   border: 1px solid var(--line-strong);
   border-radius: 26px;
   overflow: hidden;
+  background: linear-gradient(145deg, rgba(11, 26, 35, 0.95), rgba(18, 41, 53, 0.86));
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.46), 0 18px 60px rgba(29, 233, 182, 0.1);
+}
+
+.streetguess-live-preview::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background:
-    radial-gradient(circle at 24% 20%, rgba(138, 180, 248, 0.42), transparent 18rem),
-    linear-gradient(180deg, #163148, #122431 48%, #0b1117);
-  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.46);
+    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    radial-gradient(circle at 26% 24%, rgba(29, 233, 182, 0.24), transparent 10rem),
+    radial-gradient(circle at 80% 78%, rgba(138, 180, 248, 0.18), transparent 12rem);
+  background-size: 42px 42px, 42px 42px, auto, auto;
+  opacity: 0.8;
 }
 
-.preview-sky {
+.live-preview-top,
+.live-preview-bottom,
+.live-preview-map {
   position: absolute;
-  inset: 0 0 auto;
-  height: 48%;
-  background:
-    linear-gradient(90deg, transparent 0 12%, rgba(255, 255, 255, 0.22) 12% 13%, transparent 13% 48%, rgba(255, 255, 255, 0.18) 48% 49%, transparent 49%),
-    radial-gradient(circle at 20% 60%, rgba(255, 255, 255, 0.28), transparent 7rem);
+  z-index: 1;
 }
 
-.preview-road {
-  position: absolute;
-  left: -10%;
-  right: -10%;
-  bottom: -8%;
-  height: 46%;
-  clip-path: polygon(36% 0, 64% 0, 82% 100%, 18% 100%);
-  background:
-    linear-gradient(90deg, transparent 49%, rgba(249, 199, 79, 0.75) 49% 51%, transparent 51%),
-    linear-gradient(180deg, #313c46, #111820);
-}
-
-.preview-sign {
-  position: absolute;
-  left: 22px;
-  top: 24px;
-  padding: 10px 14px;
-  border: 2px solid rgba(244, 247, 251, 0.8);
-  border-radius: 14px;
-  color: #06120f;
-  background: linear-gradient(135deg, var(--primary), var(--success));
-  font-weight: 1000;
-}
-
-.preview-map {
-  position: absolute;
+.live-preview-top {
+  top: 18px;
+  left: 18px;
   right: 18px;
-  bottom: 18px;
-  width: 130px;
-  height: 98px;
-  border: 1px solid var(--line-strong);
-  border-radius: 18px;
-  background:
-    linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px),
-    linear-gradient(rgba(255,255,255,0.08) 1px, transparent 1px),
-    rgba(7, 16, 22, 0.82);
-  background-size: 22px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 900;
 }
 
-.preview-map span {
+.live-preview-top strong {
+  padding: 7px 10px;
+  border-radius: 999px;
+  color: #06120f;
+  background: var(--primary);
+}
+
+.live-preview-map {
+  left: 24px;
+  right: 18px;
+  top: 66px;
+  bottom: 92px;
+  border: 1px solid var(--line-strong);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(29, 233, 182, 0.14), transparent 34%),
+    linear-gradient(90deg, transparent 0 22%, rgba(29, 233, 182, 0.48) 22% 23%, transparent 23% 55%, rgba(249, 199, 79, 0.38) 55% 56%, transparent 56%),
+    rgba(5, 12, 18, 0.78);
+}
+
+.live-preview-map span {
   position: absolute;
-  left: 22px;
-  top: 42px;
-  right: 22px;
-  height: 3px;
-  transform: rotate(-18deg);
+  left: 18px;
+  right: 18px;
+  top: 52%;
+  height: 4px;
+  transform: rotate(-14deg);
   border-radius: 999px;
   background: var(--primary);
 }
 
-.preview-map i {
+.live-preview-map i {
   position: absolute;
-  left: 64px;
-  top: 32px;
-  width: 16px;
-  height: 16px;
+  left: 54%;
+  top: 42%;
+  width: 18px;
+  height: 18px;
   border-radius: 999px 999px 999px 0;
   transform: rotate(-45deg);
   background: var(--danger);
+}
+
+.live-preview-bottom {
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.live-preview-bottom div {
+  padding: 13px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.live-preview-bottom strong,
+.live-preview-bottom span {
+  display: block;
+}
+
+.live-preview-bottom strong {
+  color: var(--primary);
+  font-size: 1.2rem;
+}
+
+.live-preview-bottom span {
+  color: var(--muted);
+  font-size: 0.8rem;
 }
 
 .future-badge {

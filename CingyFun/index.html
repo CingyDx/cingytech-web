@@ -7,6 +7,7 @@
   <title>CingyFun | Cingy.Tech Games</title>
   <link rel="icon" href="../assets/cingyfun-logo.svg" type="image/svg+xml">
   <meta name="description" content="CingyFun is the game hub for Cingy.Tech with StreetGuess and future browser games.">
+  <script src="../js/auth-callback.js"></script>
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/responsive.css">
@@ -15,7 +16,7 @@
 <body class="fun-page">
   <header class="site-header">
     <div class="container nav-wrap">
-      <a class="brand" href="index.html"><img src="../assets/cingyfun-logo.svg" alt="">CingyFun</a>
+      <a class="brand" href="index.html"><img class="green-logo" src="../assets/logo/logo.png" alt="">CingyFun</a>
       <button class="nav-toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">Menu</button>
       <nav class="nav" id="site-nav" aria-label="CingyFun navigation">
         <a class="active" href="index.html">Games</a>
@@ -42,7 +43,7 @@
         <aside class="panel fun-orbit-card">
           <div class="fun-orbit-head">
             <p class="eyebrow">CingyFun account</p>
-            <img class="fun-orbit-logo" src="../assets/cingyfun-logo.svg" alt="">
+            <img class="fun-orbit-logo green-logo" src="../assets/logo/logo.png" alt="">
           </div>
           <h2>One login for StreetGuess rooms.</h2>
           <p class="muted">Create a game account, send a room code and play live duels with friends on another PC.</p>
@@ -58,14 +59,25 @@
         </div>
 
         <div class="fun-game-grid">
-          <a class="fun-game-card featured" href="Streetguess/">
-            <div class="streetguess-preview" aria-hidden="true">
-              <div class="preview-sky"></div>
-              <div class="preview-road"></div>
-              <div class="preview-sign">StreetGuess</div>
-              <div class="preview-map">
-                <span></span>
+          <a class="fun-game-card featured streetguess-card" href="Streetguess/">
+            <div class="streetguess-live-preview" aria-hidden="true">
+              <div class="live-preview-top">
+                <span>Street View</span>
+                <strong>LIVE</strong>
+              </div>
+              <div class="live-preview-map">
                 <i></i>
+                <span></span>
+              </div>
+              <div class="live-preview-bottom">
+                <div>
+                  <strong>3:00</strong>
+                  <span>Solo</span>
+                </div>
+                <div>
+                  <strong>6000</strong>
+                  <span>Duel HP</span>
+                </div>
               </div>
             </div>
             <div class="fun-game-copy">
@@ -99,7 +111,7 @@
     <div class="container fun-footer-inner">
       <div>
         <a class="fun-footer-brand" href="index.html">
-          <img src="../assets/cingyfun-logo.svg" alt="">
+          <img class="green-logo" src="../assets/logo/logo.png" alt="">
           <span>CingyFun</span>
         </a>
         <p class="muted">&copy; <span data-year></span> | Vytvoril Krystof Cingalek</p>

@@ -110,6 +110,11 @@ img {
 .brand img {
   width: 38px;
   height: 38px;
+  object-fit: contain;
+}
+
+.green-logo {
+  filter: hue-rotate(98deg) saturate(1.7) brightness(1.08) drop-shadow(0 10px 24px rgba(29, 233, 182, 0.22));
 }
 
 .nav {
