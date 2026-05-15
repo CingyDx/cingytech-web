@@ -80,6 +80,9 @@
         const user = await GameAuth.signup(signupForm.email.value, signupForm.password.value, signupForm.name.value);
         UI.toast(user?.emailVerified === false ? "Account created. Check your email to confirm it." : "Account created.");
         render();
+        if (user?.emailVerified === false) {
+          note.textContent = `Verification email sent to ${signupForm.email.value}. Open the newest email, confirm it, then log in here.`;
+        }
       } catch (error) {
         UI.toast(error.message || "Signup failed.");
       }
