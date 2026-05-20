@@ -4,6 +4,7 @@
   let deadlineTimer = null;
   let currentLocationId = null;
   let lastSummaryKey = "";
+  let lastFinishKey = "";
   let submittingDeadline = false;
   let deadlineLastSecond = null;
   let activeDeadlineAt = null;
@@ -327,6 +328,37 @@
     }
   }
 
+  function slotDistance(result, slot) {
+    return slot === "player1" ? result.p1Distance : result.p2Distance;
+  }
+
+  function slotScore(result, slot) {
+    const stored = slot === "player1" ? result.p1Score : result.p2Score;
+    if (Number.isFinite(stored)) return stored;
+    const missed = slot === "player1" ? result.p1Missed : result.p2Missed;
+    return missed ? 0 : Scoring.calculateScore(slotDistance(result, slot));
+  }
+
+  function slotMissed(result, slot) {
+    return slot === "player1" ? result.p1Missed : result.p2Missed;
+  }
+
+  function distanceText(result, slot) {
+    return slotMissed(result, slot) ? "Missed" : `${slotDistance(result, slot)} km away`;
+  }
+
+  function relativeSlotLabel(room, slot) {
+    if (room.meSlot === slot) return "You";
+    if (room.meSlot && slot !== room.meSlot) return "Opponent";
+    return playerLabel(room.players[slot], slot === "player1" ? "Player 1" : "Player 2");
+  }
+
+  function relativeSlotHtml(room, slot) {
+    if (room.meSlot === slot) return "You";
+    if (room.meSlot && slot !== room.meSlot) return "Opponent";
+    return playerHtml(room.players[slot], slot === "player1" ? "Player 1" : "Player 2");
+  }
+
   function showOnlineSummary(room) {
     const key = `${room.round}-${room.roundResult?.resolvedAt}`;
     if (lastSummaryKey === key) return;
@@ -335,21 +367,28 @@
     const result = room.roundResult;
     window.AudioManager?.stopDrama?.(true);
     window.AudioManager?.damage?.();
-    const winnerName = result.winnerSlot ? playerLabel(room.players[result.winnerSlot]) : "Tie";
-    const winnerDisplay = result.winnerSlot ? playerHtml(room.players[result.winnerSlot]) : "Tie";
+    const mySlot = room.meSlot || "player1";
+    const opponentSlot = mySlot === "player1" ? "player2" : "player1";
+    const winnerName = result.winnerSlot ? relativeSlotLabel(room, result.winnerSlot) : "Tie";
+    const winnerDisplay = result.winnerSlot ? relativeSlotHtml(room, result.winnerSlot) : "Tie";
     const loserName = result.loserSlot === "player1" || result.loserSlot === "player2" ? playerLabel(room.players[result.loserSlot]) : "Nobody";
+    const damageTarget = result.loserSlot === "player1" || result.loserSlot === "player2" ? relativeSlotLabel(room, result.loserSlot) : "Nobody";
     const html = `
       <div class="wide">
         <p class="eyebrow">Round ${room.round} summary</p>
         <h2>${winnerName === "Tie" ? "Round tied" : `${winnerDisplay} wins the round`}</h2>
         <div id="result-map"></div>
         <div class="result-grid">
-          <div class="metric"><span>${playerHtml(room.players.player1)}</span><strong>${result.p1Missed ? "Missed" : `${result.p1Distance} km`}</strong></div>
-          <div class="metric"><span>${playerHtml(room.players.player2)}</span><strong>${result.p2Missed ? "Missed" : `${result.p2Distance} km`}</strong></div>
+          <div class="metric"><span>${relativeSlotHtml(room, mySlot)}</span><strong>${distanceText(result, mySlot)}</strong></div>
+          <div class="metric"><span>${relativeSlotHtml(room, opponentSlot)}</span><strong>${distanceText(result, opponentSlot)}</strong></div>
+          <div class="metric"><span>${relativeSlotHtml(room, mySlot)} score</span><strong>${slotScore(result, mySlot)}</strong></div>
+          <div class="metric"><span>${relativeSlotHtml(room, opponentSlot)} score</span><strong>${slotScore(result, opponentSlot)}</strong></div>
           <div class="metric"><span>Damage</span><strong class="damage-pop">${result.damage.finalDamage}</strong></div>
-          <div class="metric"><span>Multiplier</span><strong>${result.damage.multiplier}x</strong></div>
+          <div class="metric"><span>${playerHtml(room.players.player1)}</span><strong>${result.hp1} HP</strong></div>
+          <div class="metric"><span>${playerHtml(room.players.player2)}</span><strong>${result.hp2} HP</strong></div>
+          <div class="metric"><span>Correct location</span><strong>${result.country}</strong></div>
         </div>
-        <p class="muted">${loserName} takes ${result.damage.finalDamage} damage. Correct country: ${result.country}.</p>
+        <p class="muted">${damageTarget} takes ${result.damage.finalDamage} damage. Correct country: ${result.country}. ${loserName === "Nobody" ? "No HP changed." : ""}</p>
         <div class="button-row">
           <button class="btn" id="next-online-round-btn" type="button">Next Round</button>
           <a class="btn secondary" href="duel-lobby.html">New Room</a>
@@ -387,10 +426,39 @@
     });
     const bounds = new google.maps.LatLngBounds();
     bounds.extend(correct);
-    new google.maps.Marker({ map, position: correct, title: "Correct location", label: "C" });
-    drawGuess(room, map, bounds, "player1", "#1de9b6", "1");
-    drawGuess(room, map, bounds, "player2", "#ff4d5e", "2");
+    new google.maps.Marker({
+      map,
+      position: correct,
+      title: "Correct location",
+      label: { text: "C", color: "#071016", fontWeight: "900" },
+      icon: markerIcon("#f9c74f", 11)
+    });
+    drawGuess(room, map, bounds, "player1", markerColor(room, "player1"), markerLabel(room, "player1"));
+    drawGuess(room, map, bounds, "player2", markerColor(room, "player2"), markerLabel(room, "player2"));
     map.fitBounds(bounds, 80);
+  }
+
+  function markerIcon(color, scale = 9) {
+    return {
+      path: google.maps.SymbolPath.CIRCLE,
+      scale,
+      fillColor: color,
+      fillOpacity: 1,
+      strokeColor: "#061016",
+      strokeWeight: 2
+    };
+  }
+
+  function markerColor(room, slot) {
+    if (room.meSlot === slot) return "#8ab4f8";
+    if (room.meSlot && slot !== room.meSlot) return "#ff4d5e";
+    return slot === "player1" ? "#1de9b6" : "#ff4d5e";
+  }
+
+  function markerLabel(room, slot) {
+    if (room.meSlot === slot) return "Y";
+    if (room.meSlot && slot !== room.meSlot) return "O";
+    return slot === "player1" ? "1" : "2";
   }
 
   function drawGuess(room, map, bounds, slot, color, label) {
@@ -398,7 +466,13 @@
     if (!guess || guess.missed || !Number.isFinite(guess.lat) || !Number.isFinite(guess.lng)) return;
     const position = { lat: guess.lat, lng: guess.lng };
     bounds.extend(position);
-    new google.maps.Marker({ map, position, title: playerLabel(room.players[slot]), label });
+    new google.maps.Marker({
+      map,
+      position,
+      title: relativeSlotLabel(room, slot),
+      label: { text: label, color: "#071016", fontWeight: "900" },
+      icon: markerIcon(color)
+    });
     new google.maps.Polyline({
       map,
       path: [{ lat: room.location.lat, lng: room.location.lng }, position],
@@ -410,20 +484,77 @@
   }
 
   function finishOnlineDuel(room) {
+    const finishKey = `${room.code}-${room.updatedAt}-${room.winnerSlot}`;
+    if (lastFinishKey === finishKey) return;
+    lastFinishKey = finishKey;
+
     const winner = room.winnerSlot ? playerLabel(room.players[room.winnerSlot]) : "Tie";
-    Store.saveDuelResult({
-      winner,
-      player1: playerLabel(room.players.player1),
-      player2: playerLabel(room.players.player2, "Player 2"),
-      hp1: room.hp1,
-      hp2: room.hp2,
-      rounds: room.round,
-      biggestDamage: Math.max(...room.history.map((entry) => entry.damage?.finalDamage || 0), 0)
-    });
+    const statSummary = summarizeDuelStats(room);
+    const saveKey = `streetguess-duel-saved-${room.code}-${room.updatedAt}`;
+    if (room.meSlot && !sessionStorage.getItem(saveKey)) {
+      const duelResult = {
+        winner,
+        winnerSlot: room.winnerSlot,
+        mySlot: room.meSlot,
+        player1: playerLabel(room.players.player1),
+        player2: playerLabel(room.players.player2, "Player 2"),
+        hp1: room.hp1,
+        hp2: room.hp2,
+        rounds: room.round,
+        biggestDamage: Math.max(...room.history.map((entry) => entry.damage?.finalDamage || 0), 0),
+        damageDealt: statSummary.damageDealt,
+        guesses: statSummary.guesses,
+        totalDistance: statSummary.totalDistance,
+        bestGuess: statSummary.bestGuess
+      };
+      Store.saveDuelResult(duelResult);
+      window.ProfileStats?.recordDuel?.(duelResult);
+      sessionStorage.setItem(saveKey, "1");
+    }
+
     window.clearInterval(pollTimer);
+    stopDeadlineTimer();
     window.AudioManager?.stopDrama?.(false);
     window.AudioManager?.success?.();
-    location.href = "results.html";
+
+    const winnerDisplay = room.winnerSlot ? playerHtml(room.players[room.winnerSlot]) : "Tie";
+    UI.modal(`
+      <div class="wide">
+        <p class="eyebrow">Duel complete</p>
+        <h2>${winnerDisplay} wins the duel</h2>
+        <div id="result-map"></div>
+        <div class="result-grid">
+          <div class="metric"><span>${playerHtml(room.players.player1)}</span><strong>${room.hp1} HP</strong></div>
+          <div class="metric"><span>${playerHtml(room.players.player2)}</span><strong>${room.hp2} HP</strong></div>
+          <div class="metric"><span>Rounds</span><strong>${room.round}</strong></div>
+          <div class="metric"><span>Biggest damage</span><strong>${Math.max(...room.history.map((entry) => entry.damage?.finalDamage || 0), 0)}</strong></div>
+        </div>
+        <div class="button-row">
+          <a class="btn" href="results.html">View Results</a>
+          <a class="btn secondary" href="duel-lobby.html">New Room</a>
+        </div>
+      </div>
+    `, false);
+    showOnlineResultMap(room);
+  }
+
+  function summarizeDuelStats(room) {
+    const slot = room.meSlot;
+    if (!slot) return { damageDealt: 0, guesses: 0, totalDistance: 0, bestGuess: null };
+
+    return (room.history || []).reduce((summary, entry) => {
+      const missed = slot === "player1" ? entry.p1Missed : entry.p2Missed;
+      const distance = slot === "player1" ? entry.p1Distance : entry.p2Distance;
+      if (!missed && Number.isFinite(distance)) {
+        summary.guesses += 1;
+        summary.totalDistance += distance;
+        summary.bestGuess = summary.bestGuess === null ? distance : Math.min(summary.bestGuess, distance);
+      }
+      if (entry.winnerSlot === slot || entry.damage?.winner === slot) {
+        summary.damageDealt += entry.damage?.finalDamage || 0;
+      }
+      return summary;
+    }, { damageDealt: 0, guesses: 0, totalDistance: 0, bestGuess: null });
   }
 
   function updateHud(room) {
@@ -433,8 +564,8 @@
     UI.qs("#player2-hp").textContent = room.hp2;
     UI.qs("#round").textContent = room.round;
     UI.qs("#multiplier").textContent = `${room.multiplier || Scoring.getDuelMultiplier(Math.max(1, room.round))}x`;
-    UI.qs("#player1-fill").style.width = `${Math.max(0, room.hp1 / 6000 * 100)}%`;
-    UI.qs("#player2-fill").style.width = `${Math.max(0, room.hp2 / 6000 * 100)}%`;
+    UI.qs("#player1-fill").style.width = `${Math.min(100, Math.max(0, room.hp1 / 6000 * 100))}%`;
+    UI.qs("#player2-fill").style.width = `${Math.min(100, Math.max(0, room.hp2 / 6000 * 100))}%`;
     UI.qs("#player1-fill").classList.toggle("danger-zone", room.hp1 < 2000);
     UI.qs("#player2-fill").classList.toggle("danger-zone", room.hp2 < 2000);
   }

@@ -24,10 +24,26 @@
     border-radius: 12px;
   }
 
+  .nav-account {
+    margin-left: 0;
+  }
+
+  .account-button {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .account-menu {
+    position: static;
+    margin-top: 8px;
+    box-shadow: none;
+  }
+
   .hero-layout,
   .split-grid,
   .settings-grid,
   .mode-grid,
+  .profile-hero,
   .fun-game-grid,
   .fun-game-card.featured {
     grid-template-columns: 1fr;
@@ -147,6 +163,7 @@
   }
 
   .mini-stats,
+  .stats-grid,
   .result-grid {
     grid-template-columns: 1fr;
   }

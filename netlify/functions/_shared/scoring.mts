@@ -11,6 +11,11 @@ export function getDuelMultiplier(round: number) {
   return round < 5 ? 1 : 1 + ((round - 4) * 0.5);
 }
 
+export function calculateScore(distanceKm: number) {
+  const score = Math.round(5000 * Math.exp(-Math.max(0, distanceKm) / 2000));
+  return Math.max(0, Math.min(5000, score));
+}
+
 export function calculateDuelDamage(
   distanceA: number,
   distanceB: number,
@@ -18,29 +23,24 @@ export function calculateDuelDamage(
   playerAMissed = false,
   playerBMissed = false
 ) {
-  const multiplier = getDuelMultiplier(round);
+  const multiplier = 1;
+  const scoreA = playerAMissed ? 0 : calculateScore(distanceA);
+  const scoreB = playerBMissed ? 0 : calculateScore(distanceB);
+  const baseDamage = Math.abs(scoreA - scoreB);
 
-  if (playerAMissed && playerBMissed) {
-    return { loser: "tie", winner: "tie", baseDamage: 0, multiplier, finalDamage: 0 };
+  if (baseDamage <= 0) {
+    return { loser: "tie", winner: "tie", scoreA, scoreB, baseDamage: 0, multiplier, finalDamage: 0 };
   }
 
-  if (playerAMissed || playerBMissed) {
-    const loser = playerAMissed ? "player1" : "player2";
-    const winner = playerAMissed ? "player2" : "player1";
-    return { loser, winner, baseDamage: 2000, multiplier, finalDamage: Math.round(2000 * multiplier) };
-  }
-
-  const diff = Math.abs(distanceA - distanceB);
-  if (diff < 1) {
-    return { loser: "tie", winner: "tie", baseDamage: 0, multiplier, finalDamage: 0 };
-  }
-
-  const baseDamage = Math.min(2500, Math.max(50, diff * 1.5));
+  const loser = scoreA < scoreB ? "player1" : "player2";
+  const winner = scoreA < scoreB ? "player2" : "player1";
   return {
-    loser: distanceA > distanceB ? "player1" : "player2",
-    winner: distanceA > distanceB ? "player2" : "player1",
-    baseDamage: Math.round(baseDamage),
+    loser,
+    winner,
+    scoreA,
+    scoreB,
+    baseDamage,
     multiplier,
-    finalDamage: Math.round(baseDamage * multiplier)
+    finalDamage: baseDamage
   };
 }

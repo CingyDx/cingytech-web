@@ -153,6 +153,81 @@ img {
   background: rgba(255, 255, 255, 0.08);
 }
 
+.nav-account {
+  position: relative;
+  margin-left: 6px;
+}
+
+.account-button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 12px 5px 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+
+.account-avatar {
+  width: 32px;
+  height: 32px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #06120f;
+  font-weight: 1000;
+  background: linear-gradient(135deg, var(--primary), var(--success));
+}
+
+.account-name {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 900;
+}
+
+.account-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 210px;
+  display: none;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel-strong);
+  box-shadow: var(--shadow);
+}
+
+.account-menu.open {
+  display: grid;
+}
+
+.account-menu a,
+.account-menu button {
+  width: 100%;
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  color: var(--text);
+  background: transparent;
+  text-align: left;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.account-menu a:hover,
+.account-menu button:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .nav-toggle {
   display: none;
   width: 42px;
@@ -472,6 +547,43 @@ th {
   display: block;
   margin-top: 6px;
   font-size: 1.18rem;
+}
+
+.profile-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(280px, 0.42fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.profile-card {
+  display: grid;
+  gap: 18px;
+}
+
+.profile-head {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.profile-avatar {
+  width: 74px;
+  height: 74px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  color: #06120f;
+  font-size: 2rem;
+  font-weight: 1000;
+  background: linear-gradient(135deg, var(--primary), var(--success));
+  box-shadow: 0 16px 44px rgba(29, 233, 182, 0.24);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
 }
 
 .status-good {

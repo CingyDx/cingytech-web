@@ -59,7 +59,18 @@
   function decorateUser(user) {
     if (!user) return user;
     const email = user.email || user.user_metadata?.email || "";
-    if (!isAdminEmail(email)) return user;
+    const fallbackName = user.name
+      || user.user_metadata?.full_name
+      || user.user_metadata?.name
+      || email.split("@")[0]
+      || "Player";
+    if (!isAdminEmail(email)) {
+      return {
+        ...user,
+        name: fallbackName,
+        isAdmin: false
+      };
+    }
     return {
       ...user,
       name: ADMIN_NAME,

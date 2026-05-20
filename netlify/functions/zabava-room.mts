@@ -1,6 +1,6 @@
 import { getStore } from "@netlify/blobs";
 import type { Config, Context } from "@netlify/functions";
-import { calculateDuelDamage, getDuelMultiplier, haversineDistance } from "./_shared/scoring.mts";
+import { calculateDuelDamage, haversineDistance } from "./_shared/scoring.mts";
 import { locations, type StreetLocation } from "./_shared/locations.mts";
 
 type Player = {
@@ -142,6 +142,31 @@ function slotFor(room: Room, player: Player): "player1" | "player2" | null {
 
 function publicRoom(room: Room, player: Player) {
   const meSlot = slotFor(room, player);
+  const revealAllGuesses = room.status !== "playing";
+  const publicLocation = () => {
+    if (room.status === "waiting" || !room.location) return null;
+    if (room.status !== "playing") return room.location;
+    return {
+      id: `round-${room.round}`,
+      lat: room.location.lat,
+      lng: room.location.lng,
+      heading: room.location.heading,
+      pitch: room.location.pitch,
+      zoom: room.location.zoom
+    };
+  };
+  const publicGuess = (slot: "player1" | "player2") => {
+    const guess = room.guesses[slot];
+    if (!guess) return null;
+    const revealCoordinates = revealAllGuesses || slot === meSlot;
+    return {
+      locked: true,
+      missed: Boolean(guess.missed),
+      lat: revealCoordinates ? guess.lat : undefined,
+      lng: revealCoordinates ? guess.lng : undefined
+    };
+  };
+
   return {
     code: room.code,
     status: room.status,
@@ -154,17 +179,17 @@ function publicRoom(room: Room, player: Player) {
     hp1: room.hp1,
     hp2: room.hp2,
     round: room.round,
-    location: room.status === "waiting" ? null : room.location,
+    location: publicLocation(),
     firstGuessBy: room.firstGuessBy,
     deadlineAt: room.deadlineAt,
     guesses: {
-      player1: room.guesses.player1 ? { locked: true, missed: Boolean(room.guesses.player1.missed), lat: room.guesses.player1.lat, lng: room.guesses.player1.lng } : null,
-      player2: room.guesses.player2 ? { locked: true, missed: Boolean(room.guesses.player2.missed), lat: room.guesses.player2.lat, lng: room.guesses.player2.lng } : null
+      player1: publicGuess("player1"),
+      player2: publicGuess("player2")
     },
     roundResult: room.roundResult,
     winnerSlot: room.winnerSlot,
-    multiplier: getDuelMultiplier(Math.max(1, room.round)),
-    history: room.history.slice(-12),
+    multiplier: 1,
+    history: room.status === "finished" ? room.history : room.history.slice(-12),
     updatedAt: room.updatedAt
   };
 }
@@ -206,6 +231,8 @@ function resolveRound(room: Room) {
   const p1Distance = p1Missed ? 20000 : haversineDistance(room.location.lat, room.location.lng, room.guesses.player1!.lat!, room.guesses.player1!.lng!);
   const p2Distance = p2Missed ? 20000 : haversineDistance(room.location.lat, room.location.lng, room.guesses.player2!.lat!, room.guesses.player2!.lng!);
   const damage = calculateDuelDamage(p1Distance, p2Distance, room.round, p1Missed, p2Missed);
+  const p1Score = damage.scoreA ?? 0;
+  const p2Score = damage.scoreB ?? 0;
 
   if (damage.loser === "player1") {
     room.hp1 = Math.max(0, room.hp1 - damage.finalDamage);
@@ -221,6 +248,8 @@ function resolveRound(room: Room) {
     correctLng: room.location.lng,
     p1Distance,
     p2Distance,
+    p1Score,
+    p2Score,
     p1Missed,
     p2Missed,
     damage,

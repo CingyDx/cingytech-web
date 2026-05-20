@@ -6,6 +6,95 @@
     document.body.classList.toggle("light-theme", light);
   }
 
+  let authScriptPromise = null;
+
+  function escapeHtml(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function ensureAuthScript() {
+    if (window.GameAuth) return Promise.resolve();
+    if (authScriptPromise) return authScriptPromise;
+
+    authScriptPromise = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = "/js/auth.js";
+      script.async = true;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+    return authScriptPromise;
+  }
+
+  function streetguessHref(file) {
+    const path = location.pathname.toLowerCase();
+    if (path.includes("/cingyfun/streetguess/")) return file;
+    return `/CingyFun/Streetguess/${file}`;
+  }
+
+  function userDisplay(user) {
+    const safeName = escapeHtml(user?.name || user?.email || "Player");
+    return user?.isAdmin ? `<span class="rainbow-admin">${safeName}</span>` : safeName;
+  }
+
+  async function renderAuthNav() {
+    const nav = UI.qs("#site-nav");
+    if (!nav || document.body.classList.contains("game-body")) return;
+    if (!location.pathname.toLowerCase().includes("/cingyfun")) return;
+
+    await ensureAuthScript();
+    await window.GameAuth.init();
+    const user = await window.GameAuth.getUser();
+    const loginLinks = UI.qsa("#site-nav a").filter((link) => /login\.html$/i.test(link.getAttribute("href") || ""));
+    loginLinks.forEach((link) => link.classList.toggle("hidden", Boolean(user)));
+
+    let account = UI.qs("[data-account-nav]");
+    if (!user) {
+      account?.remove();
+      return;
+    }
+
+    if (!account) {
+      account = document.createElement("div");
+      account.className = "nav-account";
+      account.dataset.accountNav = "true";
+      nav.appendChild(account);
+    }
+
+    account.innerHTML = `
+      <button class="account-button" type="button" aria-expanded="false">
+        <span class="account-avatar">${user.isAdmin ? "K" : (user.name || user.email || "P").trim().charAt(0).toUpperCase()}</span>
+        <span class="account-name">${userDisplay(user)}</span>
+      </button>
+      <div class="account-menu" role="menu">
+        <a href="${streetguessHref("profile.html")}" role="menuitem">Profile & stats</a>
+        <a href="${streetguessHref("duel-lobby.html")}" role="menuitem">Online Duel</a>
+        <button type="button" data-auth-logout role="menuitem">Log out</button>
+      </div>
+    `;
+
+    const button = account.querySelector(".account-button");
+    const menu = account.querySelector(".account-menu");
+    button.addEventListener("click", () => {
+      const open = menu.classList.toggle("open");
+      button.setAttribute("aria-expanded", String(open));
+    });
+    account.querySelector("[data-auth-logout]").addEventListener("click", async () => {
+      await window.GameAuth.logout();
+      UI.toast("Logged out.");
+      renderAuthNav();
+      if (location.pathname.toLowerCase().endsWith("/profile.html")) {
+        location.href = streetguessHref("login.html");
+      }
+    });
+  }
+
   function initCommon() {
     UI.nav();
     UI.qsa("[data-year]").forEach((node) => {
@@ -13,6 +102,7 @@
     });
     applyTheme();
     injectFunFooter();
+    renderAuthNav().catch((error) => console.warn("Auth nav failed", error));
     window.AudioManager?.installUnlock?.();
   }
 
@@ -38,6 +128,7 @@
           <a href="/CingyFun/">Game hub</a>
           <a href="/CingyFun/Streetguess/">StreetGuess</a>
           <a href="/CingyFun/Streetguess/login.html">Login</a>
+          <a href="/CingyFun/Streetguess/profile.html">Profile</a>
           <a href="/pages/privacy.html">Privacy</a>
         </nav>
       </div>
@@ -210,4 +301,6 @@
     initLeaderboard();
     initResults();
   });
+
+  window.CingyAuthNav = { render: renderAuthNav };
 })();

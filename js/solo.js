@@ -105,6 +105,7 @@
       guessCountry: "Unknown"
     };
     Store.saveSoloResult(result);
+    window.ProfileStats?.recordSolo?.(result);
     showSoloResult(result, null);
   }
 
@@ -148,6 +149,7 @@
     };
 
     Store.saveSoloResult(result);
+    window.ProfileStats?.recordSolo?.(result);
     showSoloResult(result, guessLatLng);
   }
 

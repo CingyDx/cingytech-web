@@ -50,6 +50,7 @@
         <h2>${displayName}</h2>
         <p class="muted">${escapeHtml(user.email || "")}</p>
         <div class="button-row">
+          <a class="btn" href="profile.html">Profile</a>
           <a class="btn" href="duel-lobby.html">Online Duel</a>
           <button class="btn secondary" id="logout-btn" type="button">Log Out</button>
         </div>
@@ -57,7 +58,8 @@
       document.getElementById("logout-btn").addEventListener("click", async () => {
         await GameAuth.logout();
         UI.toast("Logged out.");
-        render();
+        await render();
+        window.CingyAuthNav?.render?.();
       });
     }
 
@@ -79,7 +81,8 @@
       try {
         await GameAuth.login(loginForm.email.value, loginForm.password.value);
         UI.toast("Logged in.");
-        render();
+        await render();
+        window.CingyAuthNav?.render?.();
       } catch (error) {
         UI.toast(error.message || "Login failed.");
       }
@@ -90,7 +93,8 @@
       try {
         const user = await GameAuth.signup(signupForm.email.value, signupForm.password.value, signupForm.name.value);
         UI.toast(user?.emailVerified === false ? "Account created. Check your email to confirm it." : "Account created.");
-        render();
+        await render();
+        window.CingyAuthNav?.render?.();
         if (user?.emailVerified === false) {
           note.textContent = `Verification email sent to ${signupForm.email.value}. Open the newest email, confirm it, then log in here.`;
         }
@@ -116,7 +120,8 @@
         await GameAuth.updatePassword(resetForm.password.value);
         UI.toast("Password updated.");
         history.replaceState(null, "", location.pathname);
-        render();
+        await render();
+        window.CingyAuthNav?.render?.();
       } catch (error) {
         UI.toast(error.message || "Password update failed.");
       }
