@@ -87,6 +87,12 @@ function getDeployContext() {
   }
 }
 
+function isLocalDevRequest(req: Request) {
+  if (getDeployContext() === "production") return false;
+  const host = req.headers.get("host") || "";
+  return /^(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(host);
+}
+
 function isAdminEmail(email?: string) {
   return String(email || "").trim().toLowerCase() === ADMIN_EMAIL;
 }
@@ -109,8 +115,7 @@ async function currentPlayer(req: Request): Promise<Player | null> {
   }
 
   const devId = req.headers.get("x-streetguess-dev-user");
-  const isProduction = getDeployContext() === "production";
-  if (!isProduction && devId) {
+  if (isLocalDevRequest(req) && devId) {
     const email = req.headers.get("x-streetguess-dev-email") || `${devId}@local.streetguess`;
     const fallback = req.headers.get("x-streetguess-dev-name") || "Local Player";
     return {
@@ -146,10 +151,12 @@ function publicRoom(room: Room, player: Player) {
   const publicLocation = () => {
     if (room.status === "waiting" || !room.location) return null;
     if (room.status !== "playing") return room.location;
+    const streetViewLat = room.location.lat;
+    const streetViewLng = room.location.lng;
     return {
       id: `round-${room.round}`,
-      lat: room.location.lat,
-      lng: room.location.lng,
+      lat: streetViewLat,
+      lng: streetViewLng,
       heading: room.location.heading,
       pitch: room.location.pitch,
       zoom: room.location.zoom
@@ -310,14 +317,7 @@ async function handleRoom(req: Request, context: Context) {
   const method = req.method.toUpperCase();
   const slot = slotFor(room, player);
 
-  if (method === "GET") {
-    if (maybeResolveDeadline(room)) await writeRoom(room);
-    return json({ room: publicRoom(room, player) });
-  }
-
-  if (method !== "POST") return json({ error: "Method not allowed" }, 405);
-
-  if (action === "join") {
+  if (method === "POST" && action === "join") {
     if (!room.player2 && room.player1.id !== player.id) {
       room.player2 = player;
       await writeRoom(room);
@@ -327,7 +327,15 @@ async function handleRoom(req: Request, context: Context) {
 
   if (!slot) return json({ error: "You are not in this room" }, 403);
 
+  if (method === "GET") {
+    if (maybeResolveDeadline(room)) await writeRoom(room);
+    return json({ room: publicRoom(room, player) });
+  }
+
+  if (method !== "POST") return json({ error: "Method not allowed" }, 405);
+
   if (action === "start" || action === "next") {
+    if (slot !== "player1") return json({ error: "Only the room host can start rounds" }, 403);
     if (!room.player2) return json({ error: "Waiting for second player" }, 409);
     if (room.status !== "waiting" && room.status !== "round-summary") {
       return json({ error: "Round is already running" }, 409);

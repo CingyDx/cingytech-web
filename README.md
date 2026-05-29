@@ -76,6 +76,6 @@ Each location needs:
 
 ## Deploy
 
-Netlify publishes the repository root. There is no build command. Functions live in `netlify/functions/`.
+Netlify publishes `public/`. There is no build command. Functions live in `netlify/functions/`.
 
 Netlify will install dependencies from `package.json` during deploy.

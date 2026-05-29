@@ -22,12 +22,14 @@
   async function recordDelta(delta) {
     const headers = await authHeaders();
     if (!headers) return null;
+    const clientEventId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 14)}`;
     const response = await fetch(STATS_API, {
       method: "POST",
       headers,
       credentials: "same-origin",
-      body: JSON.stringify({ delta })
+      body: JSON.stringify({ clientEventId, delta })
     });
+    if (response.status === 403) return null;
     if (!response.ok) return null;
     return await response.json();
   }

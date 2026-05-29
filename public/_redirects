@@ -1,3 +1,11 @@
+/netlify/*          /404.html                         404!
+/package.json       /404.html                         404!
+/package-lock.json  /404.html                         404!
+/README.md          /404.html                         404!
+/SECURITY_NOTES.md  /404.html                         404!
+/AGENTS.md          /404.html                         404!
+/deploy.ps1         /404.html                         404!
+
 /kontakt             /pages/kontakt.html             200
 /sluzby              /pages/sluzby.html              200
 /omne                /pages/omne.html                200
@@ -15,6 +23,8 @@
 /weby                /pages/tvorba-webu.html         200
 /privacy             /pages/privacy.html             200
 /zabava              /CingyFun/                                  301
+/zabava/Streetguess/* /CingyFun/Streetguess/:splat               301!
+/zabava/streetguess/* /CingyFun/Streetguess/:splat               301!
 /zabava/*            /CingyFun/Streetguess/:splat                 301
 /cingyfun            /CingyFun/                                  301
 /cingyfun/*          /CingyFun/:splat                            301

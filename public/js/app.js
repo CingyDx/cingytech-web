@@ -67,9 +67,10 @@
       nav.appendChild(account);
     }
 
+    const safeInitial = escapeHtml(user.isAdmin ? "K" : (user.name || user.email || "P").trim().charAt(0).toUpperCase());
     account.innerHTML = `
       <button class="account-button" type="button" aria-expanded="false">
-        <span class="account-avatar">${user.isAdmin ? "K" : (user.name || user.email || "P").trim().charAt(0).toUpperCase()}</span>
+        <span class="account-avatar">${safeInitial}</span>
         <span class="account-name">${userDisplay(user)}</span>
       </button>
       <div class="account-menu" role="menu">
@@ -204,15 +205,19 @@
         return;
       }
 
-      body.innerHTML = rows.map((entry, index) => `
+      body.innerHTML = rows.map((entry, index) => {
+        const safePlayer = escapeHtml(entry.player || "You");
+        const safeMode = escapeHtml(entry.mode || "Solo");
+        return `
         <tr>
           <td>#${index + 1}</td>
-          <td>${entry.player || "You"}</td>
-          <td>${entry.mode}</td>
+          <td>${safePlayer}</td>
+          <td>${safeMode}</td>
           <td>${entry.mode === "Solo" ? `${entry.score || 0} pts / ${entry.streak || 0} streak` : `${entry.score || 0} rounds`}</td>
           <td>${new Date(entry.date).toLocaleDateString()}</td>
         </tr>
-      `).join("");
+      `;
+      }).join("");
     }
 
     tabs.forEach((tab) => {
@@ -250,14 +255,17 @@
 
     if (result.type === "duel") {
       createConfetti();
+      const safeWinner = escapeHtml(result.winner || "Tie");
+      const safePlayer1 = escapeHtml(result.player1 || "Player 1");
+      const safePlayer2 = escapeHtml(result.player2 || "Player 2");
       target.innerHTML = `
         <section class="panel card">
           <p class="eyebrow">Duel complete</p>
-          <h1>${result.winner} wins</h1>
+          <h1>${safeWinner} wins</h1>
           <div class="result-grid">
             <div class="metric"><span>Rounds</span><strong>${result.rounds}</strong></div>
-            <div class="metric"><span>${result.player1}</span><strong>${result.hp1} HP</strong></div>
-            <div class="metric"><span>${result.player2}</span><strong>${result.hp2} HP</strong></div>
+            <div class="metric"><span>${safePlayer1}</span><strong>${result.hp1} HP</strong></div>
+            <div class="metric"><span>${safePlayer2}</span><strong>${result.hp2} HP</strong></div>
             <div class="metric"><span>Biggest damage</span><strong>${result.biggestDamage}</strong></div>
           </div>
           <div class="button-row"><a class="btn" href="duel-lobby.html">New Online Room</a><a class="btn secondary" href="../">Back to CingyFun</a></div>

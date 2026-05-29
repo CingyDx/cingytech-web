@@ -15,7 +15,7 @@
 
   async function loadIdentity() {
     if (identityModule) return identityModule;
-    identityModule = await import("https://esm.sh/@netlify/identity?bundle");
+    identityModule = await import("/js/vendor/netlify-identity.js");
     return identityModule;
   }
 

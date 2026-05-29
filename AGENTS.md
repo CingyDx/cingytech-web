@@ -21,4 +21,4 @@ Do not add secrets, API keys, passwords, or private files to the repository.
 
 Netlify automatically deploys the website after every successful push to the `main` branch.
 There is no build command.
-Publish directory is the repository root: `.`
+Publish directory is `public/`.

@@ -76,6 +76,12 @@ function getDeployContext() {
   }
 }
 
+function isLocalDevRequest(req: Request) {
+  if (getDeployContext() === "production") return false;
+  const host = req.headers.get("host") || "";
+  return /^(localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(host);
+}
+
 function isAdminEmail(email?: string) {
   return String(email || "").trim().toLowerCase() === ADMIN_EMAIL;
 }
@@ -98,8 +104,7 @@ async function currentPlayer(req: Request): Promise<Player | null> {
   }
 
   const devId = req.headers.get("x-streetguess-dev-user");
-  const isProduction = getDeployContext() === "production";
-  if (!isProduction && devId) {
+  if (isLocalDevRequest(req) && devId) {
     const email = req.headers.get("x-streetguess-dev-email") || `${devId}@local.streetguess`;
     const fallback = req.headers.get("x-streetguess-dev-name") || "Local Player";
     return {
@@ -162,6 +167,15 @@ function mergeStats(current: Stats, delta: Partial<Stats>) {
   return next;
 }
 
+function validateStatsDelta(body: any): Partial<Stats> | null {
+  const clientEventId = String(body?.clientEventId || "").trim();
+  if (!/^[a-zA-Z0-9_-]{12,80}$/.test(clientEventId)) return null;
+
+  // Client submitted score deltas are not authoritative enough for remote profile stats.
+  // Keep GET support active, but reject writes until stats are derived server-side.
+  return null;
+}
+
 export default async (req: Request) => {
   const player = await currentPlayer(req);
   if (!player) return json({ error: "Login required" }, 401);
@@ -172,7 +186,9 @@ export default async (req: Request) => {
 
   if (req.method === "POST") {
     const body = await req.json().catch(() => ({}));
-    const next = mergeStats(await readStats(player), body.delta || {});
+    const delta = validateStatsDelta(body);
+    if (!delta) return json({ error: "Server-side stat recording is temporarily disabled" }, 403);
+    const next = mergeStats(await readStats(player), delta);
     await statsStore().setJSON(statsKey(player), next);
     return json({ player: { name: player.name, email: player.email, admin: Boolean(player.admin) }, stats: next });
   }

@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "netlify dev"
+    "dev": "netlify dev",
+    "test": "node --test tests/security.test.js tests/static-site.test.js",
+    "test:security": "node --test tests/security.test.js"
   },
   "dependencies": {
-    "@netlify/blobs": "latest",
-    "@netlify/identity": "latest"
+    "@netlify/blobs": "10.7.8",
+    "@netlify/identity": "1.2.0"
   },
   "devDependencies": {
-    "@netlify/functions": "latest"
+    "@netlify/functions": "5.2.2"
   }
 }

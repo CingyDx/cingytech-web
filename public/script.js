@@ -296,6 +296,12 @@
         return;
       }
 
+      if (messageValue.length > 4000) {
+        event.preventDefault();
+        setStatus('Zpráva je moc dlouhá. Zkraťte ji prosím na 4000 znaků.', 'error');
+        return;
+      }
+
       event.preventDefault();
       setSubmitting(true);
       setStatus('Odesílám zprávu...', 'success');
