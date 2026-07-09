@@ -4,9 +4,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cingy.Tech | Kontakt</title>
-  <meta name="description" content="Kontaktujte Cingy.Tech kvůli opravě počítače, upgradu, nové sestavě, tvorbě webu nebo domácí IT pomoci." />
-  <meta name="theme-color" content="#03b1f9" />
+  <title>Cingy.Tech | Kontakt pro nový web</title>
+  <meta name="description" content="Pošlete poptávku na nový web, restart starého webu nebo správu webu. Cingy.Tech, Kryštof Cingálek, IČO 29612071." />
+  <meta name="theme-color" content="#0f766e" />
   <link rel="icon" href="../assets/favicon/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16x16.png">
@@ -29,11 +29,12 @@
       <nav id="site-nav" class="site-nav" aria-label="Hlavní navigace">
         <ul>
           <li><a class="nav-link" href="../index.html">Domů</a></li>
-          <li><a class="nav-link" href="sluzby.html">Služby</a></li>
           <li><a class="nav-link" href="tvorba-webu.html">Weby</a></li>
+          <li><a class="nav-link" href="../index.html#reference">Reference</a></li>
+          <li><a class="nav-link" href="sluzby.html">Služby</a></li>
           <li><a class="nav-link" href="omne.html">O mně</a></li>
-          <li><a class="nav-link" href="blog/index.html">Blog</a></li>
-          <li><a class="nav-link" href="../CingyFun/">CingyFun</a></li>
+
+
           <li><a class="nav-link" href="kontakt.html">Kontakt</a></li>
         </ul>
       </nav>
@@ -45,10 +46,10 @@
       <div class="container">
         <div class="section-heading reveal">
           <p class="eyebrow">Kontakt</p>
-          <h1>Napište mi, co zařízení dělá a co od řešení čekáte</h1>
+          <h1>Pošlete mi zadání na nový web</h1>
           <p class="lead">
-            Ať řešíte opravu, upgrade, nový web nebo novou sestavu, čím přesněji zadání popíšete,
-            tím rychleji půjde navrhnout správný postup.
+            Napište název firmy, obor, jestli už máte web nebo doménu, a co má nový web umět.
+            Ozvu se s návrhem postupu, rozsahem a orientační cenou.
           </p>
         </div>
       </div>
@@ -58,7 +59,7 @@
       <div class="container contact-shell">
         <article class="contact-card glass reveal">
           <h2>Kontaktní formulář</h2>
-          <p class="lead compact">Stačí pár vět. Napište, co řešíte, jak dlouho problém trvá nebo jaký web potřebujete a co byste chtěli vyřešit.</p>
+          <p class="lead compact">Stačí pár vět. Čím konkrétnější zadání pošlete, tím rychleji půjde říct cenu a termín.</p>
 
           <form id="contact-form" class="contact-form" name="kontakt" method="POST" data-netlify="true" data-netlify-recaptcha="true"
             netlify-honeypot="bot-field" action="/">
@@ -68,14 +69,17 @@
             </p>
 
             <label for="name">Jméno</label>
-            <input id="name" name="name" type="text" placeholder="Jak vám mám říkat" maxlength="120" required>
+            <input id="name" name="name" type="text" placeholder="Vaše jméno" maxlength="120" required>
 
             <label for="email">E-mail</label>
             <input id="email" name="email" type="email" placeholder="vas@email.cz" maxlength="120" required>
 
+            <label for="company">Firma / projekt</label>
+            <input id="company" name="company" type="text" placeholder="Např. autoservis, stavební firma, klub" maxlength="160">
+
             <label for="message">Zpráva</label>
             <textarea id="message" name="message" rows="7"
-              placeholder="Například: potřebuji jednoduchý prezentační web pro služby, 4 podstránky, kontaktní formulář a pomoc s nasazením na doménu."
+              placeholder="Například: potřebujeme nový web pro lokální službu, asi 4 podstránky, kontakt, fotky, formulář a pomoc s doménou."
               maxlength="4000" required></textarea>
 
             <div data-netlify-recaptcha="true"></div>
@@ -92,6 +96,12 @@
           </article>
 
           <article class="info-card glass">
+            <p class="eyebrow">Fakturační údaje</p>
+            <h2>Kryštof Cingálek</h2>
+            <p>IČO: 29612071</p>
+          </article>
+
+          <article class="info-card glass">
             <p class="eyebrow">Kde působím</p>
             <h2>Kladno a okolí</h2>
             <p>Nejčastěji působím v Kladně a okolí. Po domluvě ale dojedu i jinam podle potřeby.</p>
@@ -100,9 +110,9 @@
           <article class="info-card glass">
             <p class="eyebrow">Co napsat do zprávy</p>
             <ul class="feature-list simple">
-              <li>Typ zařízení a hlavní problém</li>
-              <li>Co se děje a od kdy</li>
-              <li>Jestli řešíte opravu, upgrade, web nebo konzultaci</li>
+              <li>Název firmy, obor a lokalitu</li>
+              <li>Jestli máte doménu nebo starý web</li>
+              <li>Kolik podstránek a jaké služby chcete ukázat</li>
             </ul>
           </article>
         </aside>
@@ -119,7 +129,7 @@
         </a>
         <p class="small">&copy; 2026 | Vytvo&#345;il Kry&#353;tof Cing&aacute;lek</p>
       </div>
-      <p class="small">Lokalita: Kladno a okol&iacute; &bull; E-mail: contact.cingytech@proton.me &bull; <a class="footer-link" href="tvorba-webu.html">Tvorba web&#367;</a> &bull; <a class="footer-link" href="../CingyFun/">CingyFun</a> &bull; <a class="footer-link" href="privacy.html">Ochrana osobn&iacute;ch &uacute;daj&uring;</a></p>
+      <p class="small">Kry&#353;tof Cingálek, I&#268;O: 29612071 &bull; Kladno a okol&iacute; &bull; E-mail: contact.cingytech@proton.me &bull; <a class="footer-link" href="tvorba-webu.html">Tvorba web&#367;</a> &bull; <a class="footer-link" href="privacy.html">Ochrana osobn&iacute;ch &uacute;daj&uring;</a></p>
     </div>
   </footer>
 

@@ -1,6 +1,6 @@
 (function () {
   const THEME_STORAGE_KEY = 'cingy-theme';
-  const BRAND_THEME_COLOR = '#03b1f9';
+  const BRAND_THEME_COLOR = '#0f766e';
 
   applyInitialTheme();
   document.documentElement.classList.add('js');
@@ -23,7 +23,7 @@
 
   function applyInitialTheme() {
     const storedTheme = readStoredTheme();
-    const initialTheme = storedTheme === 'light' ? 'light' : 'dark';
+    const initialTheme = storedTheme === 'dark' ? 'dark' : 'light';
 
     document.documentElement.setAttribute('data-theme', initialTheme);
     updateThemeColorMeta(initialTheme);
@@ -152,8 +152,20 @@
       const href = link.getAttribute('href');
       if (!href) return;
 
-      const targetPath = normalizePathname(new URL(href, window.location.href).pathname);
+      const targetUrl = new URL(href, window.location.href);
+      const targetPath = normalizePathname(targetUrl.pathname);
       const isBlogIndex = targetPath.endsWith('/blog') && currentPath.startsWith(targetPath + '/');
+      const pointsToSection = Boolean(targetUrl.hash);
+
+      if (pointsToSection && targetUrl.hash !== window.location.hash) {
+        link.classList.remove('active');
+        return;
+      }
+
+      if (window.location.hash && !pointsToSection && targetPath === currentPath) {
+        link.classList.remove('active');
+        return;
+      }
 
       if (targetPath === currentPath || isBlogIndex) {
         link.classList.add('active');

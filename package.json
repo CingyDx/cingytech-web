@@ -1,5 +1,5 @@
 {
-  "name": "cingytech-cingyfun",
+  "name": "cingytech-web",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -7,11 +7,6 @@
     "test": "node --test tests/security.test.js tests/static-site.test.js",
     "test:security": "node --test tests/security.test.js"
   },
-  "dependencies": {
-    "@netlify/blobs": "10.7.8",
-    "@netlify/identity": "1.2.0"
-  },
-  "devDependencies": {
-    "@netlify/functions": "5.2.2"
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }

@@ -22,24 +22,13 @@
 /tvorba-webu         /pages/tvorba-webu.html         200
 /weby                /pages/tvorba-webu.html         200
 /privacy             /pages/privacy.html             200
-/zabava              /CingyFun/                                  301
-/zabava/Streetguess/* /CingyFun/Streetguess/:splat               301!
-/zabava/streetguess/* /CingyFun/Streetguess/:splat               301!
-/zabava/*            /CingyFun/Streetguess/:splat                 301
-/cingyfun            /CingyFun/                                  301
-/cingyfun/*          /CingyFun/:splat                            301
-/CingyFun            /CingyFun/index.html                        200
-/CingyFun/StreetGuess        /CingyFun/Streetguess/              301
-/CingyFun/StreetGuess/*      /CingyFun/Streetguess/:splat        301
-/CingyFun/Streetguess        /CingyFun/Streetguess/index.html    200
-/CingyFun/Streetguess/solo         /CingyFun/Streetguess/solo.html               200
-/CingyFun/Streetguess/duel         /CingyFun/Streetguess/duel.html               200
-/CingyFun/Streetguess/duel-lobby   /CingyFun/Streetguess/duel-lobby.html         200
-/CingyFun/Streetguess/results      /CingyFun/Streetguess/results.html            200
-/CingyFun/Streetguess/leaderboard  /CingyFun/Streetguess/leaderboard.html        200
-/CingyFun/Streetguess/settings     /CingyFun/Streetguess/settings.html           200
-/CingyFun/Streetguess/rules        /CingyFun/Streetguess/rules.html              200
-/CingyFun/Streetguess/login        /CingyFun/Streetguess/login.html              200
+
+/zabava              /                                301
+/zabava/*            /                                301
+/cingyfun            /                                301
+/cingyfun/*          /                                301
+/CingyFun            /                                301
+/CingyFun/*          /                                301
 
 /kontakt.html        /pages/kontakt.html             301
 /sluzby.html         /pages/sluzby.html              301
