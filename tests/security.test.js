@@ -61,9 +61,17 @@ test("contact form includes bot friction and client-side size limits", () => {
 test("work-site proof is visible and game dependencies are not required", () => {
   const index = read("public/index.html");
   const weby = read("public/pages/tvorba-webu.html");
+  const kontakt = read("public/pages/kontakt.html");
+  const sluzby = read("public/pages/sluzby.html");
+  const css = read("public/style.css");
   const pkg = JSON.parse(read("package.json"));
   assert.match(index, /Baník Rynholec/);
+  assert.match(index, /IT servis|hardware/);
+  assert.match(index, /hero-1600\.jpg/);
+  assert.match(kontakt, /Kontakt pro web nebo IT servis/);
+  assert.match(sluzby, /Weby, IT servis a hardware/);
   assert.match(weby, /portfolio-banik-rynholec\.png/);
+  assert.match(css, /portfolio-preview img[\s\S]*object-fit: contain/);
   assert.equal(fs.existsSync(path.join(publicRoot, "assets", "portfolio-banik-rynholec.png")), true);
 
   for (const version of Object.values({ ...pkg.dependencies, ...pkg.devDependencies })) {
