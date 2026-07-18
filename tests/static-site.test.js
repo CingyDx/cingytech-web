@@ -2,6 +2,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const test = require("node:test");
+const vm = require("node:vm");
 
 const root = path.resolve(__dirname, "..");
 const publicRoot = path.join(root, "public");
@@ -46,4 +47,46 @@ test("all public HTML pages reference existing local static assets and pages", (
   }
 
   assert.deepEqual(failures, []);
+});
+
+test("theme defaults to dark while preserving an explicit light preference", () => {
+  const script = fs.readFileSync(path.join(publicRoot, "script.js"), "utf8");
+
+  function getInitialTheme(storedTheme) {
+    const attributes = new Map();
+    const documentElement = {
+      classList: { add() {} },
+      getAttribute(name) {
+        return attributes.get(name) ?? null;
+      },
+      setAttribute(name, value) {
+        attributes.set(name, value);
+      },
+    };
+
+    vm.runInNewContext(script, {
+      document: {
+        documentElement,
+        addEventListener() {},
+        querySelector() {
+          return null;
+        },
+      },
+      window: {
+        localStorage: {
+          getItem() {
+            return storedTheme;
+          },
+          setItem() {},
+        },
+      },
+    });
+
+    return documentElement.getAttribute("data-theme");
+  }
+
+  assert.equal(getInitialTheme(null), "dark");
+  assert.equal(getInitialTheme("dark"), "dark");
+  assert.equal(getInitialTheme("light"), "light");
+  assert.equal(getInitialTheme("unexpected-value"), "dark");
 });

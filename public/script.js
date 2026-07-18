@@ -23,7 +23,7 @@
 
   function applyInitialTheme() {
     const storedTheme = readStoredTheme();
-    const initialTheme = storedTheme === 'dark' ? 'dark' : 'light';
+    const initialTheme = storedTheme === 'light' ? 'light' : 'dark';
 
     document.documentElement.setAttribute('data-theme', initialTheme);
     updateThemeColorMeta(initialTheme);
