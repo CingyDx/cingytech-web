@@ -336,6 +336,11 @@
 
         form.reset();
         setStatus('Zpráva byla odeslána. Ozvu se co nejdříve.', 'success');
+        try {
+          window.CingyAds?.trackLead();
+        } catch (trackingError) {
+          // Measurement must not turn a delivered message into a form error.
+        }
       } catch (error) {
         setStatus('Odeslání se nepovedlo. Zkuste to prosím znovu.', 'error');
       } finally {

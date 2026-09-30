@@ -1261,6 +1261,55 @@ button.btn {
   font-size: 0.95rem;
 }
 
+.ads-consent-banner {
+  position: fixed;
+  z-index: 1000;
+  inset: auto 1rem 1rem;
+  width: min(38rem, calc(100% - 2rem));
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  margin-inline: auto;
+  padding: 1.25rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 1rem;
+  background: var(--bg-strong);
+  box-shadow: var(--shadow);
+  color: var(--text);
+}
+
+.ads-consent-banner[hidden] {
+  display: none;
+}
+
+.ads-consent-banner p {
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+.ads-consent-banner a,
+.ads-consent-settings {
+  color: var(--accent-strong);
+  text-decoration: underline;
+}
+
+.ads-consent-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.ads-consent-actions .btn {
+  flex: 1 1 11rem;
+}
+
+.ads-consent-settings {
+  border: 0;
+  padding: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
 :root:not([data-theme="light"]) {
   color-scheme: dark;
   --bg: #111827;
