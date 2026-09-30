@@ -1,5 +1,7 @@
 (function () {
   const THEME_STORAGE_KEY = 'cingy-theme';
+  const CAMPAIGN_STORAGE_KEY = 'cingy-campaign-v1';
+  const CAMPAIGN_FIELDS = ['utm_source', 'utm_medium', 'utm_campaign'];
   const BRAND_THEME_COLOR = '#0f766e';
 
   applyInitialTheme();
@@ -16,7 +18,31 @@
     setupNavToggle();
     setupInternalLinkTransitions();
     setupRevealAnimations();
+    captureCampaign();
     setupContactForm();
+  }
+
+  function captureCampaign() {
+    const query = new URLSearchParams(window.location.search || '');
+    if (!query.has('utm_source')) return;
+    const campaign = {};
+    for (const key of CAMPAIGN_FIELDS) {
+      campaign[key] = (query.get(key) || '').trim().slice(0, 120);
+    }
+    try {
+      window.sessionStorage.setItem(CAMPAIGN_STORAGE_KEY, JSON.stringify(campaign));
+    } catch (error) {
+      // Attribution is optional; it must never block the form.
+    }
+  }
+
+  function readCampaign() {
+    try {
+      const data = JSON.parse(window.sessionStorage.getItem(CAMPAIGN_STORAGE_KEY) || '{}');
+      return data && typeof data === 'object' ? data : {};
+    } catch (error) {
+      return {};
+    }
   }
 
   document.addEventListener('DOMContentLoaded', onReady);
@@ -320,6 +346,9 @@
 
       try {
         const formData = new FormData(form);
+        for (const key of CAMPAIGN_FIELDS) {
+          if (typeof formData.set === 'function') formData.set(key, readCampaign()[key] || '');
+        }
         const body = new URLSearchParams(formData).toString();
         const target = form.getAttribute('action') || '/';
 

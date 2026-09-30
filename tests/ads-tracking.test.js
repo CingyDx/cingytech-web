@@ -98,7 +98,7 @@ test('all pages using the shared script load consent before form handling', () =
   }
 });
 
-function loadContactForm(response, trackingFails = false) {
+function loadContactForm(response, trackingFails = false, campaignSearch = '', campaignStore = new Map()) {
   const handlers = {};
   const fields = {
     name: { value: 'Test' },
@@ -127,21 +127,41 @@ function loadContactForm(response, trackingFails = false) {
   let conversions = 0;
   const window = {
     localStorage: { getItem() { return null; } },
-    location: { pathname: '/', href: 'https://cingy.tech/', origin: 'https://cingy.tech' },
+    sessionStorage: {
+      getItem(key) { return campaignStore.get(key) || null; },
+      setItem(key, value) { campaignStore.set(key, value); }
+    },
+    location: { pathname: '/', href: 'https://cingy.tech/', origin: 'https://cingy.tech', search: campaignSearch },
     matchMedia() { return { matches: true }; },
     CingyAds: { trackLead() {
       if (trackingFails) throw new Error('Tag unavailable');
       conversions++;
     } }
   };
-  class MockFormData { constructor() {} *[Symbol.iterator]() { yield ['form-name', 'kontakt']; } }
+  class MockFormData {
+    constructor() { this.fields = new Map([['form-name', 'kontakt']]); }
+    set(key, value) { this.fields.set(key, value); }
+    *[Symbol.iterator]() { yield* this.fields; }
+  }
+  let postedBody = '';
   vm.runInNewContext(fs.readFileSync(path.join(publicRoot, 'script.js'), 'utf8'), {
     document, window, FormData: MockFormData, URLSearchParams,
-    fetch: async () => response
+    fetch: async (target, request) => { postedBody = request.body; return response; }
   });
   handlers.DOMContentLoaded();
-  return { submit: handlers.submit, form, status, conversions: () => conversions };
+  return { submit: handlers.submit, form, status, conversions: () => conversions, postedBody: () => postedBody };
 }
+
+test('campaign source survives navigation and reaches the CRM form submission', async () => {
+  const store = new Map();
+  loadContactForm({ ok: true }, false, '?utm_source=google&utm_medium=cpc&utm_campaign=launch_sep26', store);
+  const contact = loadContactForm({ ok: true }, false, '', store);
+  await contact.submit({ preventDefault() {} });
+  const body = new URLSearchParams(contact.postedBody());
+  assert.equal(body.get('utm_source'), 'google');
+  assert.equal(body.get('utm_medium'), 'cpc');
+  assert.equal(body.get('utm_campaign'), 'launch_sep26');
+});
 
 test('contact form counts a lead only after Netlify confirms a successful response', async () => {
   const success = loadContactForm({ ok: true });
