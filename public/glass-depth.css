@@ -173,6 +173,13 @@ html { scroll-padding-top: 125px; }
   .glass-shelf { bottom: 25px; height: 140px; }
   .service-shelf { bottom: -15px; height: 65px; }
 }
+@media(min-width:761px) and (max-width:1050px) {
+  .hero-copy { width: 55%; }
+  .hero h1 { font-size: clamp(49px,6.3vw,66px); }
+  .hero-copy p { max-width: 100%; font-size: 16px; }
+  .hero .button { font-size: 13px; min-height: 48px; padding-inline: 16px; gap: 15px; }
+  .hero-art { width: 64%; }
+}
 @media(max-width:760px) {
   html { scroll-padding-top: 106px; }
   .site-header { width: calc(100% - 28px); margin-top: 14px; top: 12px; --glass-radius: 19px; }
