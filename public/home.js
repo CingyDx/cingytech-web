@@ -26,6 +26,21 @@
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
   window.addEventListener('resize', () => { if (window.innerWidth > 760) closeMenu(); });
 
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const reveals = document.querySelectorAll('.reveal');
+    if (reveals.length) {
+      document.documentElement.classList.add('js-reveal');
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px 36px 0px' });
+      reveals.forEach(element => observer.observe(element));
+    }
+  }
+
   const query = new URLSearchParams(window.location.search);
   if (query.has('utm_source')) {
     const campaign = {};
