@@ -63,7 +63,7 @@ test("homepage lead form is Netlify-ready and retains consent-based conversion t
   const homeScript = read("public/home.js");
   assert.match(index, /name="poptavka"[^>]*data-netlify="true"[^>]*netlify-honeypot="bot-field"/);
   assert.match(index, /name="phone"[^>]*type="tel"|type="tel"[^>]*name="phone"/);
-  assert.match(index, /src="\/ads-tracking\.js"/);
+  assert.match(index, /src="\.?\/ads-tracking\.js"/);
   assert.match(homeScript, /response\.ok/);
   assert.match(homeScript, /CingyAds\?\.trackLead\(\)/);
 });
