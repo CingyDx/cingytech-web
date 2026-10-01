@@ -21,8 +21,12 @@
 
   function update() {
     toggle.hidden = !(reducedMotion.matches || saveData || playbackBlocked);
-    toggle.textContent = manualPlayback ? 'Pozastavit 3D animaci' : 'Přehrát 3D animaci';
+    toggle.textContent = manualPlayback ? 'Pozastavit animace' : 'Zapnout animace';
     toggle.setAttribute('aria-pressed', String(manualPlayback));
+    if (document.documentElement.classList.contains('motion-enabled') !== manualPlayback) {
+      document.documentElement.classList.toggle('motion-enabled', manualPlayback);
+      window.dispatchEvent(new Event('cingy-motion-change'));
+    }
 
     if (!shouldPlay()) {
       video.pause();

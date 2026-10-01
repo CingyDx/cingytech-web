@@ -14,6 +14,8 @@ Vytvoř luxusní tmavě fialový glass design s klidem a přesností prémiovéh
 
 Celý web musí používat stejný materiálový a světelný jazyk: navigace, tlačítka, reference, formulář i přechody mezi sekcemi. Hloubku vytvářej vrstvením, perspektivou a promyšleným světlem. Každá sekce nemusí být karta. Vyhni se přehnanému neonu, náhodným gradientovým skvrnám, vizuálnímu chaosu a generickému šablonovému vzhledu. Upřednostni méně prvků s výborným provedením.
 
+Upřesnění podle označeného screenshotu: navigace má být odsazená plovoucí lišta z fialového skla. Tři služby tvoří samostatné skleněné dílky nad mělkou policí; pod referencemi je širší police v perspektivě. Materiál musí mít světlý horní odlesk, viditelnou spodní hranu a několik úrovní stínů. Doplň dva drobné skleněné detaily u hero a přirozenou reakci panelů na kurzor. Inspirací pro výraznější úvodní nájezd a prostorové přechody jsou ZIRKA Interceptor a experimentální weby z Awwwards. Zachovej vlastní značku i nabídku Cingy.Tech.
+
 ## 3. Skutečné animované 3D v hero
 
 Hlavní vizuální moment je realistický skleněný objekt vytvořený a raytracovaný v Blenderu, s fialovým nasvícením, studiovými odrazy, refrakcí, objemem a zřetelnou prostorovou rotací. Použij existující Blender scénu a skutečně vyrenderované podklady, pokud vyhovují. Pohyb musí být viditelný při běžném otevření stránky a smyčka musí působit plynule.
