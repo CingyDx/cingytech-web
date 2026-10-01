@@ -19,3 +19,5 @@ npm-debug.log*
 # Netlify / npm
 .netlify/
 node_modules/
+render/
+*.blend1
