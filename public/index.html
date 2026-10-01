@@ -1,429 +1,49 @@
 <!doctype html>
 <html lang="cs">
-
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cingy.Tech | Weby a IT servis v Kladně</title>
-  <meta name="description"
-    content="Tvorba webů, IT servis, opravy počítačů a notebooků, upgrady, stavba PC a praktická technická pomoc. Kladno, Praha a online." />
-  <meta name="theme-color" content="#0f766e" />
-  <link rel="icon" href="assets/favicon/favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
-  <link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
-  <link rel="manifest" href="assets/favicon/site.webmanifest">
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b0b12">
+  <title>Cingy.Tech | Weby, aplikace, automatizace a IT služby</title>
+  <meta name="description" content="Cingy.Tech staví weby a webové aplikace, automatizuje práci a řeší IT i hardware. Praktická digitální řešení pro firmy a jednotlivce.">
+  <link rel="canonical" href="https://cingy.tech/">
+  <meta property="og:type" content="website"><meta property="og:locale" content="cs_CZ">
+  <meta property="og:site_name" content="Cingy.Tech"><meta property="og:url" content="https://cingy.tech/">
+  <meta property="og:title" content="Cingy.Tech — Technologie, které dávají smysl.">
+  <meta property="og:description" content="Weby, webové aplikace, automatizace, AI a IT služby včetně servisu hardwaru.">
+  <meta property="og:image" content="https://cingy.tech/assets/portfolio-banik-rynholec.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/assets/favicon/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+  <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
+  <link rel="stylesheet" href="/home.css">
 </head>
-
-<body class="home-page">
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="index.html">
-        <img class="brand-logo" src="assets/logo/logo.png" alt="" width="256" height="256">
-        <span class="brand-text">Cingy.Tech</span>
-      </a>
-
-      <button id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
-        <span class="sr-only">Otevřít navigaci</span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </button>
-
-      <nav id="site-nav" class="site-nav" aria-label="Hlavní navigace">
-        <ul>
-          <li><a class="nav-link" href="index.html">Domů</a></li>
-          <li><a class="nav-link" href="pages/tvorba-webu.html">Weby</a></li>
-          <li><a class="nav-link" href="#reference">Reference</a></li>
-          <li><a class="nav-link" href="pages/sluzby.html">IT servis</a></li>
-          <li><a class="nav-link" href="pages/omne.html">O mně</a></li>
-          <li><a class="nav-link" href="pages/kontakt.html">Kontakt</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-  <main class="page" id="page">
-    <section class="hero">
-      <div class="container hero-layout">
-        <div class="hero-copy reveal">
-          <p class="eyebrow">Weby, IT servis a hardware</p>
-          <h1>Weby a technika pro firmy i domácnosti.</h1>
-          <p class="hero-lead">
-            Stavím rychlé weby pro lokální firmy a živnostníky. Zároveň řeším opravy počítačů,
-            notebooků, upgrady, stavby PC a praktickou IT pomoc v Kladně, okolí i po domluvě online.
-          </p>
-
-          <div class="hero-actions">
-            <a class="btn" href="pages/kontakt.html">Chci web nebo servis</a>
-            <a class="btn ghost" href="pages/sluzby.html">Nabídka služeb</a>
-          </div>
-
-          <ul class="hero-points">
-            <li>Weby do 7 dnů, web restart, formulář, doména, SEO základy a správa</li>
-            <li>Diagnostika, opravy PC a notebooků, čištění, reinstalace a stabilizace systému</li>
-            <li>Upgrade SSD/RAM, stavba počítačů na míru, přenos dat a základní IT nastavení</li>
-            <li>Kryštof Cingálek, IČO: 29612071</li>
-          </ul>
-        </div>
-
-        <div class="hero-visual reveal">
-          <div class="hero-image-frame hero-photo-frame">
-            <picture>
-              <source media="(max-width: 760px)" srcset="assets/hero-768.jpg">
-              <source media="(max-width: 1280px)" srcset="assets/hero-1280.jpg">
-              <img src="assets/hero-1600.jpg" alt="Sestavený počítač s RGB chlazením" width="1600" height="2133">
-            </picture>
-            <div class="hero-photo-caption">
-              <span>Hardware</span>
-              <strong>Stavba PC, upgrady, servis</strong>
-            </div>
-          </div>
-
-          <aside class="floating-panel glass">
-            <p class="panel-label">Co řeším</p>
-            <div class="tag-list">
-              <span class="tag">Web do 7 dnů</span>
-              <span class="tag">Opravy PC</span>
-              <span class="tag">Servis notebooků</span>
-              <span class="tag">SSD / RAM upgrade</span>
-              <span class="tag">Stavba PC</span>
-              <span class="tag">IT pomoc doma</span>
-              <span class="tag">Správa webu</span>
-            </div>
-            <p class="panel-note">Kladno, Praha a online • Jasná domluva předem • Přímá komunikace bez zbytečného kolečka</p>
-          </aside>
-        </div>
-      </div>
+<body>
+  <a class="skip-link" href="#obsah">Přejít na obsah</a>
+  <header class="site-header"><div class="shell header-inner">
+    <a class="brand" href="/" aria-label="Cingy.Tech, úvodní stránka">Cingy<span>.</span>Tech</a>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Otevřít nabídku"><span></span><span></span></button>
+    <nav class="site-nav" id="site-nav" aria-label="Hlavní navigace"><a href="#sluzby">Služby</a><a href="#prace">Naše práce</a><a href="#postup">Jak pracujeme</a><a href="#kontakt">Kontakt</a></nav>
+    <a class="header-cta" href="#kontakt">Poptat projekt <span aria-hidden="true">↗</span></a>
+  </div></header>
+  <main id="obsah">
+    <section class="hero shell" aria-labelledby="hero-title">
+      <div class="hero-copy"><h1 id="hero-title">Technologie, které <em>dávají smysl.</em></h1><p>Stavíme weby a webové aplikace, automatizujeme práci a řešíme IT i hardware. Pro firmy a jednotlivce, od prvního nápadu po funkční výsledek.</p><div class="actions"><a class="button button-primary" href="#kontakt">Poptat projekt <span aria-hidden="true">↗</span></a><a class="button button-secondary" href="#prace">Naše práce <span aria-hidden="true">↗</span></a></div></div>
+      <div class="hero-art" aria-hidden="true"><svg viewBox="0 0 660 660" role="presentation" focusable="false"><defs><radialGradient id="aura"><stop stop-color="#7964d7" stop-opacity=".21"/><stop offset="1" stop-color="#7964d7" stop-opacity="0"/></radialGradient></defs><circle cx="330" cy="330" r="310" fill="url(#aura)"/><circle cx="330" cy="330" r="249" class="orbit-muted"/><circle cx="330" cy="330" r="175" class="orbit-muted orbit-dash"/><path d="M80 330h500M330 80v500" class="axis"/><path d="M120 491C201 542 340 525 422 441S520 232 575 166" class="orbit-line"/><path d="M150 171c141-31 228 65 228 167 0 104-94 199-213 188" class="orbit-line orbit-secondary"/><path d="M235 451 330 330 470 235 548 161M330 330 330 177" class="connector"/><circle cx="330" cy="330" r="8" class="node node-main"/><circle cx="470" cy="235" r="7" class="node"/><circle cx="548" cy="161" r="5" class="node"/><circle cx="235" cy="451" r="5" class="node"/><circle cx="330" cy="177" r="4" class="node"/><circle cx="151" cy="330" r="4" class="node node-white"/><circle cx="500" cy="330" r="4" class="node node-white"/></svg></div>
+      <div class="hero-bottom"><span>Cingy.Tech / Digitální a IT řešení</span><span>Technika v praxi. Bez zbytečné složitosti.</span></div>
     </section>
-
-    <section class="section">
-      <div class="container hero-layout hero-layout-feature">
-        <div class="hero-copy reveal">
-          <p class="eyebrow">Nabídka</p>
-          <h2>Dvě hlavní větve: weby pro zákazníky a technika, která funguje</h2>
-          <p class="hero-lead">
-            Weby jsou hlavní růstový směr Cingy.Tech, protože se dají rychle škálovat pro lokální firmy.
-            IT servis a hardware ale zůstává plnohodnotná služba pro lidi, kteří potřebují opravit,
-            zrychlit nebo správně nastavit techniku.
-          </p>
-          <p class="hero-support">
-            Cílem je praktický výsledek: web, který přivádí poptávky, nebo počítač, který se zase dá
-            spolehlivě používat.
-          </p>
-
-          <div class="hero-actions">
-            <a class="btn" href="pages/tvorba-webu.html">Webové balíčky</a>
-            <a class="btn ghost" href="pages/sluzby.html#opravy">IT servis</a>
-          </div>
-
-          <ul class="hero-points">
-            <li>Web Start od 9 900 Kč pro rychlou online prezentaci</li>
-            <li>Web Restart od 14 900 Kč pro firmy se zastaralým nebo rozbitým webem</li>
-            <li>Diagnostika, opravy, čištění, upgrady a stavba PC podle konkrétní potřeby</li>
-          </ul>
-        </div>
-
-        <div class="hero-visual reveal">
-          <div class="hero-image-frame audit-preview-frame">
-            <div class="audit-preview" aria-hidden="true">
-              <div class="audit-preview-header">
-                <span>Rychlá kontrola</span>
-                <strong>15 min</strong>
-              </div>
-              <div class="audit-preview-row ok">
-                <span>Web / mobil</span>
-                <strong>OK</strong>
-              </div>
-              <div class="audit-preview-row warn">
-                <span>Notebook se zpomaluje</span>
-                <strong>Prověřit</strong>
-              </div>
-              <div class="audit-preview-row warn">
-                <span>SSD / RAM upgrade</span>
-                <strong>Možný</strong>
-              </div>
-              <div class="audit-preview-row ok">
-                <span>Kontakt a data</span>
-                <strong>OK</strong>
-              </div>
-              <div class="audit-preview-score">
-                <span>Další krok</span>
-                <strong>Domluvit</strong>
-              </div>
-            </div>
-          </div>
-
-          <aside class="floating-panel glass floating-panel-web">
-            <p class="panel-label">Dodání</p>
-            <div class="tag-list">
-              <span class="tag">1. zadání</span>
-              <span class="tag">2. diagnostika</span>
-              <span class="tag">3. realizace</span>
-              <span class="tag">4. spuštění / test</span>
-            </div>
-            <p class="panel-note">Rychlý proces, minimum zmatku a jasný výstup podle toho, jestli řešíme web nebo techniku.</p>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    <section id="sluzby-preview" class="section">
-      <div class="container">
-        <div class="section-heading reveal">
-          <p class="eyebrow">Webové balíčky</p>
-          <h2>Jednoduché ceny pro rychlé rozhodnutí u nového webu</h2>
-          <p class="lead">
-            Weby jsou postavené tak, aby šly rychle dodat a zároveň působily důvěryhodně. U servisu
-            a hardwaru cenu domlouvám podle konkrétní diagnostiky, zařízení a rozsahu práce.
-          </p>
-        </div>
-
-        <div class="cards service-preview-grid">
-          <article class="card glass reveal">
-            <h3>Web Start</h3>
-            <p class="price-value">od 9 900 Kč</p>
-            <p>Jednostránkový web pro firmu nebo živnostníka, který potřebuje rychle působit důvěryhodně online.</p>
-            <ul class="feature-list">
-              <li>Úvod, služby, kontakt a mapa</li>
-              <li>Mobilní verze a rychlé načítání</li>
-              <li>Formulář a nasazení na doménu</li>
-            </ul>
-            <a class="card-link" href="pages/tvorba-webu.html">Detail balíčku</a>
-          </article>
-
-          <article class="card glass reveal">
-            <h3>Web Restart</h3>
-            <p class="price-value">od 14 900 Kč</p>
-            <p>Výměna starého, pomalého nebo nepřehledného webu za moderní prezentaci připravenou pro zákazníky.</p>
-            <ul class="feature-list">
-              <li>Nová struktura a úprava textů</li>
-              <li>Přehledné služby a výzvy k akci</li>
-              <li>Přesměrování a technická kontrola</li>
-            </ul>
-            <a class="card-link" href="pages/tvorba-webu.html">Detail balíčku</a>
-          </article>
-
-          <article class="card glass reveal">
-            <h3>Firemní web do 7 dnů</h3>
-            <p class="price-value">od 18 900 Kč</p>
-            <p>Vícestránkový web pro firmu, která potřebuje představit služby, reference a získávat poptávky.</p>
-            <ul class="feature-list">
-              <li>Až 5 podstránek</li>
-              <li>Texty, formulář, SEO základy</li>
-              <li>Doména, hosting a spuštění</li>
-            </ul>
-            <a class="card-link" href="pages/tvorba-webu.html">Detail balíčku</a>
-          </article>
-        </div>
-
-        <div class="section-heading service-web-heading reveal">
-          <p class="eyebrow">Kdy napsat</p>
-          <h2>Pomůžu, když potřebujete lepší prezentaci nebo spolehlivější techniku</h2>
-          <p class="lead">
-            Typicky řeším lokální firmy bez pořádného webu, starší weby po restartu, pomalé notebooky,
-            nestabilní počítače, upgrade komponent a nové sestavy podle rozpočtu.
-          </p>
-        </div>
-
-        <div class="cards service-preview-grid">
-          <article class="card glass reveal">
-            <h3>Nemáte web</h3>
-            <p>Zákazník vás najde na mapách nebo přes doporučení, ale nemá kde rychle zjistit služby, cenu a kontakt.</p>
-            <ul class="feature-list">
-              <li>Vlastní doména a profesionální první dojem</li>
-              <li>Kontakt, formulář a mapa na jednom místě</li>
-              <li>Web připravený pro sdílení i vizitky</li>
-            </ul>
-            <a class="card-link" href="pages/tvorba-webu.html">Více</a>
-          </article>
-
-          <article class="card glass reveal">
-            <h3>Počítač nebo notebook zlobí</h3>
-            <p>Zařízení je pomalé, hlučné, přehřívá se, padá, nechce startovat nebo potřebuje čistou instalaci.</p>
-            <ul class="feature-list">
-              <li>Diagnostika příčiny a rozumné doporučení</li>
-              <li>Čištění, reinstalace, nastavení a stabilizace</li>
-              <li>Vysvětlení, co se vyplatí opravit a co už ne</li>
-            </ul>
-            <a class="card-link" href="pages/sluzby.html#opravy">Více</a>
-          </article>
-
-          <article class="card glass reveal">
-            <h3>Chcete upgrade nebo PC na míru</h3>
-            <p>Když starší zařízení brzdí práce nebo chcete novou sestavu, pomůžu vybrat řešení podle účelu.</p>
-            <ul class="feature-list">
-              <li>SSD, RAM, chlazení, zdroj a kontrola kompatibility</li>
-              <li>Stavba počítače pro práci, školu i hraní</li>
-              <li>Instalace systému, ovladačů a základních programů</li>
-            </ul>
-            <a class="card-link" href="pages/sluzby.html#upgrady">Více</a>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-alt">
-      <div class="container split-grid">
-        <article class="process-panel glass reveal">
-          <p class="eyebrow">Jak to probíhá</p>
-          <h2>Jasný postup pro web i servis</h2>
-
-          <ol class="process-list">
-            <li>
-              <span>1</span>
-              <div>
-                <h3>Pošlete zadání nebo problém</h3>
-                <p>U webu stačí obor, služby, lokalita a kontakt. U servisu popište zařízení, závadu a co se změnilo.</p>
-              </div>
-            </li>
-            <li>
-              <span>2</span>
-              <div>
-                <h3>Navrhnu postup</h3>
-                <p>U webu připravím strukturu a první verzi. U techniky doporučím diagnostiku, opravu, upgrade nebo jinou variantu.</p>
-              </div>
-            </li>
-            <li>
-              <span>3</span>
-              <div>
-                <h3>Dodám výsledek a otestuji</h3>
-                <p>Web spustím na doméně. Opravený nebo upgradovaný počítač otestuju a shrnu, co bylo hotové.</p>
-              </div>
-            </li>
-          </ol>
-        </article>
-
-        <aside class="check-panel glass reveal">
-          <p class="eyebrow">Výstup</p>
-          <h2>Co můžete čekat</h2>
-          <ul class="checklist">
-            <li>Responzivní web připravený pro mobil, počítač, kontakt a poptávky.</li>
-            <li>U servisních zakázek srozumitelná diagnostika a domluvený rozsah opravy.</li>
-            <li>Upgrade nebo stavba PC podle rozpočtu, účelu a kompatibility komponent.</li>
-            <li>Po dokončení kontrola funkčnosti, základní nastavení a předání doporučení.</li>
-            <li>Možnost další správy webu, drobných úprav nebo následné IT pomoci.</li>
-          </ul>
-          <a class="btn ghost" href="pages/kontakt.html">Napsat zprávu</a>
-        </aside>
-      </div>
-    </section>
-
-    <section id="reference-section" class="section">
-      <div id="reference" class="container">
-        <div class="section-heading reveal">
-          <p class="eyebrow">Ukázky webů</p>
-          <h2>První realizace bez ořezu a bez přikrášlování</h2>
-          <p class="lead">
-            Portfolio budu postupně doplňovat o další klientské weby. Aktuálně ukazuji první veřejnou realizaci,
-            aby bylo jasné, jak může vypadat čistá prezentace pro lokální projekt. Náhled otevírá živý web.
-          </p>
-        </div>
-
-        <div class="split-grid portfolio-feature">
-          <article class="process-panel glass reveal">
-            <p class="eyebrow">Realizace</p>
-            <h2>Baník Rynholec</h2>
-            <a class="portfolio-preview" href="https://www.banikrynholec.cz" target="_blank" rel="noopener" aria-label="Otevřít web Baník Rynholec">
-              <img src="assets/portfolio-banik-rynholec.png" alt="Náhled webu Baník Rynholec" loading="lazy" width="1280" height="720">
-            </a>
-            <p>
-              Web pro fotbalový klub s přehlednou prezentací, klubovými informacemi a jednoduchou strukturou
-              pro návštěvníky z mobilu i počítače.
-            </p>
-            <ul class="feature-list">
-              <li>Klubová prezentace s důrazem na rychlou orientaci</li>
-              <li>Responzivní zobrazení pro mobilní návštěvníky</li>
-              <li>Nasazení na vlastní doméně</li>
-            </ul>
-            <div class="hero-actions">
-              <a class="btn" href="https://www.banikrynholec.cz" target="_blank" rel="noopener">Otevřít web</a>
-              <a class="btn ghost" href="pages/kontakt.html">Chci podobný web</a>
-            </div>
-          </article>
-
-          <aside class="check-panel glass reveal">
-            <p class="eyebrow">Další reference</p>
-            <h2>Volné místo pro váš projekt</h2>
-            <p>
-              Pokud máte firmu, klub, službu, živnost nebo technický projekt, další karta tady může být právě vaše.
-              Weby budu ukazovat v portfoliu postupně, jak budou vznikat.
-            </p>
-            <ul class="checklist">
-              <li>Web pro řemeslníky, služby, kluby a lokální firmy.</li>
-              <li>Rychlé dodání, jasný rozsah a možnost správy.</li>
-              <li>Vedle webů řeším i hardware, servis a IT pomoc.</li>
-            </ul>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-alt">
-      <div class="container">
-        <div class="section-heading reveal">
-          <p class="eyebrow">Důvěra</p>
-          <h2>Oficiálně, jednoduše a bez zbytečného chaosu</h2>
-          <p class="lead">Cingy.Tech provozuje Kryštof Cingálek, IČO: 29612071. Komunikujete přímo s člověkem, který web navrhne a u techniky vysvětlí, co dává smysl opravit nebo upgradovat.</p>
-        </div>
-
-        <div class="blog-list">
-          <article class="post glass reveal">
-            <h3>Jasná cena předem</h3>
-            <p>Než začne práce, domluvíme rozsah, cenu a co přesně má být hotové u webu, opravy nebo upgradu.</p>
-            <a class="card-link" href="pages/tvorba-webu.html">Zobrazit webové ceny</a>
-          </article>
-
-          <article class="post glass reveal">
-            <h3>Rychlé weby i servisní domluva</h3>
-            <p>Menší weby mířím dodat do 7 dnů od podkladů. U servisu nejdřív řeším příčinu a reálný další krok.</p>
-            <a class="card-link" href="pages/kontakt.html">Domluvit termín</a>
-          </article>
-
-          <article class="post glass reveal">
-            <h3>Správa a následná pomoc</h3>
-            <p>Po spuštění můžu web dál upravovat. U techniky pomůžu s nastavením, přenosem dat nebo dalším upgradem.</p>
-            <a class="card-link" href="pages/sluzby.html">Všechny služby</a>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <div class="cta-banner glass reveal">
-          <div>
-            <p class="eyebrow">Kontakt</p>
-            <h2>Potřebujete nový web, opravit počítač nebo zrychlit notebook?</h2>
-            <p>
-              Pošlete mi, co řešíte. U webu napište obor a cíl, u servisu typ zařízení a problém. Ozvu se s návrhem postupu.
-            </p>
-          </div>
-          <div class="cta-actions">
-            <a class="btn" href="pages/kontakt.html">Napsat poptávku</a>
-            <a class="btn ghost" href="pages/sluzby.html">IT servis a hardware</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <section class="section services" id="sluzby" aria-labelledby="services-title"><div class="shell"><div class="section-intro"><p class="section-index">01 / Co děláme</p><h2 id="services-title">Projekty i technika <em>pod jednou střechou.</em></h2><p>Od prvního webu přes vlastní aplikaci až po počítač, který musí spolehlivě fungovat.</p></div><div class="service-list">
+      <article class="service-item"><span class="service-number">01</span><div><h3>Weby a webové aplikace</h3><p>Firemní prezentace, landing pages, redesigny i nástroje na míru. Responzivní provedení, výkon, SEO základy a nasazení.</p></div><a href="/pages/tvorba-webu.html" aria-label="Více o tvorbě webů">↗</a></article>
+      <article class="service-item"><span class="service-number">02</span><div><h3>IT služby a hardware</h3><p>Servis PC a notebooků, upgrade SSD a RAM, instalace systému, migrace dat, stavba počítačů a technická pomoc.</p></div><a href="/pages/sluzby.html" aria-label="Více o IT službách a servisu">↗</a></article>
+      <article class="service-item"><span class="service-number">03</span><div><h3>Automatizace</h3><p>Propojení pracovních postupů, méně opakující se ruční práce a interní nástroje navržené pro konkrétní proces.</p></div><a href="#kontakt" aria-label="Poptat automatizaci">↗</a></article>
+      <article class="service-item"><span class="service-number">04</span><div><h3>AI řešení</h3><p>Asistenti, práce s dokumenty a individuální prototypy. Když je to vhodné, hledáme řešení s důrazem na soukromí.</p></div><a href="#kontakt" aria-label="Poptat AI řešení">↗</a></article>
+    </div></div></section>
+        <section class="section work" id="prace" aria-labelledby="work-title"><div class="shell"><div class="section-intro"><p class="section-index">02 / Vybrané projekty</p><h2 id="work-title">Práce místo slibů.</h2><p>Veřejná realizace, kterou si můžete sami otevřít a prohlédnout.</p></div><article class="project"><a class="project-image" href="https://www.banikrynholec.cz/" target="_blank" rel="noopener noreferrer" aria-label="Otevřít web Baník Rynholec v novém okně"><img src="/assets/portfolio-banik-rynholec.png" alt="Náhled úvodní stránky webu fotbalového klubu Baník Rynholec" width="1280" height="720" loading="lazy"></a><div class="project-info"><div><p class="project-type">Webová prezentace / sportovní klub</p><h3>Baník Rynholec</h3><p>Klubový web s informacemi o týmech, areálu a programu. Přizpůsobený mobilu i počítači.</p></div><a class="text-link" href="https://www.banikrynholec.cz/" target="_blank" rel="noopener noreferrer">Prohlédnout web <span aria-hidden="true">↗</span></a></div></article></div></section>
+    <section class="section capability" aria-labelledby="capability-title"><div class="shell capability-layout"><div><p class="section-index">03 / Možnosti</p><h2 id="capability-title">Od webu k celému <em>digitálnímu řešení.</em></h2><p>Jednotlivé části mohou fungovat samostatně. Když projekt roste, navrhneme, jak je smysluplně propojit.</p></div><ol class="capability-flow"><li><span>01</span> Web a aplikace</li><li><span>02</span> Automatizace</li><li><span>03</span> AI</li><li><span>04</span> IT infrastruktura</li></ol></div></section>
+    <section class="section process" id="postup" aria-labelledby="process-title"><div class="shell"><div class="section-intro"><p class="section-index">04 / Spolupráce</p><h2 id="process-title">Jasný postup. <em>Konkrétní výsledek.</em></h2></div><div class="process-grid"><article><span>01</span><h3>Řeknete, co potřebujete</h3><p>Společně si ujasníme problém, cíl a důležité souvislosti.</p></article><article><span>02</span><h3>Navrhneme řešení</h3><p>Vybereme rozsah a technologii, které dávají smysl.</p></article><article><span>03</span><h3>Postavíme prototyp</h3><p>Vznikne konkrétní verze, kterou můžete vidět a vyzkoušet.</p></article><article><span>04</span><h3>Doladíme a spustíme</h3><p>Po připomínkách dokončíme a předáme funkční řešení.</p></article></div></div></section>
+    <section class="section contact" id="kontakt" aria-labelledby="contact-title"><div class="shell contact-layout"><div class="contact-copy"><p class="section-index">05 / Kontakt</p><h2 id="contact-title">Máte projekt? <em>Pojďme ho probrat.</em></h2><p>Stačí pár vět o tom, co potřebujete. Ozveme se s návrhem dalšího kroku.</p><a class="contact-email" href="mailto:contact.cingytech@proton.me">contact.cingytech@proton.me <span aria-hidden="true">↗</span></a></div><form id="contact-form" class="contact-form" name="poptavka" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/"><input type="hidden" name="form-name" value="poptavka"><input type="hidden" name="utm_source" value=""><input type="hidden" name="utm_medium" value=""><input type="hidden" name="utm_campaign" value=""><p class="visually-hidden"><label>Nechte prázdné <input name="bot-field" tabindex="-1" autocomplete="off"></label></p><div class="form-row"><div><label for="name">Jméno <span aria-hidden="true">*</span></label><input id="name" name="name" type="text" autocomplete="name" maxlength="120" required></div><div><label for="email">E-mail <span aria-hidden="true">*</span></label><input id="email" name="email" type="email" autocomplete="email" maxlength="120" required></div></div><label for="phone">Telefon <span class="optional">(nepovinné)</span></label><input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="40"><label for="message">Co potřebujete? <span aria-hidden="true">*</span></label><textarea id="message" name="message" rows="5" maxlength="4000" required></textarea><button class="button button-primary" type="submit">Odeslat poptávku <span aria-hidden="true">↗</span></button><p id="form-status" class="form-status" role="status" aria-live="polite"></p></form></div></section>
   </main>
-
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div class="footer-brand-group">
-        <a class="footer-brand" href="index.html">
-          <img class="footer-logo" src="assets/logo/logo.png" alt="" width="256" height="256">
-          <span>Cingy.Tech</span>
-        </a>
-        <p class="small">&copy; 2026 | Vytvo&#345;il Kry&#353;tof Cing&aacute;lek</p>
-      </div>
-      <p class="small">Kry&#353;tof Cing&aacute;lek, I&#268;O: 29612071 &bull; Kladno a okol&iacute; &bull; E-mail: contact.cingytech@proton.me &bull; <a class="footer-link" href="pages/tvorba-webu.html">Tvorba web&#367;</a> &bull; <a class="footer-link" href="pages/sluzby.html">IT servis</a> &bull; <a class="footer-link" href="pages/privacy.html">Ochrana osobn&iacute;ch &uacute;daj&uring;</a></p>
-    </div>
-  </footer>
-
-  <script src="ads-tracking.js" defer></script>
-  <script src="script.js" defer></script>
+  <footer class="site-footer"><div class="shell footer-layout footer-inner"><div><a class="brand" href="/">Cingy<span>.</span>Tech</a><p>Weby, aplikace, automatizace a IT služby.</p></div><div class="footer-links"><a href="mailto:contact.cingytech@proton.me">contact.cingytech@proton.me</a><a href="https://cingy.tech/">cingy.tech</a><a href="/pages/privacy.html">Ochrana osobních údajů</a></div></div><div class="shell footer-bottom"><span>© 2026 Cingy.Tech</span><span>Kryštof Cingálek · IČO 29612071</span></div></footer>
+  <script src="/ads-tracking.js" defer></script><script src="/home.js" defer></script>
 </body>
-
 </html>

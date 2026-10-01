@@ -58,6 +58,16 @@ test("contact form includes bot friction and client-side size limits", () => {
   assert.match(script, /messageValue\.length > 4000/);
 });
 
+test("homepage lead form is Netlify-ready and retains consent-based conversion tracking", () => {
+  const index = read("public/index.html");
+  const homeScript = read("public/home.js");
+  assert.match(index, /name="poptavka"[^>]*data-netlify="true"[^>]*netlify-honeypot="bot-field"/);
+  assert.match(index, /name="phone"[^>]*type="tel"|type="tel"[^>]*name="phone"/);
+  assert.match(index, /src="\/ads-tracking\.js"/);
+  assert.match(homeScript, /response\.ok/);
+  assert.match(homeScript, /CingyAds\?\.trackLead\(\)/);
+});
+
 test("work-site proof is visible and game dependencies are not required", () => {
   const index = read("public/index.html");
   const weby = read("public/pages/tvorba-webu.html");
@@ -65,9 +75,10 @@ test("work-site proof is visible and game dependencies are not required", () => 
   const sluzby = read("public/pages/sluzby.html");
   const css = read("public/style.css");
   const pkg = JSON.parse(read("package.json"));
+  assert.match(index, /webové aplikace/);
   assert.match(index, /Baník Rynholec/);
   assert.match(index, /IT servis|hardware/);
-  assert.match(index, /hero-1600\.jpg/);
+  assert.match(index, /class="hero-art"/);
   assert.match(kontakt, /Kontakt pro web nebo IT servis/);
   assert.match(sluzby, /Weby, IT servis a hardware/);
   assert.match(weby, /portfolio-banik-rynholec\.png/);
