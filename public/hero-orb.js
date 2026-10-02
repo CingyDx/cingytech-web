@@ -17,6 +17,7 @@
   let playbackBlocked = false;
   let playRequest = 0;
   let playPending = false;
+  let abortRetried = false;
 
   function motionEnabled() {
     return preference === 'on' || (preference !== 'off' && !reducedMotion.matches && !saveData);
@@ -46,6 +47,7 @@
       // A pending play() interrupted by scrolling is not an autoplay rejection.
       playRequest += 1;
       playPending = false;
+      abortRetried = false;
       video.pause();
       // Preserve the last rendered frame for a seamless return to the hero.
       return;
@@ -62,7 +64,14 @@
     }).catch(error => {
       if (request !== playRequest) return;
       playPending = false;
-      if (error.name === 'AbortError' || !shouldPlay()) return;
+      if (!shouldPlay()) return;
+      // A current request can be interrupted before the first frame without
+      // another visibility event. Recover once, then offer a manual retry.
+      if (error.name === 'AbortError' && !abortRetried) {
+        abortRetried = true;
+        update();
+        return;
+      }
       art.classList.remove('video-ready');
       playbackBlocked = true;
       updateControls();
@@ -74,10 +83,12 @@
     root.dataset.motionPreference = preference;
     try { localStorage.setItem('cingy-motion-v1', preference); } catch (_) { /* optional persistence */ }
     playbackBlocked = false;
+    abortRetried = false;
     update();
   });
   video.addEventListener('playing', () => {
     playbackBlocked = false;
+    abortRetried = false;
     updateControls();
     if (shouldPlay()) art.classList.add('video-ready');
   });
