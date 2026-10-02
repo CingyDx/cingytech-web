@@ -7,6 +7,22 @@ const vm = require("node:vm");
 const root = path.resolve(__dirname, "..");
 const publicRoot = path.join(root, "public");
 
+test("motion choice is restored before rendering without requiring storage access", () => {
+  const script = fs.readFileSync(path.join(publicRoot, "motion-preference.js"), "utf8");
+  for (const choice of ["on", "off", null, "unexpected"]) {
+    const classes = new Set();
+    const root = { dataset: {}, classList: { add(value) { classes.add(value); } } };
+    vm.runInNewContext(script, { document: { documentElement: root }, localStorage: { getItem() { return choice; } } });
+    assert.equal(classes.has("motion-enabled"), choice === "on");
+    assert.equal(classes.has("motion-disabled"), choice === "off");
+    assert.equal(root.dataset.motionPreference, ["on", "off"].includes(choice) ? choice : undefined);
+  }
+  assert.doesNotThrow(() => vm.runInNewContext(script, {
+    localStorage: { getItem() { throw new Error("Storage blocked"); } },
+    document: { documentElement: {} }
+  }));
+});
+
 function walk(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const fullPath = path.join(dir, entry.name);
