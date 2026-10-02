@@ -1,4 +1,9 @@
 /* Floating amethyst surfaces: shared bevel, light and elevation. */
+@property --glint-x {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 8%;
+}
 :root {
   --glass-edge: rgba(218, 197, 255, .62);
   --glass-fill: linear-gradient(125deg, rgba(129, 95, 198, .27), rgba(24, 20, 43, .83) 38%, rgba(41, 29, 70, .72) 76%, rgba(105, 74, 167, .28));
@@ -79,7 +84,7 @@ html { scroll-padding-top: 125px; }
   position: relative; z-index: 2; min-height: 118px; padding: 26px 24px; gap: 14px;
   border: 1px solid var(--glass-edge); background: var(--glass-fill);
   transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
-  transition: transform .45s var(--depth-ease), box-shadow .45s ease, border-color .3s ease;
+  transition: transform .3s var(--depth-ease), --glint-x .3s ease-out, box-shadow .45s ease, border-color .3s ease;
 }
 .signal small { color: #bcb3d0; }
 .signal:hover, .signal:focus-visible, .motion-enabled .signal:hover, .motion-enabled .signal:focus-visible {
@@ -117,7 +122,7 @@ html { scroll-padding-top: 125px; }
   transform: perspective(1100px) rotateY(calc(var(--card-turn) + var(--tilt-y, 0deg))) rotateZ(var(--card-roll)) rotateX(var(--tilt-x, 0deg));
   animation: none; will-change: auto;
   background: linear-gradient(135deg,rgba(73,48,116,.94),rgba(20,16,35,.96) 45%,rgba(52,33,88,.96));
-  transition: transform .55s var(--depth-ease), box-shadow .45s ease;
+  transition: transform .4s var(--depth-ease), --glint-x .3s ease-out, box-shadow .45s ease;
   box-shadow: var(--glass-shadow), 0 32px 60px -20px rgba(0,0,0,.72);
 }
 .portfolio-banik { --card-turn: 8deg; --card-roll: -2deg; left: 1%; top: 15px; }
@@ -236,4 +241,4 @@ html.motion-enabled .hero-copy .actions { animation: glass-copy-in .9s .27s var(
 html.motion-enabled .hero-art { animation: glass-object-in 1.25s .12s var(--depth-ease) both !important; }
 html.motion-enabled .glass-drop-one { animation: droplet-drift 6s ease-in-out infinite alternate !important; }
 html.motion-enabled .glass-drop-two { animation: droplet-drift 7s -3s ease-in-out infinite alternate-reverse !important; }
-html.motion-enabled .signal, html.motion-enabled .portfolio-window { transition: transform .5s var(--depth-ease), box-shadow .45s ease !important; }
+html.motion-enabled .signal, html.motion-enabled .portfolio-window { transition: transform .4s var(--depth-ease), --glint-x .3s ease-out, box-shadow .45s ease !important; }

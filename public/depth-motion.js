@@ -60,14 +60,23 @@
     surfaces.forEach(element => {
       let rect;
       let frame;
+      let position;
+      const invalidateRect = () => { rect = null; };
+      window.addEventListener('scroll', invalidateRect, options);
+      window.addEventListener('resize', invalidateRect, options);
+      signal.addEventListener('abort', () => cancelAnimationFrame(frame), { once: true });
       element.addEventListener('pointerenter', () => { rect = element.getBoundingClientRect(); }, options);
       element.addEventListener('pointermove', event => {
-        if (!rect || event.pointerType === 'touch') return;
-        const x = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-        const y = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
-        cancelAnimationFrame(frame);
+        if (event.pointerType === 'touch') return;
+        position = { x: event.clientX, y: event.clientY };
+        // Coalesce pointer events into one update per display frame.
+        if (frame) return;
         frame = requestAnimationFrame(() => {
+          frame = null;
           if (!motionAllowed() || signal.aborted) return;
+          rect ??= element.getBoundingClientRect();
+          const x = Math.max(0, Math.min(1, (position.x - rect.left) / rect.width));
+          const y = Math.max(0, Math.min(1, (position.y - rect.top) / rect.height));
           element.style.setProperty('--tilt-x', `${(0.5 - y) * 5}deg`);
           element.style.setProperty('--tilt-y', `${(x - 0.5) * 7}deg`);
           element.style.setProperty('--glint-x', `${Math.round(x * 100)}%`);
@@ -75,6 +84,7 @@
       }, options);
       element.addEventListener('pointerleave', () => {
         cancelAnimationFrame(frame);
+        frame = null;
         rect = null;
         resetSurface(element);
       }, options);

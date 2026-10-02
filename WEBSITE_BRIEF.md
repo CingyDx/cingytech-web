@@ -60,10 +60,10 @@ Uživatel otevřel `public/index.html` přímo přes `file://` v Opeře a viděl
 
 Jde o veřejný prezentační web. Nepřipojuj interní bridge, HQ, agenty, administraci, privátní API, interní automatizační backend ani jiné neveřejné systémy. Do veřejného frontendu nevkládej tajné údaje či interní cesty.
 
-Uživatel povolil samostatnou práci, opravy, testy a nasazení na testovací hosting bez opakovaných potvrzení běžných kroků. Pracuj v existujícím PR #1 a uvedené větvi. Respektuj `AGENTS.md`. **Neslučuj do `main` a neměň produkční DNS ani doménu; produkční nasazení čeká na výslovné schválení uživatele.**
+Uživatel povolil samostatnou práci, opravy a testy bez opakovaných potvrzení běžných kroků. Dne 2. října 2026 schválil aktuální vzhled a požádal: „dodelej plynulost a hod to online - over ze vse je rdy“. **Po ověření je schváleno sloučení existujícího PR #1 do `main` a produkční nasazení na cingy.tech.** Respektuj `AGENTS.md`; produkční DNS ani doménu není potřeba měnit.
 
 ## 10. Podmínky dokončení
 
 Před odevzdáním prohlédni skutečný web na desktopu i mobilu, spusť existující testy a zkontroluj konzoli, chybějící assety, CTA, menu, kotvy, odkazy, formulář, portfolio a dema. Animaci ověř porovnáním jejího stavu v čase; screenshot sám přehrávání nedokazuje. Prověř také reduced motion, zamítnutý autoplay a záložní zobrazení.
 
-Vystav nový Netlify Deploy Preview z aktuálního commitu a otestuj také nasazenou verzi. Odevzdej přímý funkční odkaz, stručný přehled změn, provedené kontroly a známá omezení. Pojmenuj nesplněné body konkrétně. Cílem je dokončený, ověřený náhled, který lze otevřít před zákazníkem a který okamžitě představí Cingy.Tech.
+Vystav nový Netlify Deploy Preview z aktuálního commitu a otestuj také nasazenou verzi. Po úspěšných kontrolách dokonči schválené produkční nasazení a ověř cingy.tech. Odevzdej přímý funkční odkaz, stručný přehled změn, provedené kontroly a známá omezení. Pojmenuj nesplněné body konkrétně. Cílem je dokončený, ověřený veřejný web, který lze otevřít před zákazníkem a který okamžitě představí Cingy.Tech.

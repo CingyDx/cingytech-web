@@ -14,6 +14,8 @@
   let visible = true;
   let manualPlayback = false;
   let playbackBlocked = false;
+  let playRequest = 0;
+  let playPending = false;
 
   function shouldPlay() {
     return visible && !document.hidden && (!(reducedMotion.matches || saveData) || manualPlayback);
@@ -21,7 +23,7 @@
 
   function update() {
     toggle.hidden = !(reducedMotion.matches || saveData || playbackBlocked);
-    toggle.textContent = manualPlayback ? 'Pozastavit animace' : 'Zapnout animace';
+    toggle.textContent = manualPlayback ? 'Pozastavit animace' : playbackBlocked ? 'Přehrát 3D animaci' : 'Zapnout animace';
     toggle.setAttribute('aria-pressed', String(manualPlayback));
     if (document.documentElement.classList.contains('motion-enabled') !== manualPlayback) {
       document.documentElement.classList.toggle('motion-enabled', manualPlayback);
@@ -29,15 +31,26 @@
     }
 
     if (!shouldPlay()) {
+      // A pending play() interrupted by scrolling is not an autoplay rejection.
+      playRequest += 1;
+      playPending = false;
       video.pause();
-      art.classList.remove('video-ready');
+      // Preserve the last rendered frame for a seamless return to the hero.
       return;
     }
 
+    if (playPending || !video.paused || (playbackBlocked && !manualPlayback)) return;
+    const request = ++playRequest;
+    playPending = true;
     const attempt = video.play();
     attempt?.then(() => {
-      if (shouldPlay()) art.classList.add('video-ready');
-    }).catch(() => {
+      if (request !== playRequest) return;
+      playPending = false;
+      if (shouldPlay() && video.readyState >= 2) art.classList.add('video-ready');
+    }).catch(error => {
+      if (request !== playRequest) return;
+      playPending = false;
+      if (error.name === 'AbortError' || !shouldPlay()) return;
       art.classList.remove('video-ready');
       playbackBlocked = true;
       toggle.hidden = false;
