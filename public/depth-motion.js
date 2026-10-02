@@ -9,7 +9,7 @@
   let revealsStarted = false;
 
   function motionAllowed() {
-    return !reduced.matches || document.documentElement.classList.contains('motion-enabled');
+    return !document.documentElement.classList.contains('motion-disabled') && (!reduced.matches || document.documentElement.classList.contains('motion-enabled'));
   }
 
   function reveal(element, immediate = false) {
@@ -23,7 +23,7 @@
     const animation = element.animate([
       { opacity: 0, translate: `${side}px 58px` },
       { opacity: 1, translate: '0 0' }
-    ], { duration: 850, delay: index * 95, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
+    ], { duration: 950, delay: index * 95 + (element.matches('.signal') ? Math.max(0, 650 - performance.now()) : 0), easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
     activeAnimations.add(animation);
     animation.finished.catch(() => {}).finally(() => activeAnimations.delete(animation));
   }

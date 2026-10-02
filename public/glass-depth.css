@@ -149,16 +149,18 @@ html { scroll-padding-top: 125px; }
 .site-footer { background: transparent; }
 @media (prefers-reduced-motion: no-preference) {
   .site-header { animation: glass-header-in .85s var(--depth-ease) both; }
-  .hero-copy h1 { animation: glass-copy-in .9s .1s var(--depth-ease) both; }
-  .hero-copy>p { animation: glass-copy-in .9s .19s var(--depth-ease) both; }
-  .hero-copy .actions { animation: glass-copy-in .9s .27s var(--depth-ease) both; }
-  .hero-art { animation: glass-object-in 1.25s .12s var(--depth-ease) both; }
+  .hero-copy h1 { animation: glass-copy-in 1s .12s var(--depth-ease) both; }
+  .hero-copy>p { animation: glass-copy-in 1s .24s var(--depth-ease) both; }
+  .hero-copy .actions { animation: glass-copy-in 1s .36s var(--depth-ease) both; }
+  .hero-art { animation: glass-object-in 1.65s .1s var(--depth-ease) both; }
+  .service-shelf { animation: glass-shelf-in 1.2s .4s var(--depth-ease) both; }
   .glass-drop-one { animation: droplet-drift 6s ease-in-out infinite alternate; }
   .glass-drop-two { animation: droplet-drift 7s -3s ease-in-out infinite alternate-reverse; }
 }
 @keyframes glass-header-in { from { opacity: .2; translate: 0 -26px; } to { opacity: 1; translate: 0 0; } }
 @keyframes glass-copy-in { from { opacity: .08; translate: -28px 25px; } to { opacity: 1; translate: 0 0; } }
-@keyframes glass-object-in { from { opacity: 0; translate: 110px 32px; scale: .8; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes glass-object-in { from { opacity: 0; translate: 120px 40px; scale: .72; rotate: -12deg; } to { opacity: 1; translate: 0 0; scale: 1; rotate: 0deg; } }
+@keyframes glass-shelf-in { from { opacity: 0; translate: 0 32px; scale: .94; } to { opacity: 1; translate: 0 0; scale: 1; } }
 @keyframes droplet-drift { to { translate: 0 -14px; rotate: 12deg; } }
 @media(max-width:1050px) {
   .site-header { width: calc(100% - 56px); }
@@ -235,10 +237,19 @@ html { scroll-padding-top: 125px; }
 }
 /* A deliberate user choice also enables motion when the OS preference is reduce. */
 html.motion-enabled .site-header { animation: glass-header-in .85s var(--depth-ease) both !important; }
-html.motion-enabled .hero-copy h1 { animation: glass-copy-in .9s .1s var(--depth-ease) both !important; }
-html.motion-enabled .hero-copy>p { animation: glass-copy-in .9s .19s var(--depth-ease) both !important; }
-html.motion-enabled .hero-copy .actions { animation: glass-copy-in .9s .27s var(--depth-ease) both !important; }
-html.motion-enabled .hero-art { animation: glass-object-in 1.25s .12s var(--depth-ease) both !important; }
+html.motion-enabled .hero-copy h1 { animation: glass-copy-in 1s .12s var(--depth-ease) both !important; }
+html.motion-enabled .hero-copy>p { animation: glass-copy-in 1s .24s var(--depth-ease) both !important; }
+html.motion-enabled .hero-copy .actions { animation: glass-copy-in 1s .36s var(--depth-ease) both !important; }
+html.motion-enabled .hero-art { animation: glass-object-in 1.65s .1s var(--depth-ease) both !important; }
+html.motion-enabled .service-shelf { animation: glass-shelf-in 1.2s .4s var(--depth-ease) both !important; }
 html.motion-enabled .glass-drop-one { animation: droplet-drift 6s ease-in-out infinite alternate !important; }
 html.motion-enabled .glass-drop-two { animation: droplet-drift 7s -3s ease-in-out infinite alternate-reverse !important; }
 html.motion-enabled .signal, html.motion-enabled .portfolio-window { transition: transform .4s var(--depth-ease), --glint-x .3s ease-out, box-shadow .45s ease !important; }
+html.motion-disabled { scroll-behavior: auto; }
+html.motion-disabled *, html.motion-disabled *::before, html.motion-disabled *::after {
+  animation: none !important;
+  transition: none !important;
+}
+html.motion-disabled .motion-pending { opacity: 1; translate: none; }
+html.motion-disabled .signal:hover, html.motion-disabled .signal:focus-visible,
+html.motion-disabled .portfolio-window:hover, html.motion-disabled .portfolio-window:focus-visible { transform: none; }

@@ -26,6 +26,27 @@
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
   window.addEventListener('resize', () => { if (window.innerWidth > 760) closeMenu(); });
 
+  // Keep section navigation on the clean landing URL. Native hrefs remain
+  // available for shared deep links, new tabs and visitors without JavaScript.
+  document.addEventListener('click', event => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    const link = event.target.closest('a[href^="#"]');
+    if (!link || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+    let target;
+    try { target = document.getElementById(decodeURIComponent(link.hash.slice(1))); } catch (_) { return; }
+    if (!target) return;
+    event.preventDefault();
+    const root = document.documentElement;
+    const animate = !root.classList.contains('motion-disabled') && (root.classList.contains('motion-enabled') || !window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    target.scrollIntoView({ behavior: animate ? 'smooth' : 'instant', block: 'start' });
+    if (!target.hasAttribute('tabindex')) {
+      target.setAttribute('tabindex', '-1');
+      target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true });
+    }
+    target.focus({ preventScroll: true });
+    if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
+  });
+
   const query = new URLSearchParams(window.location.search);
   if (query.has('utm_source')) {
     const campaign = {};
