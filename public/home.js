@@ -91,7 +91,13 @@
       setStatus('Poptávka byla odeslána. Ozveme se vám co nejdříve.', 'success');
       try { window.CingyAds?.trackLead(); } catch (_) { /* tracking must not affect delivery */ }
     } catch (_) {
-      setStatus('Odeslání se nepovedlo. Zkuste to znovu nebo nám napište přímo na contact.cingytech@proton.me.', 'error');
+      setStatus('Odeslání se nepovedlo. Zkuste to znovu nebo nám napište přímo na ', 'error');
+      if (status) {
+        const emailLink = document.createElement('a');
+        emailLink.href = 'mailto:contact.cingytech@proton.me';
+        emailLink.textContent = 'contact.cingytech@proton.me';
+        status.append(emailLink, '.');
+      }
     } finally {
       submit.disabled = false;
       submit.innerHTML = 'Odeslat poptávku <span aria-hidden="true">↗</span>';
