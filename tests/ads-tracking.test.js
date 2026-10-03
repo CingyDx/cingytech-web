@@ -106,7 +106,13 @@ function loadContactForm(response, trackingFails = false, campaignSearch = '', c
     message: { value: 'Prosím o web.' }
   };
   const button = { textContent: 'Odeslat zprávu', disabled: false };
-  const status = { textContent: '', className: '' };
+  const status = {
+    textContent: '', className: '', children: [],
+    append(...items) {
+      this.children.push(...items);
+      this.textContent += items.map((item) => typeof item === 'string' ? item : item.textContent).join('');
+    }
+  };
   const form = {
     querySelector(selector) {
       if (selector === 'button[type="submit"]') return button;
@@ -118,8 +124,10 @@ function loadContactForm(response, trackingFails = false, campaignSearch = '', c
     reset() { form.resetCalled = true; }
   };
   const document = {
+    body: { classList: { contains() { return true; } } },
     documentElement: { classList: { add() {} }, getAttribute() { return null; }, setAttribute() {} },
     addEventListener(type, listener) { handlers[type] = listener; },
+    createElement() { return { href: '', textContent: '' }; },
     getElementById(id) { return id === 'contact-form' ? form : id === 'form-status' ? status : null; },
     querySelector() { return null; },
     querySelectorAll() { return []; }
@@ -174,6 +182,7 @@ test('contact form counts a lead only after Netlify confirms a successful respon
   assert.equal(failure.conversions(), 0);
   assert.equal(failure.form.resetCalled, undefined);
   assert.match(failure.status.textContent, /nepovedlo/);
+  assert.equal(failure.status.children[0].href, 'mailto:contact.cingytech@proton.me');
 
   const trackingFailure = loadContactForm({ ok: true }, true);
   await trackingFailure.submit({ preventDefault() {} });

@@ -2,7 +2,7 @@
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
   const pointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   const reveals = [...document.querySelectorAll('.reveal, .signal, .portfolio-window, .demo-rail, .method-inner')];
-  const surfaces = [...document.querySelectorAll('.signal, .portfolio-window')];
+  const surfaces = [...document.querySelectorAll('.signal, .portfolio-window, .subpage .service-card, .subpage .pricing-card, .subpage .post')];
   const activeAnimations = new Set();
   let observer;
   let pointerEvents;

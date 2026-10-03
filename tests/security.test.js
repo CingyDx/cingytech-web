@@ -46,12 +46,13 @@ test("content security policy is scoped to the static work site", () => {
   assert.match(headers, /object-src 'none'/);
 });
 
-test("contact form includes bot friction and client-side size limits", () => {
+test("contact form uses a honeypot without a blocking CAPTCHA and limits input size", () => {
   const kontakt = read("public/pages/kontakt.html");
   const script = read("public/script.js");
   assert.match(kontakt, /data-netlify="true"/);
   assert.match(kontakt, /netlify-honeypot="bot-field"/);
-  assert.match(kontakt, /data-netlify-recaptcha="true"/);
+  assert.match(kontakt, /name="bot-field"/);
+  assert.doesNotMatch(kontakt, /data-netlify-recaptcha="true"/);
   assert.match(kontakt, /maxlength="120"/);
   assert.match(kontakt, /maxlength="160"/);
   assert.match(kontakt, /maxlength="4000"/);
@@ -73,16 +74,16 @@ test("work-site proof is visible and game dependencies are not required", () => 
   const weby = read("public/pages/tvorba-webu.html");
   const kontakt = read("public/pages/kontakt.html");
   const sluzby = read("public/pages/sluzby.html");
-  const css = read("public/style.css");
+  const css = read("public/pages.css");
   const pkg = JSON.parse(read("package.json"));
   assert.match(index, /webové aplikace/);
   assert.match(index, /Baník Rynholec/);
   assert.match(index, /IT servis|hardware/);
   assert.match(index, /class="hero-art"/);
-  assert.match(kontakt, /Kontakt pro web nebo IT servis/);
+  assert.match(kontakt, /Kontakt pro web, aplikaci nebo IT servis/);
   assert.match(sluzby, /Weby, IT servis a hardware/);
   assert.match(weby, /portfolio-banik-rynholec\.png/);
-  assert.match(css, /portfolio-preview img[\s\S]*object-fit: contain/);
+  assert.match(css, /portfolio-preview img[\s\S]*object-fit:\s*contain/);
   assert.equal(fs.existsSync(path.join(publicRoot, "assets", "portfolio-banik-rynholec.png")), true);
 
   for (const version of Object.values({ ...pkg.dependencies, ...pkg.devDependencies })) {

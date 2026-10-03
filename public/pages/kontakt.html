@@ -4,52 +4,41 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cingy.Tech | Kontakt pro web nebo IT servis</title>
+  <title>Cingy.Tech | Kontakt pro web, aplikaci nebo IT servis</title>
   <meta name="description" content="Pošlete poptávku na nový web, IT servis, opravu počítače, upgrade notebooku nebo stavbu PC. Cingy.Tech, Kryštof Cingálek, IČO 29612071." />
-  <meta name="theme-color" content="#0f766e" />
+  <meta name="theme-color" content="#0b0b12">
   <link rel="icon" href="../assets/favicon/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16x16.png">
   <link rel="apple-touch-icon" href="../assets/favicon/apple-touch-icon.png">
   <link rel="manifest" href="../assets/favicon/site.webmanifest">
-  <link rel="stylesheet" href="../style.css">
+  <script src="../motion-preference.js?v=pages-1"></script>
+  <link rel="stylesheet" href="../glass-depth.css?v=pages-1">
+  <link rel="stylesheet" href="../pages.css?v=pages-1">
+  <link rel="canonical" href="https://cingy.tech/pages/kontakt">
 </head>
 
-<body>
-  <header class="site-header">
-    <div class="container header-inner">
-      <a class="brand" href="../index.html">
-        <img class="brand-logo" src="../assets/logo/logo.png" alt="" width="256" height="256">
-        <span class="brand-text">Cingy.Tech</span>
-      </a>
-      <button id="nav-toggle" class="nav-toggle" aria-expanded="false" aria-controls="site-nav">
-        <span class="sr-only">Otevřít navigaci</span>
-        <span class="bar"></span><span class="bar"></span><span class="bar"></span>
-      </button>
-      <nav id="site-nav" class="site-nav" aria-label="Hlavní navigace">
-        <ul>
-          <li><a class="nav-link" href="../index.html">Domů</a></li>
-          <li><a class="nav-link" href="tvorba-webu.html">Weby</a></li>
-          <li><a class="nav-link" href="../index.html#prace">Reference</a></li>
-          <li><a class="nav-link" href="sluzby.html">IT servis</a></li>
-          <li><a class="nav-link" href="omne.html">O mně</a></li>
-
-
-          <li><a class="nav-link" href="kontakt.html">Kontakt</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+<body class="subpage">
+  <a class="skip-link" href="#page">Přejít na obsah</a>
+  <header class="site-header"><div class="container header-inner">
+    <a class="brand" href="/" aria-label="Cingy.Tech, úvodní stránka">Cingy<span>.</span>Tech</a>
+    <button id="nav-toggle" class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav"><span class="sr-only">Otevřít navigaci</span><span class="bar"></span><span class="bar"></span><span class="bar"></span></button>
+    <nav id="site-nav" class="site-nav" aria-label="Hlavní navigace"><ul>
+      <li><a class="nav-link" href="/pages/sluzby.html">Služby</a></li>
+      <li><a class="nav-link" href="/pages/tvorba-webu.html">Weby a aplikace</a></li>
+      <li><a class="nav-link" href="/#prace">Práce a ukázky</a></li>
+    </ul></nav>
+    <a class="header-cta" href="/pages/kontakt.html">Kontakt <span aria-hidden="true">↗</span></a>
+  </div></header>
 
   <main class="page" id="page">
     <section class="page-hero section">
       <div class="container">
         <div class="section-heading reveal">
           <p class="eyebrow">Kontakt</p>
-          <h1>Pošlete mi zadání na web nebo IT servis</h1>
+          <h1>Co spolu <em>vyřešíme?</em></h1>
           <p class="lead">
-            Napište, jestli řešíte nový web, restart starého webu, opravu počítače, upgrade notebooku,
-            stavbu PC nebo jiné technické nastavení. Ozvu se s návrhem postupu.
+            Web, vlastní aplikace, automatizace nebo IT? Napište pár vět o tom, co potřebujete. Ozveme se s návrhem dalšího kroku.
           </p>
         </div>
       </div>
@@ -58,10 +47,10 @@
     <section class="section">
       <div class="container contact-shell">
         <article class="contact-card glass reveal">
-          <h2>Kontaktní formulář</h2>
-          <p class="lead compact">Stačí pár vět. Čím konkrétnější zadání pošlete, tím rychleji půjde říct další krok, cenu a termín.</p>
+          <h2>Napište nám</h2>
+          <p class="lead compact">Stačí pár vět. Čím konkrétnější zadání pošlete, tím rychleji půjde říct další krok, cenu a termín. Raději e-mailem? <a class="text-link" href="mailto:contact.cingytech@proton.me">Napište mi přímo</a>.</p>
 
-          <form id="contact-form" class="contact-form" name="kontakt" method="POST" data-netlify="true" data-netlify-recaptcha="true"
+          <form id="contact-form" class="contact-form" name="kontakt" method="POST" data-netlify="true"
             netlify-honeypot="bot-field" action="/">
             <input type="hidden" name="form-name" value="kontakt" />
             <input type="hidden" name="utm_source" value="" />
@@ -78,17 +67,16 @@
             <input id="email" name="email" type="email" placeholder="vas@email.cz" maxlength="120" required>
 
             <label for="company">Firma / projekt / zařízení</label>
-            <input id="company" name="company" type="text" placeholder="Např. autoservis, klub, notebook Lenovo, herní PC" maxlength="160">
+            <input id="company" name="company" type="text" placeholder="Např. firemní web, aplikace, automatizace, notebook" maxlength="160">
 
             <label for="message">Zpráva</label>
             <textarea id="message" name="message" rows="7"
-              placeholder="Například: potřebujeme nový web pro lokální službu. Nebo: notebook se přehřívá, je pomalý a chci zjistit, jestli pomůže SSD/RAM upgrade."
+              placeholder="Co potřebujete vyřešit? Pokud máte, přidejte odkaz na web, očekávaný rozsah a termín. U zařízení stačí model a popis problému."
               maxlength="4000" required></textarea>
 
-            <div data-netlify-recaptcha="true"></div>
             <button class="btn" type="submit">Odeslat zprávu</button>
-            <p id="form-status" class="form-status" aria-live="polite"></p>
-          </form>
+            <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+          </form><p class="form-note">Údaje použijeme pro vyřízení zprávy. <a href="privacy.html">Jak chráníme vaše soukromí</a>.</p>
         </article>
 
         <aside class="contact-info reveal">
@@ -113,8 +101,8 @@
           <article class="info-card glass">
             <p class="eyebrow">Co napsat do zprávy</p>
             <ul class="feature-list simple">
-              <li>Jestli jde o web, opravu, upgrade, stavbu PC nebo IT pomoc</li>
-              <li>U webu název firmy, obor, lokalitu a jestli máte doménu</li>
+              <li>Co potřebujete: web, aplikaci, automatizaci nebo IT</li>
+              <li>Cíl, přibližný rozsah, termín a rozpočet, pokud je znáte</li>
               <li>U servisu typ zařízení, závadu, stáří a co jste už zkoušeli</li>
             </ul>
           </article>
@@ -123,21 +111,18 @@
     </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="container footer-inner">
-      <div class="footer-brand-group">
-        <a class="footer-brand" href="../index.html">
-          <img class="footer-logo" src="../assets/logo/logo.png" alt="" width="256" height="256">
-          <span>Cingy.Tech</span>
-        </a>
-        <p class="small">&copy; 2026 | Vytvo&#345;il Kry&#353;tof Cing&aacute;lek</p>
-      </div>
-      <p class="small">Kry&#353;tof Cing&aacute;lek, I&#268;O: 29612071 &bull; Kladno a okol&iacute; &bull; E-mail: contact.cingytech@proton.me &bull; <a class="footer-link" href="tvorba-webu.html">Tvorba web&#367;</a> &bull; <a class="footer-link" href="sluzby.html">IT servis</a> &bull; <a class="footer-link" href="privacy.html">Ochrana osobn&iacute;ch &uacute;daj&uring;</a></p>
+  <footer class="site-footer"><div class="container footer-inner">
+    <div class="footer-brand-group"><a class="footer-brand" href="/">Cingy<span>.</span>Tech</a><p class="small">Weby, aplikace, automatizace a IT služby.</p><a class="text-link" href="mailto:contact.cingytech@proton.me">contact.cingytech@proton.me</a></div>
+    <div><nav class="footer-links" aria-label="Další stránky"><a href="/pages/sluzby.html">Služby</a><a href="/pages/omne.html">O Cingy.Tech</a><a href="/pages/blog/">Tipy a články</a><a href="/pages/kontakt.html">Kontakt</a><a href="/pages/privacy.html">Soukromí</a></nav>
+      <div class="footer-settings"><button class="page-motion-toggle" type="button" aria-pressed="true">Pozastavit animace</button></div>
+      <p class="footer-legal">© 2026 Cingy.Tech · Kryštof Cingálek · IČO 29612071 · Kladno a okolí</p>
     </div>
-  </footer>
+  </div></footer>
 
   <script src="../ads-tracking.js" defer></script>
-  <script src="../script.js" defer></script>
+  <script src="../script.js?v=pages-1" defer></script>
+  <script src="../pages.js?v=pages-1" defer></script>
+  <script src="../depth-motion.js?v=pages-1" defer></script>
 </body>
 
 </html>

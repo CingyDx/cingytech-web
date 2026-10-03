@@ -2,7 +2,7 @@
   const THEME_STORAGE_KEY = 'cingy-theme';
   const CAMPAIGN_STORAGE_KEY = 'cingy-campaign-v1';
   const CAMPAIGN_FIELDS = ['utm_source', 'utm_medium', 'utm_campaign'];
-  const BRAND_THEME_COLOR = '#0f766e';
+  const BRAND_THEME_COLOR = '#0b0b12';
 
   applyInitialTheme();
   document.documentElement.classList.add('js');
@@ -104,6 +104,7 @@
   }
 
   function setupThemeToggle() {
+    if (document.body.classList.contains('subpage')) return;
     const headerInner = document.querySelector('.header-inner');
     const nav = headerInner?.querySelector('.site-nav');
     const navToggle = headerInner?.querySelector('.nav-toggle');
@@ -167,7 +168,7 @@
       normalized = normalized.slice(0, -1);
     }
 
-    return normalized || '/';
+    return normalized.replace(/\.html$/, '') || '/';
   }
 
   function highlightNav() {
@@ -195,6 +196,7 @@
 
       if (targetPath === currentPath || isBlogIndex) {
         link.classList.add('active');
+        link.setAttribute('aria-current', 'page');
       }
     });
   }
@@ -249,6 +251,9 @@
   }
 
   function setupInternalLinkTransitions() {
+    // Native navigation keeps Back/Forward reliable; entrance motion belongs
+    // to the arriving page and never delays a customer's click.
+    if (document.body.classList.contains('subpage')) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const anchors = document.querySelectorAll('a[href]');
@@ -281,6 +286,7 @@
   }
 
   function setupRevealAnimations() {
+    if (document.body.classList.contains('subpage')) return;
     const items = document.querySelectorAll('.reveal');
     if (!items.length) return;
 
@@ -315,6 +321,16 @@
       if (!status) return;
       status.textContent = text;
       status.className = 'form-status' + (type ? ` ${type}` : '');
+    }
+
+    function setSubmitError() {
+      if (!status) return;
+      status.className = 'form-status error';
+      status.textContent = 'Odeslání se nepovedlo. Napište mi prosím na ';
+      const emailLink = document.createElement('a');
+      emailLink.href = 'mailto:contact.cingytech@proton.me';
+      emailLink.textContent = 'contact.cingytech@proton.me';
+      status.append(emailLink, '.');
     }
 
     function setSubmitting(isSubmitting) {
@@ -371,7 +387,7 @@
           // Measurement must not turn a delivered message into a form error.
         }
       } catch (error) {
-        setStatus('Odeslání se nepovedlo. Zkuste to prosím znovu.', 'error');
+        setSubmitError();
       } finally {
         setSubmitting(false);
       }
