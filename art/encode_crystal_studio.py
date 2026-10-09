@@ -7,9 +7,11 @@ from pathlib import Path
 import subprocess, json
 import numpy as np
 from PIL import Image
+from verify_crystal_frames import verify_frames
 
 root=Path(__file__).resolve().parent.parent
 frames=root/'render/crystal/frames-4k-clean'
+verify_frames(frames)
 assets=root/'public/assets'
 paths=[frames/f'crystal_{i:04d}.png' for i in range(1,361)]
 if any(not p.is_file() for p in paths):raise RuntimeError('All 360 source frames are required')
@@ -23,8 +25,10 @@ edge=np.minimum.reduce([x,1-x,y,1-y]);fade=np.clip(edge/.08,0,1)
 broad=np.exp(-((x-.50)/.40)**2-((y-.79)/.22)**2)*fade
 pool=np.exp(-((x-.50)/.31)**2-((y-.91)/.048)**2)*fade
 rgb=np.empty((2160,2160,3),dtype=np.uint8)
-for i,(base,gain,pool_gain) in enumerate(zip((9,10,16),(18,5,43),(11,3,28))):rgb[:,:,i]=np.clip(base+broad*gain+pool*pool_gain,0,255).astype(np.uint8)
-stage=Image.new('RGB',(3840,2160),(9,10,16));stage.paste(Image.fromarray(rgb),(840,0))
+for i,(gain,pool_gain) in enumerate(zip((18,5,43),(11,3,28))):rgb[:,:,i]=np.clip(broad*gain+pool*pool_gain,0,255).astype(np.uint8)
+# Pure black + screen composition keeps the movie edge invisible over the
+# optical backdrop without a per-frame alpha mask or expensive colour filter.
+stage=Image.new('RGB',(3840,2160),(0,0,0));stage.paste(Image.fromarray(rgb),(840,0))
 
 first=Image.open(paths[0]).convert('RGBA')
 first_rgb=stage.copy();first_rgb.paste(first,(0,0),first.getchannel('A'))

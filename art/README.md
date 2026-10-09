@@ -12,8 +12,14 @@ python art/encode_crystal_studio.py
 pwsh -File art/compress_crystal_web.ps1
 ```
 
-The Python encoder needs Pillow and NumPy. It recreates raw web derivatives in `render/crystal/` on every run; compression consumes those files and never reuses a cached public derivative. The compositor bakes the dark background and violet light field into RGB, with explicit BT.709 conversion. Web movies are square crops, not 4K: 768px/30fps (1,626,178 bytes), 1080px/60fps (3,732,925 bytes), 1440px/60fps (5,667,060 bytes). No interpolated frames or audio. H.264/yuv420p with faststart works in the tested Chromium and WebKit engines.
+The Python encoder needs Pillow and NumPy. It recreates raw web derivatives in `render/crystal/` on every run; compression consumes those files and never reuses a cached public derivative. The compositor bakes the violet light field into RGB on pure black for screen compositing, with explicit BT.709 conversion. Web movies are square crops, not 4K: 768px/30fps (approximately 1.7MB), 1080px/60fps (approximately 4MB), 1440px/60fps (approximately 6MB). No interpolated frames or audio. H.264/yuv420p with faststart works in the tested Chromium and WebKit engines.
 
 `--asset wet-slab --width 3840 --height 1100 --samples 96 --output render/crystal/wet-slab-4k.png` renders real bevelled glass, recessed violet lighting and IOR 1.333 water lenses. Its tightly cropped, 1600px-wide `wet-glass-slab.webp` is only 33,782 bytes; labels stay native HTML. Original legacy source assets remain for reproducibility.
 
 The player defaults to autoplay for ordinary motion-enabled visitors, selects lighter variants by viewport/network/device signals, and steps down after two consecutive sustained dropped-frame windows. It pauses offscreen and preserves the loop position when changing quality. Poster/manual fallback remains for browser refusal, failed media and reduced motion. The owner review URL `?motion=on` and portable HTML `data-preview-motion="on"` explicitly enable motion; ordinary visitors retain their saved and system preferences.
+
+## Late-frame cache regression
+
+Cycles persistent scene data caused solid-black portions of the animated glass in the original late frames. Fresh same-pose renders were correct. Paired360-frame probes reproduced the defect with persistent data enabled and passed with it disabled. `render_crystal_studio.py` now disables persistent data. `verify_crystal_frames.py` validates all360 real4Kframes and rejects the reproduced opaque-black regions; encoding always runs that check first.
+
+`render_optical_backdrop.py` produces the genuine4K wet optical backdrop. The website serves2560px/40KB and1280px/15KB compressed variants. Its interface motion is efficient native transform/opacity animation and clipped optical highlights.

@@ -103,7 +103,9 @@ scene.cycles.max_bounces=12;scene.cycles.transmission_bounces=12;scene.cycles.gl
 scene.cycles.use_light_tree=True;scene.cycles.use_adaptive_sampling=True;scene.cycles.adaptive_threshold=.015
 scene.render.resolution_x=args.width;scene.render.resolution_y=args.height;scene.render.resolution_percentage=100
 scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGBA';scene.render.film_transparent=True
-scene.render.use_persistent_data=True;scene.render.fps=args.fps;scene.frame_start=1;scene.frame_end=args.frames
+# OptiX persistent scene data reproduced opaque black glass late in this
+# rotating sequence. Rebuilding per frame avoids that renderer-cache defect.
+scene.render.use_persistent_data=False;scene.render.fps=args.fps;scene.frame_start=1;scene.frame_end=args.frames
 scene.view_settings.view_transform='AgX';scene.view_layers[0].cycles.use_denoising=True
 scene.cycles.denoiser='OPENIMAGEDENOISE'
 scene.cycles.denoising_use_gpu=True

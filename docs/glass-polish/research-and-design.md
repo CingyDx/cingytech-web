@@ -54,3 +54,17 @@ Figma: https://www.figma.com/design/d9sQYFCGwWKApIN1lOwlIf?node-id=7-29 — edit
 Validation: 24 Node tests and 109 local route/interaction checks; actual Chromium desktop and mobile viewport + WebKit mobile viewport playback. Both contact forms had intercepted success/error tests, attribution preservation, denied tracking and no-JavaScript availability. No real lead was submitted and mailbox delivery is not certified by these checks. Real Opera played the large source without a gesture. Independent review confirmed adaptive switching preserves loop position from seekable assets; Python's basic local server does not support range seeking, so file:// verified that behavior. Review found a stale encoder-cache reproducibility issue, corrected by writing fresh raw derivatives on every encode.
 
 Reference fidelity: split hero, concise copy, brand, purple identity and service hierarchy retained; stronger material render and optical edges are intentional changes. Native text remains readable on mobile. Production and Ads await the existing approval boundary and are unchanged by this preview.
+
+## Optical-depth follow-up — 9 October 2026
+
+User reported intermittent completely black glass bands and requested pleasant hover waves across surfaces, subtle water on the background and interconnected violet light. No production release authorized by this follow-up.
+
+The defect was present in RGBA source frames 283–360, before any codec/browser/network. Fresh renders of the same failing pose were correct at 1080p and genuine 4K. A 360-frame small probe reproduced the problem with Cycles persistent data (first bad at frame274); an otherwise identical probe with persistent data off completed without opaque black regions. The renderer now rebuilds per frame; affected4Kframes were re-rendered and all360 pass an opaque-black-region regression gate before encoding.
+
+A genuine3840×2160 Cycles backdrop contains a violet optical pane, water lenses and curved emissive filaments. Compressed static assets are40,148bytes desktop and15,006bytes mobile. Two low-opacity light fields animate transform/opacity on desktop, with one static field on limited devices/mobile. Hidden-tab and explicit pause stop motion. Browser rendering is video/compositing, not live RTX ray tracing.
+
+Every shared public page uses the same optical background. Service slabs, portfolio windows, buttons, demo rail, contact panels and subpage glass surfaces receive a clipped caustic wave on hover/focus. Native keyboard/form behavior remains; focus outlines are outside the decorative clip. Pointer tilt returns smoothly. The existing portfolio position/layout is preserved. Reduced-motion and saved pause suppress new movement.
+
+To avoid a rectangular movie patch against the new backdrop, the compositor now uses pure black outside the glass/light field and screen blend; no animated alpha mask or per-frame colour filter is used. The source4Kmaster is genuine; public movies remain responsive crops. Local scene/source videos and the owner ZIP remain separate from production.
+
+Independent review caught portfolio positioning and paused-anchor transforms in the new surface rule; both fixed and exercised in actual Chromium. Figma's existing editable material board now includes the actual backdrop as a separate image layer with native text/components retained.

@@ -3,10 +3,17 @@
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   const pointer=matchMedia('(hover: hover) and (pointer: fine)');
   const reveals=[...document.querySelectorAll('.reveal,.signal,.portfolio-window,.demo-rail,.method-inner')];
-  const surfaces=[...document.querySelectorAll('.signal,.portfolio-window,.subpage .service-card,.subpage .pricing-card,.subpage .post')];
+  const surfaces=[...document.querySelectorAll('.signal,.portfolio-window,.subpage .glass,.demo-rail,.contact-form,.button,.header-cta,.btn')];
   const seen=new WeakSet(),active=new Set();
   let introStarted=false,pointerEvents;
   const allowed=()=>!root.classList.contains('motion-disabled')&&(!reduced.matches||root.classList.contains('motion-enabled'));
+  const scene=document.createElement('div');
+  scene.className='optical-scene';scene.setAttribute('aria-hidden','true');
+  ['optical-pane','optical-ray optical-ray-one','optical-ray optical-ray-two'].forEach(name=>{const layer=document.createElement('span');layer.className=name;scene.appendChild(layer);});
+  document.body.prepend(scene);
+  const limited=innerWidth<=760||navigator.connection?.saveData||navigator.hardwareConcurrency<=4||navigator.deviceMemory<=4;
+  scene.classList.toggle('optical-lite',Boolean(limited));
+  function sceneMotion(){scene.classList.toggle('optical-active',allowed()&&!document.hidden);}
   function animate(element,frames,options={}){
     if(!element?.animate||!allowed()||document.hidden)return;
     element.style.willChange='transform, opacity';
@@ -44,22 +51,37 @@
     document.querySelector('.hero')?.setAttribute('data-entrance','choreographed');
   }
   const observer='IntersectionObserver' in window?new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){reveal(entry.target);observer.unobserve(entry.target);}});},{threshold:.08,rootMargin:'0px 0px -20px 0px'}):null;
-  surfaces.forEach(element=>{const glint=document.createElement('span');glint.className='glass-glint';glint.setAttribute('aria-hidden','true');element.appendChild(glint);});
+  surfaces.forEach(element=>{
+    element.classList.add('optical-surface');
+    const optics=document.createElement('span');optics.className='glass-optics';optics.setAttribute('aria-hidden','true');element.appendChild(optics);
+    ['glass-glint','glass-caustic'].forEach(name=>{const glint=document.createElement('span');glint.className=name;optics.appendChild(glint);});
+  });
   function resetSurface(element){['--tilt-x','--tilt-y','--glint-shift'].forEach(property=>element.style.removeProperty(property));}
   function configurePointer(){
     pointerEvents?.abort();surfaces.forEach(resetSurface);
-    if(!allowed()||!pointer.matches)return;
+    if(!allowed())return;
     pointerEvents=new AbortController();const signal=pointerEvents.signal,options={signal,passive:true};
     surfaces.forEach(element=>{
-      let rect,frame,position;
+      let rect,frame,position,wave;
+      const refract=()=>{
+        if(document.hidden||!allowed())return;
+        wave?.cancel();
+        const lens=element.querySelector(':scope > .glass-optics > .glass-caustic');
+        if(!lens?.animate)return;
+        wave=lens.animate([{opacity:0,transform:'translateX(-85%) scale(.65) rotate(-15deg)'},{opacity:.65,offset:.4,transform:'translateX(0) scale(1) rotate(-9deg)'},{opacity:0,transform:'translateX(85%) scale(1.2) rotate(-3deg)'}],{duration:850,easing:'cubic-bezier(.2,.7,.25,1)'});
+        active.add(wave);const current=wave;
+        current.finished.catch(()=>{}).finally(()=>active.delete(current));
+      };
       const invalidate=()=>{rect=null;};window.addEventListener('scroll',invalidate,{...options,capture:true});window.addEventListener('resize',invalidate,options);
-      signal.addEventListener('abort',()=>cancelAnimationFrame(frame),{once:true});
-      element.addEventListener('pointerenter',()=>{rect=element.getBoundingClientRect();},options);
+      signal.addEventListener('abort',()=>{cancelAnimationFrame(frame);wave?.cancel();},{once:true});
+      element.addEventListener('focusin',event=>{if(event.target===element||element.matches('.contact-form'))refract();},options);
+      if(!pointer.matches)return;
+      element.addEventListener('pointerenter',()=>{rect=element.getBoundingClientRect();refract();},options);
       element.addEventListener('pointermove',event=>{
         if(event.pointerType==='touch')return;position={x:event.clientX,y:event.clientY};if(frame)return;
         frame=requestAnimationFrame(()=>{frame=null;if(!allowed()||document.hidden||signal.aborted)return;rect??=element.getBoundingClientRect();
           const x=Math.max(0,Math.min(1,(position.x-rect.left)/rect.width)),y=Math.max(0,Math.min(1,(position.y-rect.top)/rect.height));
-          element.style.setProperty('--tilt-x',`${(.5-y)*3}deg`);element.style.setProperty('--tilt-y',`${(x-.5)*4}deg`);element.style.setProperty('--glint-shift',`${x*rect.width*1.3}px`);
+          element.style.setProperty('--tilt-x',`${(.5-y)*3.6}deg`);element.style.setProperty('--tilt-y',`${(x-.5)*6.5}deg`);element.style.setProperty('--glint-shift',`${x*rect.width*1.3}px`);
         });
       },options);
       element.addEventListener('pointerleave',()=>{cancelAnimationFrame(frame);frame=null;rect=null;resetSurface(element);},options);
@@ -69,9 +91,10 @@
     if(!allowed()){active.forEach(animation=>animation.cancel());reveals.forEach(element=>{element.classList.remove('motion-pending');});root.dataset.entrance='static';}
     else{intro();}
     configurePointer();
+    sceneMotion();
   }
-  intro();reveals.forEach(element=>{if(observer)observer.observe(element);else reveal(element);});configurePointer();
+  intro();reveals.forEach(element=>{if(observer)observer.observe(element);else reveal(element);});configurePointer();sceneMotion();
   reduced.addEventListener('change',configure);pointer.addEventListener('change',configurePointer);window.addEventListener('cingy-motion-change',configure);
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)active.forEach(animation=>animation.cancel());else{intro();reveals.filter(visible).forEach(reveal);}});
+  document.addEventListener('visibilitychange',()=>{sceneMotion();if(document.hidden)active.forEach(animation=>animation.cancel());else{intro();reveals.filter(visible).forEach(reveal);}});
   document.addEventListener('focusin',event=>{const element=event.target.closest('.reveal,.signal,.portfolio-window');if(element){seen.add(element);element.classList.remove('motion-pending');}});
 })();
