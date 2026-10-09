@@ -9,7 +9,7 @@
   const allowed=()=>!root.classList.contains('motion-disabled')&&(!reduced.matches||root.classList.contains('motion-enabled'));
   const scene=document.createElement('div');
   scene.className='optical-scene';scene.setAttribute('aria-hidden','true');
-  ['optical-pane','optical-ray optical-ray-one','optical-ray optical-ray-two'].forEach(name=>{const layer=document.createElement('span');layer.className=name;scene.appendChild(layer);});
+  const pane=document.createElement('span');pane.className='optical-pane';scene.appendChild(pane);
   document.body.prepend(scene);
   const limited=innerWidth<=760||navigator.connection?.saveData||navigator.hardwareConcurrency<=4||navigator.deviceMemory<=4;
   scene.classList.toggle('optical-lite',Boolean(limited));
@@ -54,7 +54,7 @@
   surfaces.forEach(element=>{
     element.classList.add('optical-surface');
     const optics=document.createElement('span');optics.className='glass-optics';optics.setAttribute('aria-hidden','true');element.appendChild(optics);
-    ['glass-glint','glass-caustic'].forEach(name=>{const glint=document.createElement('span');glint.className=name;optics.appendChild(glint);});
+    const glint=document.createElement('span');glint.className='glass-glint';optics.appendChild(glint);
   });
   function resetSurface(element){['--tilt-x','--tilt-y','--glint-shift'].forEach(property=>element.style.removeProperty(property));}
   function configurePointer(){
@@ -62,26 +62,16 @@
     if(!allowed())return;
     pointerEvents=new AbortController();const signal=pointerEvents.signal,options={signal,passive:true};
     surfaces.forEach(element=>{
-      let rect,frame,position,wave;
-      const refract=()=>{
-        if(document.hidden||!allowed())return;
-        wave?.cancel();
-        const lens=element.querySelector(':scope > .glass-optics > .glass-caustic');
-        if(!lens?.animate)return;
-        wave=lens.animate([{opacity:0,transform:'translateX(-85%) scale(.65) rotate(-15deg)'},{opacity:.65,offset:.4,transform:'translateX(0) scale(1) rotate(-9deg)'},{opacity:0,transform:'translateX(85%) scale(1.2) rotate(-3deg)'}],{duration:850,easing:'cubic-bezier(.2,.7,.25,1)'});
-        active.add(wave);const current=wave;
-        current.finished.catch(()=>{}).finally(()=>active.delete(current));
-      };
+      let rect,frame,position;
       const invalidate=()=>{rect=null;};window.addEventListener('scroll',invalidate,{...options,capture:true});window.addEventListener('resize',invalidate,options);
-      signal.addEventListener('abort',()=>{cancelAnimationFrame(frame);wave?.cancel();},{once:true});
-      element.addEventListener('focusin',event=>{if(event.target===element||element.matches('.contact-form'))refract();},options);
+      signal.addEventListener('abort',()=>{cancelAnimationFrame(frame);},{once:true});
       if(!pointer.matches)return;
-      element.addEventListener('pointerenter',()=>{rect=element.getBoundingClientRect();refract();},options);
+      element.addEventListener('pointerenter',()=>{rect=element.getBoundingClientRect();},options);
       element.addEventListener('pointermove',event=>{
         if(event.pointerType==='touch')return;position={x:event.clientX,y:event.clientY};if(frame)return;
         frame=requestAnimationFrame(()=>{frame=null;if(!allowed()||document.hidden||signal.aborted)return;rect??=element.getBoundingClientRect();
           const x=Math.max(0,Math.min(1,(position.x-rect.left)/rect.width)),y=Math.max(0,Math.min(1,(position.y-rect.top)/rect.height));
-          element.style.setProperty('--tilt-x',`${(.5-y)*3.6}deg`);element.style.setProperty('--tilt-y',`${(x-.5)*6.5}deg`);element.style.setProperty('--glint-shift',`${x*rect.width*1.3}px`);
+          element.style.setProperty('--tilt-x',`${(.5-y)*2.4}deg`);element.style.setProperty('--tilt-y',`${(x-.5)*4}deg`);element.style.setProperty('--glint-shift',`${(x-.5)*14}px`);
         });
       },options);
       element.addEventListener('pointerleave',()=>{cancelAnimationFrame(frame);frame=null;rect=null;resetSurface(element);},options);

@@ -11,26 +11,21 @@
 body{font-family:Manrope,"Segoe UI",Arial,sans-serif}
 body{isolation:isolate}
 .optical-scene{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;contain:strict;background:#090a10}
-.optical-pane{position:absolute;inset:-3%;background:url('./assets/optical-backdrop-2560.webp') center/cover no-repeat;opacity:.62}
-.optical-ray{position:absolute;left:-25%;width:150%;height:20%;border-radius:50%;opacity:.2;background:radial-gradient(ellipse,rgba(171,103,255,.20),rgba(71,30,122,.08) 38%,transparent 68%);transform:rotate(-13deg)}
-.optical-ray-one{top:22%}.optical-ray-two{bottom:8%;transform:rotate(12deg)}
-.optical-active .optical-ray-one{animation:optical-tide 14s ease-in-out infinite alternate}
-.optical-active .optical-ray-two{animation:optical-tide 19s ease-in-out -7s infinite alternate-reverse}
-@keyframes optical-tide{from{transform:translate3d(-2%,-12%,0) rotate(-12deg);opacity:.25}to{transform:translate3d(3%,22%,0) rotate(-8deg);opacity:.65}}
-.optical-lite .optical-ray-two{display:none}.optical-lite .optical-pane{background-image:url('./assets/optical-backdrop-1280.webp');opacity:.45}.optical-lite .optical-ray-one{animation:none}
+.optical-pane{position:absolute;inset:0;background:url('./assets/optical-backdrop-2560.webp?v=quiet-3') center/cover no-repeat;opacity:.68}
+.optical-lite .optical-pane{background-image:url('./assets/optical-backdrop-1280.webp?v=quiet-3');opacity:.62}
+@media(max-width:760px){.optical-lite .optical-pane{background-image:url('./assets/optical-backdrop-mobile.webp?v=quiet-3');background-position:right center}}
 .optical-surface{isolation:isolate}
 .optical-surface:is(.button,.header-cta,.btn){position:relative}
 .glass-optics{position:absolute;inset:0;z-index:5;border-radius:inherit;overflow:hidden;pointer-events:none}
-.glass-caustic{position:absolute;inset:0;z-index:5;border-radius:inherit;pointer-events:none;opacity:0;background:radial-gradient(ellipse at 42% 48%,transparent 31%,rgba(212,179,255,.16) 37%,rgba(249,233,255,.44) 38%,transparent 41%,rgba(188,126,255,.10) 45%,transparent 58%)}
-.optical-surface>.glass-optics>.glass-glint{border-radius:inherit;opacity:0;transition:opacity .35s,transform .12s ease-out}
-.optical-surface:hover>.glass-optics>.glass-glint,.optical-surface:focus-within>.glass-optics>.glass-glint{opacity:.75}
+/* Broad studio reflection: short pointer travel, no sweeping beam or lens ring. */
+.optical-surface>.glass-optics>.glass-glint{inset:-40% -30%;width:auto;border-radius:50%;background:radial-gradient(ellipse at 40% 20%,rgba(230,208,255,.55),rgba(158,104,227,.18) 32%,transparent 66%);transform:translate3d(var(--glint-shift,0px),0,0);opacity:0;transition:opacity .5s ease,transform .4s var(--depth-ease)}
+.optical-surface:hover>.glass-optics>.glass-glint,.optical-surface:focus-within>.glass-optics>.glass-glint{opacity:.12}
 .signal-icon,.signal-arrow{transition:transform .35s var(--depth-ease),background .35s}
 .signal:hover .signal-icon,.signal:focus-visible .signal-icon{transform:translateY(-2px) rotate(-3deg)}
 .signal:hover .signal-arrow,.signal:focus-visible .signal-arrow{transform:translate(2px,-2px);background:rgba(164,105,255,.25)}
 .subpage .glass:hover{border-color:rgba(221,187,255,.65)}
 .contact-form input:focus-visible,.contact-form textarea:focus-visible{outline:2px solid #c5a5ff;outline-offset:3px;box-shadow:0 0 20px -7px rgba(155,84,255,.45)}
 .demo-links a,.site-nav a{transition:color .25s,transform .25s}.demo-links a:hover,.site-nav a:hover{transform:translateY(-2px)}
-.optical-surface>.glass-glint,.optical-surface>.glass-caustic{overflow:hidden}
 html.motion-disabled .signal-icon,html.motion-disabled .signal-arrow,html.motion-disabled .demo-links a,html.motion-disabled .site-nav a{transform:none!important}
 @media(prefers-reduced-motion:reduce){html:not(.motion-enabled) .signal-icon,html:not(.motion-enabled) .signal-arrow,html:not(.motion-enabled) .demo-links a,html:not(.motion-enabled) .site-nav a{transform:none!important}}
 .brand{font-weight:800;letter-spacing:-.065em}
