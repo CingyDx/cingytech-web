@@ -30,6 +30,18 @@ function walk(dir) {
   });
 }
 
+test('explicit animated preview overrides saved pause without requiring storage', () => {
+  const script=fs.readFileSync(path.join(publicRoot,'motion-preference.js'),'utf8');
+  for(const blocked of [false,true]){
+    const classes=new Set(),root={dataset:{previewMotion:'on'},classList:{add:c=>classes.add(c)}};
+    vm.runInNewContext(script,{document:{documentElement:root},localStorage:{getItem:()=> 'off',setItem(){if(blocked)throw new Error('blocked');}}});
+    assert.equal(root.dataset.motionPreference,'on');assert.equal(classes.has('motion-enabled'),true);
+  }
+  const root={dataset:{},classList:{add(){}}};
+  vm.runInNewContext(script,{document:{documentElement:root},localStorage:{getItem:()=> 'off',setItem(){}},location:{search:'?utm_source=ads&motion=on'},URLSearchParams});
+  assert.equal(root.dataset.motionPreference,'on');
+});
+
 function existingTarget(page, rawTarget) {
   const cleanTarget = rawTarget.split("#")[0].split("?")[0];
   if (!cleanTarget || cleanTarget === "/") return publicRoot;

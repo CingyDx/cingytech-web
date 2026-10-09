@@ -1,0 +1,49 @@
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(./assets/manrope-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Real Cycles optical-frame texture. The interface text remains native HTML. */
+body{font-family:Manrope,"Segoe UI",Arial,sans-serif}
+.brand{font-weight:800;letter-spacing:-.065em}
+body:not(.subpage) .hero h1{font-weight:800;font-size:clamp(58px,6.1vw,92px);letter-spacing:-.072em;line-height:1.07;max-width:none;width:114%}
+body:not(.subpage) .hero h1 em{color:#be95ff;text-shadow:0 0 45px rgba(146,63,255,.14)}
+.hero::before{display:none}
+.hero-art-video{mask-image:none;-webkit-mask-image:none;filter:none}
+.hero-art-poster{filter:none}
+.hero-art-poster,.hero-art-video{height:112%;top:-6%;object-fit:contain}
+.site-header{background:linear-gradient(110deg,rgba(42,26,70,.82),rgba(15,12,23,.94) 45%,rgba(39,23,68,.88));border-color:rgba(187,137,255,.42);box-shadow:inset 0 1px 0 rgba(244,216,255,.5),0 3px 0 #2c1b43,0 4px 1px #6b449d,0 20px 50px -30px #000,0 0 40px -20px rgba(135,50,255,.4)}
+.site-header::before{inset:3px;border:1px solid rgba(225,190,255,.23);border-radius:inherit;background:linear-gradient(175deg,rgba(248,226,255,.09),transparent 25%,transparent 75%,rgba(168,103,255,.13))}
+.site-header::after{height:1px;box-shadow:0 0 12px rgba(170,104,255,.55)}
+.signal,.signal:first-child,.signal:last-child{background:#1a1229 url('./assets/wet-glass-slab.webp') center/100% 100% no-repeat;border:1px solid rgba(221,185,255,.35);box-shadow:0 3px 0 #352050,0 4px 1px rgba(190,129,255,.4),0 19px 35px -14px rgba(0,0,0,.95),0 0 35px -15px rgba(145,61,255,.38)}
+.signal::before{inset:0;border:0;background:none}
+.signal::after{opacity:.45;height:1px}
+.signal:hover,.signal:focus-visible{background:#1a1229 url('./assets/wet-glass-slab.webp') center/100% 100% no-repeat}
+.signal strong{font-weight:750;color:#fff}
+.signal small{color:#ded3ed}
+.signal-icon{color:#e4caff;border-color:rgba(221,188,255,.32);background:linear-gradient(145deg,rgba(163,108,255,.15),rgba(32,15,63,.55));box-shadow:inset 0 1px 0 rgba(246,214,255,.24),0 2px 0 rgba(7,3,15,.6),0 0 20px -6px rgba(147,65,255,.32)}
+.signal-arrow{border-color:rgba(225,194,255,.45);background:rgba(18,10,34,.33)}
+.glass-shelf{border-color:rgba(199,148,255,.65);background:linear-gradient(170deg,rgba(57,24,110,.12),rgba(135,72,220,.32) 60%,rgba(72,33,132,.62));box-shadow:inset 0 1px 2px rgba(255,229,255,.75),inset 0 -2px 6px rgba(178,104,255,.60),0 7px 0 #2d1547,0 8px 1px rgba(213,151,255,.6),0 25px 36px -8px rgba(0,0,0,.6),0 12px 35px rgba(116,37,239,.22)}
+.button-primary,.header-cta,.subpage .btn:not(.ghost){background:linear-gradient(140deg,#dbc5ff,#b28af4 58%,#9563de);box-shadow:inset 0 1px 1px #fff0ff,inset 0 -2px 3px rgba(63,22,109,.33),0 3px 0 #503273,0 13px 30px -12px rgba(162,66,255,.62)}
+.button-primary:hover,.header-cta:hover{background:linear-gradient(140deg,#eddfff,#c9a3ff 58%,#ad78f4)}
+.portfolio-window,.contact-form,.subpage .glass{box-shadow:var(--glass-shadow),0 0 35px -22px rgba(154,69,255,.4)}
+.portfolio-caption small{color:#d1bae9}
+.hero-motion-toggle{border-color:rgba(190,147,255,.35);background:rgba(18,12,31,.92);backdrop-filter:none;-webkit-backdrop-filter:none}
+.ads-consent-banner{border-radius:18px;border-color:rgba(186,145,243,.35);background:rgba(19,14,29,.98);box-shadow:0 18px 45px rgba(0,0,0,.45);padding:18px 20px;max-width:460px}
+.ads-consent-banner p{font-size:12px;line-height:1.6}
+.ads-consent-actions .btn{border-radius:10px;font-size:12px;min-height:44px}
+@media(min-width:761px) and (max-width:1050px){body:not(.subpage) .hero h1{font-size:clamp(48px,6.05vw,64px);width:115%}}
+@media(max-width:760px){body:not(.subpage) .hero h1{font-size:clamp(44px,8.2vw,61px);width:100%;letter-spacing:-.074em}.hero-art-poster,.hero-art-video{height:116%;top:-8%}.signal strong{font-size:17px}.site-header::before{border-image-width:11px}.ads-consent-banner{max-width:none}}
+@media(max-width:430px){body:not(.subpage) .hero h1{font-size:clamp(40px,10.95vw,48px)}.hero-art{top:320px;height:283px}.hero-motion-toggle{right:4%;bottom:13px}.signal,.signal:first-child,.signal:last-child{padding-inline:22px}.hero .button{padding-inline:17px;gap:18px;font-size:13px}}
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(./assets/manrope-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}

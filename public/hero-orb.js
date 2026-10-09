@@ -22,6 +22,10 @@
   let selectedSource = false;
   let frameCallback = null;
   let frameReady = false;
+  let quality = 'medium';
+  let qualitySample = null;
+  let slowWindows = 0;
+  let resumeTime = null;
 
   function resetFrame() {
     if (frameCallback !== null) video.cancelVideoFrameCallback?.(frameCallback);
@@ -35,10 +39,54 @@
     selectedSource = true;
     if (supportsMP4 && video.dataset.mp4Small) {
       const width = window.innerWidth;
-      video.src = width <= 760 ? video.dataset.mp4Small : width >= 1700 ? video.dataset.mp4Large : video.dataset.mp4Medium;
+      const connection = navigator.connection;
+      const limited = saveData || ['slow-2g', '2g', '3g'].includes(connection?.effectiveType) || (connection?.downlink > 0 && connection.downlink <= 2) || (navigator.deviceMemory > 0 && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4);
+      quality = width <= 760 || limited ? 'small' : width >= 1700 ? 'large' : 'medium';
+      art.dataset.videoQuality = quality;
+      video.src = sourceFor(quality);
+      video.muted = true;
+      video.autoplay = true;
       video.preload = 'auto';
       video.load();
     }
+  }
+
+  function sourceFor(level) {
+    return level === 'small' ? video.dataset.mp4Small : level === 'large' ? video.dataset.mp4Large : video.dataset.mp4Medium;
+  }
+
+  function lowerQuality() {
+    if (!supportsMP4 || quality === 'small') return;
+    resumeTime = video.currentTime;
+    video.pause();
+    playRequest += 1;
+    playPending = false;
+    resetFrame();
+    quality = quality === 'large' ? 'medium' : 'small';
+    art.dataset.videoQuality = quality;
+    art.dataset.videoState = 'adapting';
+    qualitySample = null;
+    slowWindows = 0;
+    video.src = sourceFor(quality);
+    video.load();
+    update();
+  }
+
+  function checkQuality() {
+    if (!shouldPlay() || video.paused || !frameReady || !video.getVideoPlaybackQuality) {
+      qualitySample = null;
+      slowWindows = 0;
+      return;
+    }
+    const current = video.getVideoPlaybackQuality();
+    if (qualitySample) {
+      const frames = current.totalVideoFrames - qualitySample.total;
+      const dropped = current.droppedVideoFrames - qualitySample.dropped;
+      // Do not react to one startup hitch, hidden tabs or tiny sample windows.
+      slowWindows = frames >= 30 && dropped / frames > .12 ? slowWindows + 1 : 0;
+      if (slowWindows >= 2) { lowerQuality(); return; }
+    }
+    qualitySample = { total: current.totalVideoFrames, dropped: current.droppedVideoFrames };
   }
 
   function presentFrame() {
@@ -66,6 +114,7 @@
   function updateControls() {
     const enabled = motionEnabled();
     const override = preference === 'on';
+    root.dataset.motionReason = preference === 'off' ? 'paused' : override ? 'explicit-on' : reducedMotion.matches ? 'reduced-motion' : saveData ? 'save-data' : 'automatic';
     toggle.hidden = false;
     toggle.textContent = playbackBlocked ? 'Přehrát 3D animaci' : enabled ? 'Pozastavit animace' : 'Zapnout animace';
     toggle.setAttribute('aria-pressed', String(enabled));
@@ -139,6 +188,12 @@
     updateControls();
     presentFrame();
   });
+  video.addEventListener('loadedmetadata', () => {
+    if (resumeTime === null) return;
+    const time = resumeTime;
+    resumeTime = null;
+    try { if (Number.isFinite(video.duration) && video.duration > 0) video.currentTime = time % video.duration; } catch (_) { /* Fresh loop remains usable. */ }
+  });
   video.addEventListener('error', () => {
     playRequest += 1;
     playPending = false;
@@ -149,6 +204,7 @@
   });
   document.addEventListener('visibilitychange', update);
   reducedMotion.addEventListener?.('change', update);
+  window.setInterval?.(checkQuality, 2000);
 
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(entries => {

@@ -33,3 +33,24 @@ Native page content remains visible without JavaScript. Reduced-motion/off prefe
 Isolated worktree CingyTech-glass-refresh / feat/glass-arrival-polish-2026-10-09. Publish draft preview only until user approves. Main and Ads untouched.
 
 Verify actual early-to-final panel transforms and video frames; desktop/mobile/tablet layout; first-frame poster transition; autoplay rejection/media failure/offscreen/hidden-tab/reduced-motion/storage rejection; menu/keyboard/anchors; form failure and success intercepted (no synthetic real lead); all detail-page local references and existing 15 tests. Try WebKit runtime; distinguish it from physical Safari/iOS. Measure lab LCP/CLS/resource bytes/dropped frames, never promise 100/100 without a real benchmark.
+
+## Crystal Studio revision — stronger materials and smoother motion
+
+The user rejected a subtle polish and requested stronger realistic glass, violet LEDs, water droplets and immediate autoplay. Real home-PC Opera diagnosed the original manual-start state as `reduced-motion`; this is independent of GPU power. The owner preview explicitly opts into animation (`?motion=on`), including blocked storage. Ordinary visitors still receive accessible reduced-motion and saved-pause behavior.
+
+Actual Blender source: 360 genuine Cycles frames, 3840×2160/60fps, OptiX RTX 5070, OIDN GPU. Website movies are 768/30, 1080/60 and 1440/60 square crops, 1.63/3.73/5.67MB. Native video no longer has a per-frame color filter, shadow or alpha mask. The wet glass service texture is a real Cycles render with water lenses, 33.8KB. Manrope is self-hosted under SIL OFL; the editable Figma material board and website share the same font.
+
+Quality selection uses modest device/network hints, then actual dropped-frame counters when available. Two consecutive >12% dropped-frame windows with at least 30 measured frames step down one quality level. A single startup hitch, hidden tab or manual pause does not trigger switching. This is playback adaptation, not an assertion that every physical phone sustains 60fps. Slow connections retain the poster while the selected file loads.
+
+Additional primary sources consulted:
+- https://developer.mozilla.org/en-US/docs/Web/API/VideoPlaybackQuality/droppedVideoFrames
+- https://docs.blender.org/manual/sr/latest/render/cycles/gpu_rendering.html
+- https://www.blender.org/features/rendering/
+- https://fonts.google.com/specimen/Manrope
+- https://raw.githubusercontent.com/google/fonts/main/ofl/manrope/OFL.txt
+
+Figma: https://www.figma.com/design/d9sQYFCGwWKApIN1lOwlIf?node-id=7-29 — editable native text, component instances, semantic tokens and actual rendered object/material assets. This is a first-impression material board, not a claim that every website page is duplicated in Figma.
+
+Validation: 24 Node tests and 109 local route/interaction checks; actual Chromium desktop and mobile viewport + WebKit mobile viewport playback. Both contact forms had intercepted success/error tests, attribution preservation, denied tracking and no-JavaScript availability. No real lead was submitted and mailbox delivery is not certified by these checks. Real Opera played the large source without a gesture. Independent review confirmed adaptive switching preserves loop position from seekable assets; Python's basic local server does not support range seeking, so file:// verified that behavior. Review found a stale encoder-cache reproducibility issue, corrected by writing fresh raw derivatives on every encode.
+
+Reference fidelity: split hero, concise copy, brand, purple identity and service hierarchy retained; stronger material render and optical edges are intentional changes. Native text remains readable on mobile. Production and Ads await the existing approval boundary and are unchanged by this preview.
