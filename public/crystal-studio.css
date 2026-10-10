@@ -96,3 +96,23 @@ html.motion-disabled .portfolio-window.depth-managed:hover:not(:focus-visible){z
   src: url(./assets/manrope-latin.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
+/* Local study only: two lenses, low-frequency illumination approximation. */
+@keyframes depth-descent{0%{transform:translate3d(0,-30px,0);opacity:0;filter:brightness(.94)}14%{opacity:.24}32%{opacity:.34;filter:brightness(1.18)}48%{opacity:.25;filter:brightness(.94)}68%{opacity:.32;filter:brightness(1.14)}88%{opacity:.24;filter:brightness(.96)}100%{transform:translate3d(0,105vh,0);opacity:0;filter:brightness(.94)}}
+.optical-lite .depth-drop:first-child{top:22%!important}.optical-lite .depth-drop:nth-child(2){top:68%!important}
+@media(min-width:761px) and (max-width:1050px){body:not(.subpage) .hero-copy>p{max-width:min(340px,44vw)}}
+
+.optical-surface:hover>.glass-optics>.glass-glint,.optical-surface:focus-within>.glass-optics>.glass-glint{opacity:.18}
+.site-header.optical-surface>.glass-optics>.glass-glint{background:radial-gradient(ellipse at 50% 0,rgba(230,208,255,.55),rgba(176,131,231,.16) 38%,transparent 68%)}
+.site-header.optical-surface:hover>.glass-optics>.glass-glint,.site-header.optical-surface:focus-within>.glass-optics>.glass-glint{opacity:.16}
+.site-header.optical-surface.depth-managed>.glass-optics>.glass-glint{opacity:clamp(0,calc(var(--hover-progress,0)*.16),.16);transition:none}
+
+/* A clean Cycles material plate, with all background water in real DOM layers. */
+.optical-pane{background-image:url('./assets/clean-glass-1920.webp?v=local-water-1')}
+.optical-lite .optical-pane{background-image:url('./assets/clean-glass-1280.webp?v=local-water-1')}
+@media(max-width:760px){.optical-lite .optical-pane{background-image:url('./assets/clean-glass-mobile.webp?v=local-water-1')}}
+@keyframes depth-descent{0%{transform:translate3d(0,-30px,0);opacity:0;filter:brightness(.94)}10%{transform:translate3d(0,-20px,0);opacity:.2;filter:brightness(.96)}30%{transform:translate3d(0,30vh,0);opacity:.3;filter:brightness(1.14)}42%{transform:translate3d(0,30vh,0);opacity:.27;filter:brightness(1.1)}75%{transform:translate3d(0,72vh,0);opacity:.23;filter:brightness(.97)}86%{transform:translate3d(0,72vh,0);opacity:.25;filter:brightness(1.08)}100%{transform:translate3d(0,108vh,0);opacity:0;filter:brightness(.94)}}
+.optical-lite .depth-drop:nth-child(3){top:45%!important}.optical-lite .depth-drop:nth-child(4){top:82%!important}
+
+@keyframes depth-descent{0%{transform:translate3d(0,-30px,0);opacity:0;filter:brightness(.94)}10%{transform:translate3d(0,-20px,0);opacity:calc(var(--drop-alpha)*.72);filter:brightness(.98)}30%{transform:translate3d(0,30vh,0);opacity:var(--drop-alpha);filter:brightness(1.23)}42%{transform:translate3d(0,30vh,0);opacity:calc(var(--drop-alpha)*.92);filter:brightness(1.16)}75%{transform:translate3d(0,72vh,0);opacity:calc(var(--drop-alpha)*.8);filter:brightness(1.02)}86%{transform:translate3d(0,72vh,0);opacity:calc(var(--drop-alpha)*.88);filter:brightness(1.14)}100%{transform:translate3d(0,108vh,0);opacity:0;filter:brightness(.94)}}
+.depth-drop-far{z-index:0}.optical-lite .depth-drop{opacity:.15!important}

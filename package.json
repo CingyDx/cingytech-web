@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "netlify dev",
-    "test": "node --test tests/security.test.js tests/static-site.test.js tests/ads-tracking.test.js tests/hero-playback.test.js",
+    "test": "node --test tests/security.test.js tests/static-site.test.js tests/ads-tracking.test.js tests/hero-playback.test.js tests/automation-demo.test.js",
     "test:security": "node --test tests/security.test.js"
   },
   "dependencies": {},

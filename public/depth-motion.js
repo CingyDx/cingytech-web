@@ -11,9 +11,9 @@
   scene.className='optical-scene';scene.setAttribute('aria-hidden','true');
   const pane=document.createElement('span');pane.className='optical-pane';scene.appendChild(pane);
   const droplets=document.createElement('span');droplets.className='depth-droplets';
-  [[3,12,17,111,-31],[9,55,11,137,-74],[14,82,15,123,-9],[87,18,14,129,-63],[95,46,19,147,-101],[91,76,12,119,-45],[38,25,9,0,0],[65,72,8,0,0]].forEach(([x,y,size,duration,delay])=>{
-    const drop=document.createElement('span');drop.className='depth-drop'+(duration?'':' depth-drop-still');
-    drop.style.cssText=`left:${x}%;top:${y}%;width:${size}px;height:${size*1.24}px;--drop-duration:${duration||120}s;--drop-delay:${delay}s`;
+  [[6.27,0,15,198,-43,0.35],[87.15,0,21,199,-169,0.43],[15.91,0,22,178,-102,0.45],[93.42,0,21,141,-63,0.42],[3.49,0,21,228,-97,0.42],[92.03,0,19,182,-174,0.43],[7.72,0,23,202,-72,0.39],[98.03,0,23,216,-50,0.46],[10.0,0,20,220,-11,0.41],[88.29,0,14,194,-50,0.46],[14.06,0,22,166,-49,0.47],[87.9,0,24,182,-188,0.47],[7.22,0,27,234,-84,0.38],[87.02,0,23,178,-174,0.42],[7.79,0,20,143,-63,0.4],[89.04,0,13,159,-151,0.45],[13.5,0,27,195,-198,0.41],[84.54,0,16,181,-39,0.41],[8.23,0,14,234,-46,0.47],[87.06,0,20,173,-156,0.39],[2.81,0,22,183,-99,0.47],[96.09,0,13,162,-19,0.45],[10.98,0,26,162,-54,0.37],[91.39,0,27,206,-186,0.39],[9.8,0,26,140,-160,0.4],[94.74,0,17,234,-95,0.45],[14.84,0,28,159,-65,0.36],[92.37,0,28,233,-209,0.41],[30,0,8,242,-160,0.18],[38,0,7,282,-241,0.18],[45,0,7,225,-215,0.16],[55,0,6,266,-178,0.19],[63,0,6,215,-236,0.16],[69,0,6,215,-182,0.17],[34,0,10,227,-95,0.16],[60,0,10,195,-237,0.13]].forEach(([x,y,size,duration,delay,alpha=.3])=>{
+    const drop=document.createElement('span');drop.className='depth-drop'+(duration?'':' depth-drop-still')+(alpha<.25?' depth-drop-far':'');
+    drop.style.cssText=`left:${x}%;top:${y}%;width:${size}px;height:${size*1.24}px;--drop-duration:${duration||120}s;--drop-delay:${delay}s;--drop-alpha:${alpha}`;
     droplets.appendChild(drop);
   });scene.appendChild(droplets);
   document.body.prepend(scene);
@@ -90,9 +90,9 @@
           state.value[key]+=(state.target[key]-state.value[key])*blend;
           if(Math.abs(state.target[key]-state.value[key])>.0008)settled=false;
         }
-        // Exact damped spring for lift only: about 2% overshoot (under .2px).
+        // Exact damped spring for lift only: about 15% overshoot (around 1px on project cards).
         // Tilt and reflection keep the existing gentle, monotonic follower.
-        const omega=12,damping=.78,decay=damping*omega,frequency=omega*Math.sqrt(1-damping*damping);
+        const omega=10.5,damping=.48,decay=damping*omega,frequency=omega*Math.sqrt(1-damping*damping);
         const offset=state.value.hover-state.target.hover,velocity=state.velocity;
         const fade=Math.exp(-decay*dt),c=Math.cos(frequency*dt),s=Math.sin(frequency*dt);
         state.value.hover=state.target.hover+fade*(offset*c+(velocity+decay*offset)*s/frequency);
@@ -118,7 +118,7 @@
       element.addEventListener('pointermove',event=>{
         if(event.pointerType==='touch'||document.hidden)return;rect??=element.getBoundingClientRect();
         const x=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width)),y=Math.max(0,Math.min(1,(event.clientY-rect.top)/rect.height));
-        target(state,{x:(.5-y)*3.6,y:(x-.5)*5.4,shift:(x-.5)*14,hover:1});
+        target(state,{x:(.5-y)*3.6,y:(x-.5)*5.4,shift:(x-.5)*(element.matches(".site-header")?96:24),hover:1});
       },options);
       element.addEventListener('pointerleave',()=>{rect=null;target(state,{x:0,y:0,shift:0,hover:element.matches(':focus-visible')?1:0});},options);
     });
