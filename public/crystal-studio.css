@@ -11,6 +11,14 @@
 body{font-family:Manrope,"Segoe UI",Arial,sans-serif}
 body{isolation:isolate}
 .optical-scene{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden;contain:strict;background:#090a10}
+.optical-scene::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 78% 43%,rgba(57,27,94,.12),transparent 70%);pointer-events:none}
+.depth-droplets{position:absolute;inset:0;pointer-events:none}
+.depth-drop{position:absolute;background:url('./assets/depth-water-drop.webp?v=flow-4') center/contain no-repeat;opacity:.25;animation:depth-descent var(--drop-duration) linear var(--drop-delay) infinite;animation-play-state:paused}
+.optical-active:not(.optical-lite) .depth-drop{animation-play-state:running}
+.depth-drop-still{animation:none!important;opacity:.12}
+@keyframes depth-descent{0%{transform:translate3d(0,-24px,0);opacity:0}16%{opacity:.25}84%{opacity:.25}100%{transform:translate3d(0,140px,0);opacity:0}}
+.optical-lite .depth-drop{animation:none!important;opacity:.15}.optical-lite .depth-drop:nth-child(n+5){display:none}
+html.motion-disabled .depth-drop:not(.depth-drop-still){animation:depth-descent var(--drop-duration) linear var(--drop-delay) infinite!important;animation-play-state:paused!important}
 .optical-pane{position:absolute;inset:0;background:url('./assets/optical-backdrop-2560.webp?v=quiet-3') center/cover no-repeat;opacity:.68}
 .optical-lite .optical-pane{background-image:url('./assets/optical-backdrop-1280.webp?v=quiet-3');opacity:.62}
 @media(max-width:760px){.optical-lite .optical-pane{background-image:url('./assets/optical-backdrop-mobile.webp?v=quiet-3');background-position:right center}}
@@ -35,6 +43,8 @@ body:not(.subpage) .hero h1 em{color:#be95ff;text-shadow:0 0 45px rgba(146,63,25
 .hero-art-video{mask-image:none;-webkit-mask-image:none;filter:none}
 .hero-art{mix-blend-mode:screen}
 body:not(.subpage) .hero{isolation:auto;perspective:none;background:none}
+.hero-art::before,.portfolio-stage::before{display:none}
+.contact{background:transparent}
 .hero-art-poster{filter:none}
 .hero-art-poster,.hero-art-video{height:112%;top:-6%;object-fit:contain}
 .site-header{background:linear-gradient(110deg,rgba(42,26,70,.82),rgba(15,12,23,.94) 45%,rgba(39,23,68,.88));border-color:rgba(187,137,255,.42);box-shadow:inset 0 1px 0 rgba(244,216,255,.5),0 3px 0 #2c1b43,0 4px 1px #6b449d,0 20px 50px -30px #000,0 0 40px -20px rgba(135,50,255,.4)}
@@ -49,6 +59,19 @@ body:not(.subpage) .hero{isolation:auto;perspective:none;background:none}
 .signal-icon{color:#e4caff;border-color:rgba(221,188,255,.32);background:linear-gradient(145deg,rgba(163,108,255,.15),rgba(32,15,63,.55));box-shadow:inset 0 1px 0 rgba(246,214,255,.24),0 2px 0 rgba(7,3,15,.6),0 0 20px -6px rgba(147,65,255,.32)}
 .signal-arrow{border-color:rgba(225,194,255,.45);background:rgba(18,10,34,.33)}
 .glass-shelf{border-color:rgba(199,148,255,.65);background:linear-gradient(170deg,rgba(57,24,110,.12),rgba(135,72,220,.32) 60%,rgba(72,33,132,.62));box-shadow:inset 0 1px 2px rgba(255,229,255,.75),inset 0 -2px 6px rgba(178,104,255,.60),0 7px 0 #2d1547,0 8px 1px rgba(213,151,255,.6),0 25px 36px -8px rgba(0,0,0,.6),0 12px 35px rgba(116,37,239,.22)}
+/* One consistent pose on hover: no instant restacking or rotation reset. */
+.signal.depth-managed,.signal.depth-managed:hover,.signal.depth-managed:focus-visible{transform:perspective(1000px) translateY(calc(var(--rest-y) - var(--hover-progress,0)*4px)) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg));transition:border-color .65s ease}
+.portfolio-window.depth-managed,.portfolio-window.depth-managed:hover,.portfolio-window.depth-managed:focus-visible{z-index:var(--surface-z,2);transform:perspective(1100px) translateY(calc(var(--hover-progress,0)*-7px)) rotateY(calc(var(--card-turn) + var(--tilt-y,0deg))) rotateZ(var(--card-roll)) rotateX(var(--tilt-x,0deg)) scale(calc(1 + var(--hover-progress,0)*.008));transition:border-color .65s ease}
+.portfolio-domfins{--surface-z:3}.portfolio-window.depth-managed:focus-visible{z-index:5}
+html.motion-disabled .signal.depth-managed:hover,html.motion-disabled .signal.depth-managed:focus-visible{transform:perspective(1000px) translateY(var(--rest-y))}
+html.motion-disabled .portfolio-window.depth-managed:hover,html.motion-disabled .portfolio-window.depth-managed:focus-visible{transform:perspective(1100px) rotateY(var(--card-turn)) rotateZ(var(--card-roll))}
+html.motion-disabled .portfolio-window.depth-managed:hover:not(:focus-visible){z-index:var(--surface-z,2)}
+@media(prefers-reduced-motion:reduce){html:not(.motion-enabled) .signal.depth-managed:hover{transform:perspective(1000px) translateY(var(--rest-y))}html:not(.motion-enabled) .portfolio-window.depth-managed:hover{transform:perspective(1100px) rotateY(var(--card-turn)) rotateZ(var(--card-roll));z-index:var(--surface-z,2)}html:not(.motion-enabled) .portfolio-window.depth-managed:focus-visible{z-index:5}}
+.signal-icon,.signal-arrow{transition:transform .8s cubic-bezier(.22,.61,.36,1),background .7s ease}
+.optical-surface.depth-managed>.glass-optics>.glass-glint{transition:opacity .8s ease;transform:translate3d(var(--glint-shift,0px),0,0)}
+.glass-shelf,.service-shelf{transform:none;border:0;border-radius:0;box-shadow:none;background:url('./assets/depth-glass-shelf.webp?v=flow-4') center bottom/100% 100% no-repeat;height:180px;bottom:4px;left:-1%;right:-1%;opacity:.86}
+.glass-shelf::before,.glass-shelf::after{display:none}.service-shelf{height:82px;bottom:-32px}
+@media(max-width:760px){.portfolio-stage>.glass-shelf{height:90px;bottom:-12px}.service-shelf{height:65px;bottom:-28px}.portfolio-window.depth-managed,.portfolio-window.depth-managed:hover{--card-turn:0deg;--card-roll:0deg}}
 .button-primary,.header-cta,.subpage .btn:not(.ghost){background:linear-gradient(140deg,#dbc5ff,#b28af4 58%,#9563de);box-shadow:inset 0 1px 1px #fff0ff,inset 0 -2px 3px rgba(63,22,109,.33),0 3px 0 #503273,0 13px 30px -12px rgba(162,66,255,.62)}
 .button-primary:hover,.header-cta:hover{background:linear-gradient(140deg,#eddfff,#c9a3ff 58%,#ad78f4)}
 .portfolio-window,.contact-form,.subpage .glass{box-shadow:var(--glass-shadow),0 0 35px -22px rgba(154,69,255,.4)}

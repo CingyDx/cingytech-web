@@ -10,6 +10,12 @@
   const scene=document.createElement('div');
   scene.className='optical-scene';scene.setAttribute('aria-hidden','true');
   const pane=document.createElement('span');pane.className='optical-pane';scene.appendChild(pane);
+  const droplets=document.createElement('span');droplets.className='depth-droplets';
+  [[3,12,17,111,-31],[9,55,11,137,-74],[14,82,15,123,-9],[87,18,14,129,-63],[95,46,19,147,-101],[91,76,12,119,-45],[38,25,9,0,0],[65,72,8,0,0]].forEach(([x,y,size,duration,delay])=>{
+    const drop=document.createElement('span');drop.className='depth-drop'+(duration?'':' depth-drop-still');
+    drop.style.cssText=`left:${x}%;top:${y}%;width:${size}px;height:${size*1.24}px;--drop-duration:${duration||120}s;--drop-delay:${delay}s`;
+    droplets.appendChild(drop);
+  });scene.appendChild(droplets);
   document.body.prepend(scene);
   const limited=innerWidth<=760||navigator.connection?.saveData||navigator.hardwareConcurrency<=4||navigator.deviceMemory<=4;
   scene.classList.toggle('optical-lite',Boolean(limited));
@@ -52,29 +58,51 @@
   }
   const observer='IntersectionObserver' in window?new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){reveal(entry.target);observer.unobserve(entry.target);}});},{threshold:.08,rootMargin:'0px 0px -20px 0px'}):null;
   surfaces.forEach(element=>{
-    element.classList.add('optical-surface');
+    element.classList.add('optical-surface','depth-managed');
     const optics=document.createElement('span');optics.className='glass-optics';optics.setAttribute('aria-hidden','true');element.appendChild(optics);
     const glint=document.createElement('span');glint.className='glass-glint';optics.appendChild(glint);
   });
-  function resetSurface(element){['--tilt-x','--tilt-y','--glint-shift'].forEach(property=>element.style.removeProperty(property));}
+  function resetSurface(element){['--tilt-x','--tilt-y','--glint-shift','--hover-progress'].forEach(property=>element.style.removeProperty(property));}
   function configurePointer(){
     pointerEvents?.abort();surfaces.forEach(resetSurface);
     if(!allowed())return;
     pointerEvents=new AbortController();const signal=pointerEvents.signal,options={signal,passive:true};
+    const moving=new Set();let frame,last=0;
+    // A time-based damped follower avoids restarting a CSS transition on
+    // every mouse event, and stays equally gentle at different refresh rates.
+    function follow(now){
+      frame=null;if(!allowed()||document.hidden||signal.aborted)return;
+      const dt=last?Math.min((now-last)/1000,.064):1/60;last=now;
+      const blend=1-Math.exp(-dt/.22);
+      moving.forEach(state=>{
+        let settled=true;
+        for(const key of ['x','y','shift','hover']){
+          state.value[key]+=(state.target[key]-state.value[key])*blend;
+          if(Math.abs(state.target[key]-state.value[key])>.0008)settled=false;
+        }
+        if(settled){Object.assign(state.value,state.target);moving.delete(state);}
+        const {x,y,shift,hover}=state.value,e=state.element;
+        if(settled&&!x&&!y&&!shift&&!hover)resetSurface(e);
+        else{e.style.setProperty('--tilt-x',`${x.toFixed(4)}deg`);e.style.setProperty('--tilt-y',`${y.toFixed(4)}deg`);e.style.setProperty('--glint-shift',`${shift.toFixed(4)}px`);e.style.setProperty('--hover-progress',hover.toFixed(4));}
+      });
+      if(moving.size)frame=requestAnimationFrame(follow);
+    }
+    function target(state,values){Object.assign(state.target,values);moving.add(state);if(!frame){last=0;frame=requestAnimationFrame(follow);}}
+    signal.addEventListener('abort',()=>{cancelAnimationFrame(frame);moving.clear();},{once:true});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=null;moving.forEach(s=>{Object.assign(s.value,{x:0,y:0,shift:0,hover:0});Object.assign(s.target,s.value);resetSurface(s.element);});moving.clear();}},{signal});
     surfaces.forEach(element=>{
-      let rect,frame,position;
+      let rect;const state={element,value:{x:0,y:0,shift:0,hover:0},target:{x:0,y:0,shift:0,hover:0}};
       const invalidate=()=>{rect=null;};window.addEventListener('scroll',invalidate,{...options,capture:true});window.addEventListener('resize',invalidate,options);
-      signal.addEventListener('abort',()=>{cancelAnimationFrame(frame);},{once:true});
+      element.addEventListener('focusin',()=>target(state,{hover:1}),options);
+      element.addEventListener('focusout',event=>{if(!element.contains(event.relatedTarget))target(state,{hover:0});},options);
       if(!pointer.matches)return;
-      element.addEventListener('pointerenter',()=>{rect=element.getBoundingClientRect();},options);
+      element.addEventListener('pointerenter',()=>{rect=element.getBoundingClientRect();target(state,{hover:1});},options);
       element.addEventListener('pointermove',event=>{
-        if(event.pointerType==='touch')return;position={x:event.clientX,y:event.clientY};if(frame)return;
-        frame=requestAnimationFrame(()=>{frame=null;if(!allowed()||document.hidden||signal.aborted)return;rect??=element.getBoundingClientRect();
-          const x=Math.max(0,Math.min(1,(position.x-rect.left)/rect.width)),y=Math.max(0,Math.min(1,(position.y-rect.top)/rect.height));
-          element.style.setProperty('--tilt-x',`${(.5-y)*2.4}deg`);element.style.setProperty('--tilt-y',`${(x-.5)*4}deg`);element.style.setProperty('--glint-shift',`${(x-.5)*14}px`);
-        });
+        if(event.pointerType==='touch'||document.hidden)return;rect??=element.getBoundingClientRect();
+        const x=Math.max(0,Math.min(1,(event.clientX-rect.left)/rect.width)),y=Math.max(0,Math.min(1,(event.clientY-rect.top)/rect.height));
+        target(state,{x:(.5-y)*3.6,y:(x-.5)*5.4,shift:(x-.5)*14,hover:1});
       },options);
-      element.addEventListener('pointerleave',()=>{cancelAnimationFrame(frame);frame=null;rect=null;resetSurface(element);},options);
+      element.addEventListener('pointerleave',()=>{rect=null;target(state,{x:0,y:0,shift:0,hover:element.matches(':focus-visible')?1:0});},options);
     });
   }
   function configure(){

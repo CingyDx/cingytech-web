@@ -19,6 +19,7 @@ parser.add_argument('--start',type=int,default=1)
 parser.add_argument('--end',type=int,default=1)
 parser.add_argument('--output',default='render/crystal/hero')
 parser.add_argument('--save-blend',default='')
+parser.add_argument('--motion',choices=['studio','flow'],default='studio')
 args=parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 project=Path(__file__).resolve().parent.parent
 
@@ -118,7 +119,7 @@ def pose(frame):
     if args.asset=='hero':
         a=2*math.pi*(frame-1)/args.frames
         # One smooth revolution, gentle precession; no doubled fast axes.
-        root.rotation_euler=(.24+.16*math.sin(a),a,.30+.13*math.cos(a))
+        root.rotation_euler=(a+.24,.18+.22*math.sin(a),a+.43) if args.motion=='flow' else (.24+.16*math.sin(a),a,.30+.13*math.cos(a))
 
 if args.save_blend:
     if args.asset=='hero':
