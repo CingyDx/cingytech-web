@@ -9,11 +9,17 @@ p.add_argument('--variant', choices=['together','counter','phases','continuous',
 p.add_argument('--frames', type=int, default=288)
 p.add_argument('--fps', type=int, default=24)
 p.add_argument('--size', type=int, default=640)
+p.add_argument('--width',type=int)
+p.add_argument('--height',type=int)
+p.add_argument('--start',type=int,default=1)
+p.add_argument('--only-frames',default='')
+p.add_argument('--output',default='')
+p.add_argument('--adaptive-threshold',type=float,default=.04)
 p.add_argument('--end', type=int)
 p.add_argument('--samples', type=int, default=16)
 a=p.parse_args(sys.argv[sys.argv.index('--')+1:])
 project=Path(__file__).resolve().parent.parent
-output=project/'render/crystal/motion-studies'/a.variant
+output=project/a.output if a.output else project/'render/crystal/motion-studies'/a.variant
 output.mkdir(parents=True,exist_ok=True)
 bpy.ops.wm.open_mainfile(filepath=str(project/'art/crystal-flow.blend'))
 scene=bpy.context.scene
@@ -22,11 +28,11 @@ parts=[o for o in bpy.data.objects if o.parent==assembly]
 for obj in [assembly,*parts]:obj.animation_data_clear()
 base={o.name:o.rotation_euler.to_quaternion() for o in parts}
 locations={o.name:o.location.copy() for o in parts}
-scene.render.resolution_x=scene.render.resolution_y=a.size
+scene.render.resolution_x=a.width or a.size;scene.render.resolution_y=a.height or a.size
 scene.render.resolution_percentage=100
-scene.camera.data.ortho_scale=4.5
+scene.camera.data.ortho_scale=4.5*scene.render.resolution_x/scene.render.resolution_y
 scene.cycles.samples=a.samples
-scene.cycles.adaptive_threshold=.04
+scene.cycles.adaptive_threshold=a.adaptive_threshold
 scene.render.use_persistent_data=False
 scene.render.fps=a.fps
 scene.frame_start=1;scene.frame_end=a.frames
@@ -81,9 +87,10 @@ for frame in range(1,a.frames+2):
 pose(1);scene.frame_set(1)
 bpy.ops.wm.save_as_mainfile(filepath=str(output/'study.blend'))
 for obj in [assembly,*parts]:obj.animation_data_clear()
-for frame in range(1,min(a.end or a.frames,a.frames)+1):
+selected=[int(frame) for frame in a.only_frames.split(',')] if a.only_frames else range(a.start,min(a.end or a.frames,a.frames)+1)
+for frame in selected:
     start=time.monotonic();scene.frame_set(frame);pose(frame)
     scene.render.filepath=str(output/f'frame_{frame:04d}.png')
     bpy.ops.render.render(write_still=True)
     if frame%24==0 or frame==1:print('STUDY_FRAME',a.variant,frame,round(time.monotonic()-start,2),flush=True)
-(output/'metadata.json').write_text(json.dumps({'variant':a.variant,'width':a.size,'height':a.size,'frames':min(a.end or a.frames,a.frames),'fps':a.fps,'cyclesSamples':a.samples,'source':'art/crystal-flow.blend','persistentData':False},indent=2))
+(output/'metadata.json').write_text(json.dumps({'variant':a.variant,'width':scene.render.resolution_x,'height':scene.render.resolution_y,'frames':len(selected),'fps':a.fps,'cyclesSamples':a.samples,'adaptiveThreshold':a.adaptive_threshold,'source':'art/crystal-flow.blend','persistentData':False},indent=2))
