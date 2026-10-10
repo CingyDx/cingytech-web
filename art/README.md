@@ -40,3 +40,11 @@ Cycles persistent scene data caused solid-black portions of the animated glass i
 ```powershell
 blender -b --python-exit-code 1 --python art/render_optical_backdrop.py
 ```
+
+## Independent motion studies (local only)
+
+`experiment_ring_motion.py` reads the approved scene without modifying it. It renders three small Cycles studies (640x640, 24fps, 288 frames, 12 seconds): together, counter and phases. Outer ring, fine edge and internal violet channel share the same additional orientation. Persistent scene cache remains disabled.
+
+`audit_motion_studies.py` checks loop closure and maximum angular steps in the editable keyed scenes. `package_motion_studies.py` rejects opaque-black defects and edge clipping, then encodes the three actual frame sequences. Use the bundled Python runtime with Pillow/NumPy for this packaging step.
+
+`integrate_motion_study.py` builds Desktop/CingyTech-final-local from the existing public site, using the selected phases study and two slow background lenses with low contrast CSS lighting approximation. Public site assets and the preserved prototype 2.1 remain intact. The integrated preview uses the 640px/24fps study, not a new 4K master. No hosting operation is performed by these scripts.
