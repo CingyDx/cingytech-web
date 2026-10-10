@@ -95,7 +95,7 @@ if args.rich_background:
 if args.final_quality:
     for size in (768,1080,1440):shutil.copy2(final/f'web-{size}.mp4',target/f'assets/final-crystal-{size}.mp4')
     for size in (768,1280,2160):shutil.copy2(final/f'poster-{size}.webp',target/f'assets/final-crystal-poster-{size}.webp')
-    html=page.read_text(encoding='utf-8')
+    html=page.read_text(encoding='utf-8').replace('hero-orb.js?v=flow-4','hero-orb.js?v=final-local-1')
     for level,size in [('Small',768),('Medium',1080),('Large',1440)]:html=html.replace(f'data-mp4-{level.lower()}="./assets/crystal-study-{variant}.mp4?v=local-study-2"',f'data-mp4-{level.lower()}="./assets/final-crystal-{size}.mp4?v=final-1"')
     html=html.replace(f'<source src="./assets/crystal-study-{variant}.mp4?v=local-study-2"', '<source src="./assets/final-crystal-768.mp4?v=final-1"')
     html=html.replace(f'poster="./assets/crystal-study-{variant}.webp?v=local-study-2"','poster="./assets/final-crystal-poster-1280.webp?v=final-1"')

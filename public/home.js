@@ -94,8 +94,8 @@
       setStatus('Odeslání se nepovedlo. Zkuste to znovu nebo nám napište přímo na ', 'error');
       if (status) {
         const emailLink = document.createElement('a');
-        emailLink.href = 'mailto:contact.cingytech@proton.me';
-        emailLink.textContent = 'contact.cingytech@proton.me';
+        emailLink.href = 'mailto:contact.cingytech@pm.me';
+        emailLink.textContent = 'contact.cingytech@pm.me';
         status.append(emailLink, '.');
       }
     } finally {

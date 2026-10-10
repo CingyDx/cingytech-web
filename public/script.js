@@ -328,8 +328,8 @@
       status.className = 'form-status error';
       status.textContent = 'Odeslání se nepovedlo. Napište mi prosím na ';
       const emailLink = document.createElement('a');
-      emailLink.href = 'mailto:contact.cingytech@proton.me';
-      emailLink.textContent = 'contact.cingytech@proton.me';
+      emailLink.href = 'mailto:contact.cingytech@pm.me';
+      emailLink.textContent = 'contact.cingytech@pm.me';
       status.append(emailLink, '.');
     }
 

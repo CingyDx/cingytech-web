@@ -182,7 +182,7 @@ test('contact form counts a lead only after Netlify confirms a successful respon
   assert.equal(failure.conversions(), 0);
   assert.equal(failure.form.resetCalled, undefined);
   assert.match(failure.status.textContent, /nepovedlo/);
-  assert.equal(failure.status.children[0].href, 'mailto:contact.cingytech@proton.me');
+  assert.equal(failure.status.children[0].href, 'mailto:contact.cingytech@pm.me');
 
   const trackingFailure = loadContactForm({ ok: true }, true);
   await trackingFailure.submit({ preventDefault() {} });
