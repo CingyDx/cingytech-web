@@ -5,7 +5,7 @@ import bpy
 from mathutils import Quaternion, Vector
 
 p=argparse.ArgumentParser()
-p.add_argument('--variant', choices=['together','counter','phases','continuous'], required=True)
+p.add_argument('--variant', choices=['together','counter','phases','continuous','continuous-polish'], required=True)
 p.add_argument('--frames', type=int, default=288)
 p.add_argument('--fps', type=int, default=24)
 p.add_argument('--size', type=int, default=640)
@@ -60,16 +60,17 @@ def pose(frame):
         turn(['Crossing amethyst orbit'],(0,1,0),-.25*math.sin(t+1.6))
         turn(['Sculpted glass helix','Countertwist glass helix'],(0,0,1),.12*math.sin(t+2.4))
         turn(['Faceted luminous heart'],(0,0,1),-.15*math.sin(t))
-    elif a.variant=='continuous':
+    elif a.variant in ('continuous','continuous-polish'):
         # Unwrapped angles: real complete turns, not sinusoidal rocking.
         # Parent-space X/Z axes change ring planes; spinning a torus around
         # its own symmetry axis would be visually indistinguishable.
-        assembly.rotation_euler=(.24+.10*math.sin(t),.18+t,.43+.10*math.cos(t))
-        turn(['Inner glass orbit'],(0,0,1),2*t)
-        turn(['Crossing amethyst orbit'],(1,0,0),-t)
-        turn(['Faceted luminous heart'],(0,0,1),t)
+        cycle=2*t if a.variant=='continuous-polish' else t
+        assembly.rotation_euler=(.24+.10*math.sin(cycle),.18+cycle,.43+.10*math.cos(cycle))
+        turn(['Inner glass orbit'],(0,0,1),2*cycle)
+        turn(['Crossing amethyst orbit'],(1,0,0),-3*t if a.variant=='continuous-polish' else -t)
+        turn(['Faceted luminous heart'],(0,0,1),cycle)
         heart=bpy.data.objects['Faceted luminous heart']
-        heart.location=locations[heart.name]+Vector((.018*math.sin(t),0,.012*math.cos(t)))
+        heart.location=locations[heart.name]+Vector((.018*math.sin(cycle),0,.012*math.cos(cycle)))
 
 # Save editable keyed study separately; public and approved source are intact.
 for frame in range(1,a.frames+2):

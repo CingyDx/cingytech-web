@@ -33,6 +33,8 @@ for variant in variants:
     root_turn=math.degrees(bpy.data.objects['Orbit assembly'].rotation_euler.y-first_root_y)
     if variant=='continuous':
         if abs(root_turn-360)>.05 or local_travel['Inner glass orbit']<719 or local_travel['Crossing amethyst orbit']<359:raise RuntimeError('Expected real continuous complete rotations')
+    if variant=='continuous-polish':
+        if abs(root_turn-720)>.05 or local_travel['Inner glass orbit']<1438 or local_travel['Crossing amethyst orbit']<1078:raise RuntimeError('Expected preserved assembly speed and faster small dark ring')
     reports.append({'variant':variant,'loopClosureDegrees':round(seam,5),'maxWorldStepDegrees':round(maximum,5),'independentlyMovingParts':moved,'rootUnwrappedYDegrees':round(root_turn,4),'relativeAngularTravelDegrees':{name:round(angle,3) for name,angle in local_travel.items() if angle>1}})
 (root/(f'motion-audit-{variants[0]}.json' if len(variants)==1 else 'motion-audit.json')).write_text(json.dumps(reports,indent=2))
 print('MOTION_AUDIT',json.dumps(reports))

@@ -9,13 +9,13 @@ source=root/'render/crystal/motion-studies'
 output=Path('C:/Users/kryst/Desktop/CingyTech-motion-lab')
 output.mkdir(exist_ok=True)
 results=[]
-parser=argparse.ArgumentParser();parser.add_argument('--variant',choices=['together','counter','phases','continuous'])
+parser=argparse.ArgumentParser();parser.add_argument('--variant',choices=['together','counter','phases','continuous','continuous-polish'])
 args=parser.parse_args();variants=[args.variant] if args.variant else ['together','counter','phases']
 contact=Image.new('RGB',(960,1008),(9,10,16))
 for variant in variants:
     folder=source/variant;metadata=json.loads((folder/'metadata.json').read_text())
     frames=sorted(folder.glob('frame_*.png'))
-    expected=384 if variant=='continuous' else 288
+    expected=768 if variant=='continuous-polish' else 384 if variant=='continuous' else 288
     if len(frames)!=expected or metadata['frames']!=expected:raise RuntimeError(f'{variant}: expected {expected} actual frames')
     minimum_margin=640;worst_black=0
     command=['ffmpeg','-hide_banner','-loglevel','error','-y','-f','rawvideo','-pixel_format','rgb24','-video_size','640x640','-framerate','24','-i','pipe:0','-an','-c:v','libx264','-preset','medium','-crf','22','-pix_fmt','yuv420p','-movflags','+faststart',str(output/f'{variant}.mp4')]

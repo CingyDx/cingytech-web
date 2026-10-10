@@ -5,10 +5,10 @@ import shutil,json,argparse
 root=Path(__file__).resolve().parent.parent
 lab=Path('C:/Users/kryst/Desktop/CingyTech-motion-lab')
 target=Path('C:/Users/kryst/Desktop/CingyTech-final-local')
-parser=argparse.ArgumentParser();parser.add_argument('--variant',choices=['phases','continuous'],default='phases')
+parser=argparse.ArgumentParser();parser.add_argument('--variant',choices=['phases','continuous','continuous-polish'],default='phases')
 args=parser.parse_args();variant=args.variant
-if variant=='continuous':
-    backup=target.with_name('CingyTech-final-local-C')
+if variant in ('continuous','continuous-polish'):
+    backup=target.with_name('CingyTech-final-local-continuous' if variant=='continuous-polish' else 'CingyTech-final-local-C')
     if not backup.exists():shutil.copytree(target,backup)
 shutil.copytree(root/'public',target,dirs_exist_ok=True)
 shutil.copy2(lab/f'{variant}.mp4',target/f'assets/crystal-study-{variant}.mp4')
@@ -20,6 +20,9 @@ for size in (720,1280,2160):text=text.replace(f'crystal-poster-{size}.webp?v=flo
 text=text.replace('<source src="./assets/hero-glass-loop-720.webm" type="video/webm">','')
 page.write_text(text,encoding='utf-8')
 script=target/'depth-motion.js';text=script.read_text(encoding='utf-8')
+if variant=='continuous-polish':
+    text=text.replace('const omega=12,damping=.78','const omega=10.5,damping=.52').replace('about 2% overshoot (under .2px)','about 15% overshoot (around 1px on project cards)')
+    text=text.replace('shift:(x-.5)*14','shift:(x-.5)*(element.matches(".site-header")?96:24)')
 text=text.replace('[[3,12,17,111,-31],[9,55,11,137,-74],[14,82,15,123,-9],[87,18,14,129,-63],[95,46,19,147,-101],[91,76,12,119,-45],[38,25,9,0,0],[65,72,8,0,0]]','[[4,0,22,111,-31],[94,0,18,129,-63]]')
 script.write_text(text,encoding='utf-8')
 css=target/'crystal-studio.css'
@@ -28,9 +31,16 @@ text+='''
 /* Local study only: two lenses, low-frequency illumination approximation. */
 @keyframes depth-descent{0%{transform:translate3d(0,-30px,0);opacity:0;filter:brightness(.94)}14%{opacity:.24}32%{opacity:.34;filter:brightness(1.18)}48%{opacity:.25;filter:brightness(.94)}68%{opacity:.32;filter:brightness(1.14)}88%{opacity:.24;filter:brightness(.96)}100%{transform:translate3d(0,105vh,0);opacity:0;filter:brightness(.94)}}
 .optical-lite .depth-drop:first-child{top:22%!important}.optical-lite .depth-drop:nth-child(2){top:68%!important}
-@media(min-width:761px) and (max-width:1050px){body:not(.subpage) .hero-copy>p{max-width:44%}}
+@media(min-width:761px) and (max-width:1050px){body:not(.subpage) .hero-copy>p{max-width:min(340px,44vw)}}
 '''
 css.write_text(text,encoding='utf-8')
+if variant=='continuous-polish':
+    with css.open('a',encoding='utf-8') as file:file.write('''
+.optical-surface:hover>.glass-optics>.glass-glint,.optical-surface:focus-within>.glass-optics>.glass-glint{opacity:.18}
+.site-header.optical-surface>.glass-optics>.glass-glint{background:radial-gradient(ellipse at 50% 0,rgba(230,208,255,.55),rgba(176,131,231,.16) 38%,transparent 68%)}
+.site-header.optical-surface:hover>.glass-optics>.glass-glint,.site-header.optical-surface:focus-within>.glass-optics>.glass-glint{opacity:.16}
+.site-header.optical-surface.depth-managed>.glass-optics>.glass-glint{opacity:clamp(0,calc(var(--hover-progress,0)*.16),.16);transition:none}
+''')
 (target/'LOCAL-PREVIEW.txt').write_text('''Cingy.Tech — integrated local study
 Preserved baseline: Desktop/CingyTech-prototyp-2.1 and repo commit 37215a4.
 Selected variant and actual frame dimensions are in SOURCE-VERIFICATION.json.
@@ -38,6 +48,6 @@ No upscaling/4K claim; independent motion is baked into the video.
 Two background lenses use a low contrast CSS illumination approximation.
 No Netlify deploy, production publication or new purchase.
 ''',encoding='utf-8')
-verification=lab/(f'{variant}-verification.json' if variant=='continuous' else 'verification.json')
+verification=lab/(f'{variant}-verification.json' if variant in ('continuous','continuous-polish') else 'verification.json')
 shutil.copy2(verification,target/'SOURCE-VERIFICATION.json')
 print(json.dumps({'directory':str(target),'selected':variant,'movieBytes':(target/f'assets/crystal-study-{variant}.mp4').stat().st_size,'backgroundDroplets':2}))
