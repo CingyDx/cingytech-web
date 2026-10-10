@@ -123,4 +123,6 @@ No Netlify deploy, production publication or new purchase.
 verification=lab/(f'{variant}-verification.json' if variant in ('continuous','continuous-polish') else 'verification.json')
 shutil.copy2(verification,target/'SOURCE-VERIFICATION.json')
 if args.final_quality:shutil.copy2(final/'verification.json',target/'SOURCE-VERIFICATION.json')
+diagnostics=target/'diagnostics';diagnostics.mkdir(exist_ok=True)
+shutil.copy2(root/'art/local_quality_diagnostics.html',diagnostics/'index.html')
 print(json.dumps({'directory':str(target),'selected':variant,'finalQuality':args.final_quality,'movieBytes':(target/f'assets/crystal-study-{variant}.mp4').stat().st_size,'backgroundDroplets':36 if args.rich_background else 12 if args.moving_background else 2,'bakedBackgroundDroplets':0 if args.moving_background else 36}))

@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="cs"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Místní kontrola Cingy.Tech</title>
+<style>body{margin:16px;background:#17141d;color:#fff;font:14px system-ui}button{padding:10px;margin:0 8px 8px 0}iframe{display:block;width:390px;height:844px;border:1px solid #aaa;background:#09090f}pre{position:absolute;left:430px;top:155px;margin:0;white-space:pre-wrap;width:750px;max-height:650px;overflow:auto;background:#17141d}body:has(iframe[style*="1440px"]) pre{left:1480px}</style>
+<h1>Místní kontrola skutečného přehrávání</h1>
+<p>Pomocná stránka pro QA. Formulář neodesílá.</p>
+<button id="mobile">Mobil 390 px</button><button id="desktop">Desktop 1440 px</button><button id="refresh">Nové načtení</button>
+<pre id="metrics">Čekám na náhled…</pre>
+<iframe id="preview" title="Webový náhled" src="../?motion=on" allow="autoplay"></iframe>
+<script>
+const frame=document.querySelector('#preview'),output=document.querySelector('#metrics');
+let last=0,loops=0,started=performance.now(),firstFrameMs=null,previousSource='',errors=[];
+document.querySelector('#mobile').onclick=()=>{frame.style.width='390px';frame.style.height='844px'};
+document.querySelector('#desktop').onclick=()=>{frame.style.width='1440px';frame.style.height='1000px'};
+document.querySelector('#refresh').onclick=()=>{frame.contentWindow.location.reload()};
+frame.onload=()=>{last=0;loops=0;started=performance.now();firstFrameMs=null;previousSource='';errors=[];frame.contentWindow.addEventListener('error',e=>errors.push(e.message))};
+setInterval(()=>{
+ try{
+ const win=frame.contentWindow,doc=win.document,video=doc.querySelector('video'),art=doc.querySelector('.hero-art');
+ if(!video)return;
+ if(video.currentSrc!==previousSource){last=0;previousSource=video.currentSrc}
+ if(video.currentTime+3<last&&!video.paused)loops++;
+ last=video.currentTime;
+ if(firstFrameMs===null&&video.currentTime>0)firstFrameMs=Math.round(performance.now()-started);
+ const quality=video.getVideoPlaybackQuality?.();
+ output.textContent=JSON.stringify({viewport:[win.innerWidth,win.innerHeight],horizontalOverflow:doc.documentElement.scrollWidth>win.innerWidth+1,source:video.currentSrc,width:video.videoWidth,height:video.videoHeight,duration:video.duration,currentTime:Number(video.currentTime.toFixed(3)),paused:video.paused,readyState:video.readyState,loops,firstFrameAfterLoadMs:firstFrameMs,totalVideoFrames:quality?.totalVideoFrames,droppedVideoFrames:quality?.droppedVideoFrames,motionDisabled:doc.documentElement.classList.contains('motion-disabled'),systemReducedMotion:win.matchMedia('(prefers-reduced-motion: reduce)').matches,videoState:art?.dataset.videoState,videoQuality:art?.dataset.videoQuality,drops:doc.querySelectorAll('.depth-drop').length,farDrops:doc.querySelectorAll('.depth-drop-far').length,visibleDrops:[...doc.querySelectorAll('.depth-drop')].filter(e=>win.getComputedStyle(e).display!=='none').length,dropStates:[...new Set([...doc.querySelectorAll('.depth-drop')].map(e=>win.getComputedStyle(e).animationPlayState))],errors},null,2);
+ }catch(error){output.textContent=String(error)}
+},250);
+</script></html>
+
