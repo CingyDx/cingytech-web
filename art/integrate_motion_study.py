@@ -6,7 +6,11 @@ root=Path(__file__).resolve().parent.parent
 lab=Path('C:/Users/kryst/Desktop/CingyTech-motion-lab')
 target=Path('C:/Users/kryst/Desktop/CingyTech-final-local')
 parser=argparse.ArgumentParser();parser.add_argument('--variant',choices=['phases','continuous','continuous-polish'],default='phases')
+parser.add_argument('--moving-background',action='store_true')
 args=parser.parse_args();variant=args.variant
+if args.moving_background:
+    backup=target.with_name('CingyTech-final-local-before-moving-background')
+    if not backup.exists():shutil.copytree(target,backup)
 if variant in ('continuous','continuous-polish'):
     backup=target.with_name('CingyTech-final-local-continuous' if variant=='continuous-polish' else 'CingyTech-final-local-C')
     if not backup.exists():shutil.copytree(target,backup)
@@ -23,7 +27,10 @@ script=target/'depth-motion.js';text=script.read_text(encoding='utf-8')
 if variant=='continuous-polish':
     text=text.replace('const omega=12,damping=.78','const omega=10.5,damping=.52').replace('about 2% overshoot (under .2px)','about 15% overshoot (around 1px on project cards)')
     text=text.replace('shift:(x-.5)*14','shift:(x-.5)*(element.matches(".site-header")?96:24)')
-text=text.replace('[[3,12,17,111,-31],[9,55,11,137,-74],[14,82,15,123,-9],[87,18,14,129,-63],[95,46,19,147,-101],[91,76,12,119,-45],[38,25,9,0,0],[65,72,8,0,0]]','[[4,0,22,111,-31],[94,0,18,129,-63]]')
+drops='[[4,0,22,111,-31],[94,0,18,129,-63]]'
+if args.moving_background:
+    drops='[[4,0,22,151,-28],[94,0,18,179,-93],[9,0,13,193,-124],[88,0,16,167,-12],[14,0,10,211,-65],[97,0,11,137,-73],[2,0,9,181,-146],[91,0,14,223,-42],[7,0,16,157,-103],[85,0,9,199,-172],[12,0,12,173,-37],[99,0,8,229,-132]]'
+text=text.replace('[[3,12,17,111,-31],[9,55,11,137,-74],[14,82,15,123,-9],[87,18,14,129,-63],[95,46,19,147,-101],[91,76,12,119,-45],[38,25,9,0,0],[65,72,8,0,0]]',drops)
 script.write_text(text,encoding='utf-8')
 css=target/'crystal-studio.css'
 text=css.read_text(encoding='utf-8')
@@ -41,13 +48,31 @@ if variant=='continuous-polish':
 .site-header.optical-surface:hover>.glass-optics>.glass-glint,.site-header.optical-surface:focus-within>.glass-optics>.glass-glint{opacity:.16}
 .site-header.optical-surface.depth-managed>.glass-optics>.glass-glint{opacity:clamp(0,calc(var(--hover-progress,0)*.16),.16);transition:none}
 ''')
+if args.moving_background:
+    from PIL import Image
+    source=root/'render/crystal/clean-glass-1920.png'
+    metadata=json.loads(source.with_suffix('.json').read_text())
+    if metadata['waterLenses']!=0 or metadata['width']!=1920:raise RuntimeError('Expected small clean background without baked water lenses')
+    image=Image.open(source).convert('RGB')
+    image.save(target/'assets/clean-glass-1920.webp',quality=84,method=6)
+    image.resize((1280,720),Image.Resampling.LANCZOS).save(target/'assets/clean-glass-1280.webp',quality=82,method=6)
+    image.crop((1296,0,1920,1080)).resize((720,1246),Image.Resampling.LANCZOS).save(target/'assets/clean-glass-mobile.webp',quality=82,method=6)
+    with css.open('a',encoding='utf-8') as file:file.write('''
+/* A clean Cycles material plate, with all background water in real DOM layers. */
+.optical-pane{background-image:url('./assets/clean-glass-1920.webp?v=local-water-1')}
+.optical-lite .optical-pane{background-image:url('./assets/clean-glass-1280.webp?v=local-water-1')}
+@media(max-width:760px){.optical-lite .optical-pane{background-image:url('./assets/clean-glass-mobile.webp?v=local-water-1')}}
+@keyframes depth-descent{0%{transform:translate3d(0,-30px,0);opacity:0;filter:brightness(.94)}10%{transform:translate3d(0,-20px,0);opacity:.2;filter:brightness(.96)}30%{transform:translate3d(0,30vh,0);opacity:.3;filter:brightness(1.14)}42%{transform:translate3d(0,30vh,0);opacity:.27;filter:brightness(1.1)}75%{transform:translate3d(0,72vh,0);opacity:.23;filter:brightness(.97)}86%{transform:translate3d(0,72vh,0);opacity:.25;filter:brightness(1.08)}100%{transform:translate3d(0,108vh,0);opacity:0;filter:brightness(.94)}}
+.optical-lite .depth-drop:nth-child(3){top:45%!important}.optical-lite .depth-drop:nth-child(4){top:82%!important}
+''')
+    shutil.copy2(source.with_suffix('.json'),target/'BACKGROUND-SOURCE.json')
 (target/'LOCAL-PREVIEW.txt').write_text('''Cingy.Tech — integrated local study
 Preserved baseline: Desktop/CingyTech-prototyp-2.1 and repo commit 37215a4.
 Selected variant and actual frame dimensions are in SOURCE-VERIFICATION.json.
 No upscaling/4K claim; independent motion is baked into the video.
-Two background lenses use a low contrast CSS illumination approximation.
+Background lenses use a low contrast CSS illumination approximation.
 No Netlify deploy, production publication or new purchase.
 ''',encoding='utf-8')
 verification=lab/(f'{variant}-verification.json' if variant in ('continuous','continuous-polish') else 'verification.json')
 shutil.copy2(verification,target/'SOURCE-VERIFICATION.json')
-print(json.dumps({'directory':str(target),'selected':variant,'movieBytes':(target/f'assets/crystal-study-{variant}.mp4').stat().st_size,'backgroundDroplets':2}))
+print(json.dumps({'directory':str(target),'selected':variant,'movieBytes':(target/f'assets/crystal-study-{variant}.mp4').stat().st_size,'backgroundDroplets':12 if args.moving_background else 2,'bakedBackgroundDroplets':0 if args.moving_background else 36}))

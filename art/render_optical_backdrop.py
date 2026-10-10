@@ -1,7 +1,7 @@
 """Continuous smoked glass, soft studio reflections and real water lenses.
 No pane boundary, emissive paths or strip lights. The material plate stays still.
 """
-import argparse, random, sys
+import argparse, random, sys, json
 from pathlib import Path
 import bpy
 from mathutils import Vector
@@ -10,6 +10,7 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--width',type=int,default=3840)
 parser.add_argument('--samples',type=int,default=96)
 parser.add_argument('--output',default='render/crystal/infinity-glass-4k.png')
+parser.add_argument('--droplets',type=int,default=36)
 args=parser.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 root=Path(__file__).resolve().parent.parent
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
@@ -45,7 +46,7 @@ o=bpy.context.object;o.name='Continuous infinity glass plane';o.scale=(54,.15,36
 
 water=material('Water - IOR 1.333',(.98,.96,1),1,.022,1.333)
 random.seed(5070)
-for index in range(36):
+for index in range(args.droplets):
     # Side lenses give surface detail while leaving the centre calm for text.
     x=random.choice([-1,1])*random.uniform(8.6,11.7);z=random.uniform(-6.5,6.5);radius=random.uniform(.05,.125)
     bpy.ops.mesh.primitive_uv_sphere_add(segments=40,ring_count=24,radius=1,location=(x,-.12,z))
@@ -72,3 +73,6 @@ scene.render.resolution_x,scene.render.resolution_y=args.width,round(args.width*
 scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGB'
 output=root/args.output;output.parent.mkdir(parents=True,exist_ok=True);scene.render.filepath=str(output)
 bpy.ops.render.render(write_still=True)
+metadata={'width':scene.render.resolution_x,'height':scene.render.resolution_y,'waterLenses':sum(o.name.startswith('Water lens ') for o in bpy.data.objects),'samples':args.samples}
+output.with_suffix('.json').write_text(json.dumps(metadata,indent=2))
+print('BACKDROP_SOURCE',json.dumps(metadata),flush=True)
