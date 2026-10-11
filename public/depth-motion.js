@@ -11,18 +11,28 @@
   scene.className='optical-scene';scene.setAttribute('aria-hidden','true');
   const pane=document.createElement('span');pane.className='optical-pane';scene.appendChild(pane);
   const droplets=document.createElement('span');droplets.className='depth-droplets';
+  const scriptURL=document.currentScript?.src||document.baseURI;
+  let dropletsReady=false;
   [[6.27,0,15,198,-43,0.35],[87.15,0,21,199,-169,0.43],[15.91,0,22,178,-102,0.45],[93.42,0,21,141,-63,0.42],[3.49,0,21,228,-97,0.42],[92.03,0,19,182,-174,0.43],[7.72,0,23,202,-72,0.39],[98.03,0,23,216,-50,0.46],[10.0,0,20,220,-11,0.41],[88.29,0,14,194,-50,0.46],[14.06,0,22,166,-49,0.47],[87.9,0,24,182,-188,0.47],[7.22,0,27,234,-84,0.38],[87.02,0,23,178,-174,0.42],[7.79,0,20,143,-63,0.4],[89.04,0,13,159,-151,0.45],[13.5,0,27,195,-198,0.41],[84.54,0,16,181,-39,0.41],[8.23,0,14,234,-46,0.47],[87.06,0,20,173,-156,0.39],[2.81,0,22,183,-99,0.47],[96.09,0,13,162,-19,0.45],[10.98,0,26,162,-54,0.37],[91.39,0,27,206,-186,0.39],[9.8,0,26,140,-160,0.4],[94.74,0,17,234,-95,0.45],[14.84,0,28,159,-65,0.36],[92.37,0,28,233,-209,0.41],[30,0,8,242,-160,0.18],[38,0,7,282,-241,0.18],[45,0,7,225,-215,0.16],[55,0,6,266,-178,0.19],[63,0,6,215,-236,0.16],[69,0,6,215,-182,0.17],[34,0,10,227,-95,0.16],[60,0,10,195,-237,0.13]].forEach(([x,y,size,duration,delay,alpha=.3])=>{
     const drop=document.createElement('span');drop.className='depth-drop'+(duration?'':' depth-drop-still')+(alpha<.25?' depth-drop-far':'');
     drop.style.cssText=`left:${x}%;top:${y}%;width:${size}px;height:${size*1.24}px;--drop-duration:${duration||120}s;--drop-delay:${delay}s;--drop-alpha:${alpha}`;
     droplets.appendChild(drop);
   });scene.appendChild(droplets);
   document.body.prepend(scene);
+  // Decode before exposing or moving the lens layer: a late texture must not
+  // pop into the middle of an animation that has already been running.
+  const dropTexture=new Image();
+  dropTexture.onload=async()=>{
+    try{await dropTexture.decode();}catch(_){return;}
+    dropletsReady=true;scene.classList.add('drops-ready');sceneMotion();
+  };
+  dropTexture.src=new URL('assets/depth-water-drop.webp?v=flow-4',scriptURL).href;
   const limited=innerWidth<=760||navigator.connection?.saveData||navigator.hardwareConcurrency<=4||navigator.deviceMemory<=4;
   scene.classList.toggle('optical-lite',Boolean(limited));
   let heroVisible=true;
   const heroDrops=[...document.querySelectorAll('.glass-drop')];
   function sceneMotion(){
-    scene.classList.toggle('optical-active',allowed()&&!document.hidden);
+    scene.classList.toggle('optical-active',dropletsReady&&allowed()&&!document.hidden);
     heroDrops.forEach(drop=>{drop.style.animationPlayState=allowed()&&!limited&&!document.hidden&&heroVisible?'running':'paused';});
   }
   const heroLayer=document.querySelector('.hero-art');

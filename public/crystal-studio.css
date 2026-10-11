@@ -116,3 +116,10 @@ html.motion-disabled .portfolio-window.depth-managed:hover:not(:focus-visible){z
 
 @keyframes depth-descent{0%{transform:translate3d(0,-30px,0);opacity:0;filter:brightness(.94)}10%{transform:translate3d(0,-20px,0);opacity:calc(var(--drop-alpha)*.72);filter:brightness(.98)}30%{transform:translate3d(0,30vh,0);opacity:var(--drop-alpha);filter:brightness(1.23)}42%{transform:translate3d(0,30vh,0);opacity:calc(var(--drop-alpha)*.92);filter:brightness(1.16)}75%{transform:translate3d(0,72vh,0);opacity:calc(var(--drop-alpha)*.8);filter:brightness(1.02)}86%{transform:translate3d(0,72vh,0);opacity:calc(var(--drop-alpha)*.88);filter:brightness(1.14)}100%{transform:translate3d(0,108vh,0);opacity:0;filter:brightness(.94)}}
 .depth-drop-far{z-index:0}.optical-lite .depth-drop{opacity:.15!important}
+
+/* Keep the lens plane stable until its shared texture has decoded. */
+.depth-droplets{opacity:0;transition:opacity .9s ease}
+.drops-ready .depth-droplets{opacity:1}
+html.motion-disabled .depth-droplets{transition:none}
+@media(prefers-reduced-motion:reduce){html:not(.motion-enabled) .depth-droplets{transition:none}}
+.hero-art[data-video-state="adapting"] .hero-art-poster{transition:none}

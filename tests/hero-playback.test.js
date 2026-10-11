@@ -1,9 +1,9 @@
 const {test}=require('node:test');
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const script=fs.readFileSync(require('node:path').join(__dirname,'../public/hero-orb.js'),'utf8');
-function fixture({reduced=false,reject=false,webkit=false,cores}={}){
+function fixture({reduced=false,reject=false,webkit=false,cores,connection={effectiveType:'4g',downlink:20,rtt:30}}={}){
   const classes=()=>{const set=new Set();return {add:x=>set.add(x),remove:x=>set.delete(x),contains:x=>set.has(x),toggle(x,value){if(value)set.add(x);else set.delete(x)}}};
-  const events={},windowEvents={},buttonEvents={};let nextFrame,source='',plays=0,block=reject,qualityCheck;
+  const events={},windowEvents={},buttonEvents={};let nextFrame,source='',plays=0,block=reject,qualityCheck,stallCheck;
   const root={classList:classes(),dataset:{}};
   const video={paused:true,readyState:2,dataset:{mp4Small:'small.mp4',mp4Medium:'medium.mp4',mp4Large:'large.mp4'},canPlayType:()=> 'probably',addEventListener:(name,cb)=>events[name]=cb,pause(){this.paused=true;},play(){plays++;if(block)return Promise.reject(Object.assign(new Error('blocked'),{name:'NotAllowedError'}));this.paused=false;return Promise.resolve();},load(){},getAttribute:()=>source,requestVideoFrameCallback(cb){nextFrame=cb;return 1;},cancelVideoFrameCallback(){nextFrame=null;}};
   Object.defineProperty(video,'src',{get:()=>source,set:value=>source=value});
@@ -11,10 +11,25 @@ function fixture({reduced=false,reject=false,webkit=false,cores}={}){
   const toggle={hidden:true,textContent:'',setAttribute(){},addEventListener:(name,cb)=>buttonEvents[name]=cb};
   const document={documentElement:root,hidden:false,querySelector:selector=>selector==='.hero-art'?art:toggle,addEventListener:(name,cb)=>windowEvents[name]=cb};
   const window={innerWidth:1440,matchMedia:()=>({matches:reduced,addEventListener(){}}),dispatchEvent(){},requestAnimationFrame:cb=>cb(),setInterval(cb){qualityCheck=cb;}};
-  vm.runInNewContext(script,{document,window,navigator:{userAgent:webkit?'AppleWebKit/605 Safari/605':'Chrome/142',hardwareConcurrency:cores,connection:{}},localStorage:{setItem(){}},Event:class{},IntersectionObserver:class{observe(){}},requestAnimationFrame:cb=>cb()});
-  return {root,art,video,toggle,events,source:()=>source,plays:()=>plays,frame(){nextFrame?.(0,{presentedFrames:1});},quality(total,dropped){video.getVideoPlaybackQuality=()=>({totalVideoFrames:total,droppedVideoFrames:dropped});qualityCheck();},click(){buttonEvents.click();},unblock(){block=false;},hide(){document.hidden=true;windowEvents.visibilitychange();}};
+  vm.runInNewContext(script,{document,window,navigator:{userAgent:webkit?'AppleWebKit/605 Safari/605':'Chrome/142',hardwareConcurrency:cores,connection},localStorage:{setItem(){}},Event:class{},IntersectionObserver:class{observe(){}},requestAnimationFrame:cb=>cb(),setTimeout:cb=>{stallCheck=cb;return 1;},clearTimeout:()=>{stallCheck=null;}});
+  return {root,art,video,toggle,events,source:()=>source,plays:()=>plays,stall(){stallCheck?.();},frame(){nextFrame?.(0,{presentedFrames:1});},quality(total,dropped){video.getVideoPlaybackQuality=()=>({totalVideoFrames:total,droppedVideoFrames:dropped});qualityCheck();},click(){buttonEvents.click();},unblock(){block=false;},hide(){document.hidden=true;windowEvents.visibilitychange();}};
 }
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
+test('unknown connection starts with the light source, including WebKit',async()=>{
+ const f=fixture({webkit:true,connection:{}});await flush();assert.equal(f.source(),'small.mp4');assert.equal(f.video.paused,false);
+});
+test('buffer starvation falls directly to the light source and retains the loop position',async()=>{
+ const f=fixture();await flush();f.frame();f.video.currentTime=2.75;f.video.duration=32;f.video.readyState=2;
+ assert.equal(typeof f.events.waiting,'function');f.events.waiting();f.stall();await flush();assert.equal(f.source(),'small.mp4');
+ f.video.currentTime=0;f.events.loadedmetadata();assert.equal(f.video.currentTime,2.75);
+});
+test('a recovered short buffering pause does not replace the source',async()=>{
+ const f=fixture();await flush();f.frame();assert.equal(typeof f.events.waiting,'function');f.events.waiting();f.events.playing();f.stall();assert.equal(f.source(),'medium.mp4');
+});
+test('repeated network interruptions choose light video even if each pause recovers quickly',async()=>{
+ const f=fixture();await flush();f.frame();f.video.currentTime=3.5;f.video.duration=32;
+ f.events.waiting();f.events.playing();assert.equal(f.source(),'medium.mp4');f.events.waiting();await flush();assert.equal(f.source(),'small.mp4');
+});
 test('WebKit receives compatible MP4 and plays without a user gesture',async()=>{
  const f=fixture({webkit:true});await flush();assert.equal(f.video.paused,false);assert.equal(f.source(),'medium.mp4');assert.equal(f.plays(),1);
 });

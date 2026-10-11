@@ -26,6 +26,22 @@
   let qualitySample = null;
   let slowWindows = 0;
   let resumeTime = null;
+  let stallTimer = null;
+  let bufferInterruptions = 0;
+
+  function clearStall() {
+    clearTimeout(stallTimer);
+    stallTimer = null;
+  }
+
+  function watchBuffer() {
+    if (stallTimer !== null || quality === 'small' || !shouldPlay()) return;
+    art.dataset.videoState = frameReady ? 'buffering' : 'loading';
+    stallTimer = setTimeout(() => {
+      stallTimer = null;
+      if (shouldPlay() && video.readyState < 3) lowerQuality('small');
+    }, 3000);
+  }
 
   function resetFrame() {
     if (frameCallback !== null) video.cancelVideoFrameCallback?.(frameCallback);
@@ -40,7 +56,8 @@
     if (supportsMP4 && video.dataset.mp4Small) {
       const width = window.innerWidth;
       const connection = navigator.connection;
-      const limited = saveData || ['slow-2g', '2g', '3g'].includes(connection?.effectiveType) || (connection?.downlink > 0 && connection.downlink <= 2) || (navigator.deviceMemory > 0 && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4);
+      const fastConnection = connection?.effectiveType === '4g' && connection.downlink >= 8 && connection.rtt <= 150;
+      const limited = !fastConnection || saveData || (navigator.deviceMemory > 0 && navigator.deviceMemory <= 4) || (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4);
       quality = width <= 760 || limited ? 'small' : width >= 1700 ? 'large' : 'medium';
       art.dataset.videoQuality = quality;
       video.src = sourceFor(quality);
@@ -55,18 +72,20 @@
     return level === 'small' ? video.dataset.mp4Small : level === 'large' ? video.dataset.mp4Large : video.dataset.mp4Medium;
   }
 
-  function lowerQuality() {
+  function lowerQuality(target) {
     if (!supportsMP4 || quality === 'small') return;
+    clearStall();
     resumeTime = video.currentTime;
     video.pause();
     playRequest += 1;
     playPending = false;
     resetFrame();
-    quality = quality === 'large' ? 'medium' : 'small';
+    quality = target === 'small' ? 'small' : quality === 'large' ? 'medium' : 'small';
     art.dataset.videoQuality = quality;
     art.dataset.videoState = 'adapting';
     qualitySample = null;
     slowWindows = 0;
+    bufferInterruptions = 0;
     video.src = sourceFor(quality);
     video.load();
     update();
@@ -129,6 +148,7 @@
     updateControls();
 
     if (!shouldPlay()) {
+      clearStall();
       // A pending play() interrupted by scrolling is not an autoplay rejection.
       playRequest += 1;
       playPending = false;
@@ -142,6 +162,7 @@
 
     if (playPending || !video.paused || playbackBlocked) return;
     selectSource();
+    watchBuffer();
     const request = ++playRequest;
     playPending = true;
     const attempt = video.play();
@@ -183,11 +204,21 @@
     update();
   });
   video.addEventListener('playing', () => {
+    clearStall();
+    if (frameReady) art.dataset.videoState = 'playing';
     playbackBlocked = false;
     abortRetried = false;
     updateControls();
     presentFrame();
   });
+  video.addEventListener('waiting', () => {
+    if (frameReady && shouldPlay() && quality !== 'small' && ++bufferInterruptions >= 2) {
+      lowerQuality('small');
+      return;
+    }
+    watchBuffer();
+  });
+  video.addEventListener('stalled', watchBuffer);
   video.addEventListener('loadedmetadata', () => {
     if (resumeTime === null) return;
     const time = resumeTime;
@@ -195,6 +226,7 @@
     try { if (Number.isFinite(video.duration) && video.duration > 0) video.currentTime = time % video.duration; } catch (_) { /* Fresh loop remains usable. */ }
   });
   video.addEventListener('error', () => {
+    clearStall();
     playRequest += 1;
     playPending = false;
     resetFrame();
