@@ -1,0 +1,14 @@
+/* Selective finite hover feedback; independent rotate/translate preserve depth transforms. */
+@media(hover:hover) and (pointer:fine){
+.site-header .brand:hover,.site-nav a:hover,.site-header .header-cta:hover{animation:contact-micro-wiggle .55s cubic-bezier(.25,.7,.3,1) both}
+.demo-links a:hover{animation:template-micro-wiggle .65s cubic-bezier(.2,.8,.25,1) both}
+.contact-form input[name="name"]:hover:not(:focus),.contact-form input[name="email"]:hover:not(:focus){animation:input-soft-highlight .5s ease-out both}
+}
+@keyframes contact-micro-wiggle{0%,100%{rotate:0deg;translate:0 0}28%{rotate:-.55deg;translate:0 -.7px}60%{rotate:.3deg;translate:0 -.3px}82%{rotate:-.12deg;translate:0 0}}
+@keyframes template-micro-wiggle{0%,100%{rotate:0deg;translate:0 0}28%{rotate:-1.1deg;translate:0 -1.4px}60%{rotate:.6deg;translate:0 -.6px}82%{rotate:-.2deg;translate:0 0}}
+@keyframes input-soft-highlight{0%,100%{box-shadow:0 0 0 transparent}45%{box-shadow:0 0 12px #b493ee20}}
+.contact-form input:focus{animation:none}
+@media(max-width:760px){.site-header .header-cta{display:inline-flex!important;margin-left:auto;min-height:36px;padding:0 11px;font-size:12px;gap:5px}.header-inner{gap:10px}.site-header .menu-toggle{flex:none}}
+@media(max-width:380px){.site-header .brand{font-size:20px}.site-header .header-inner{padding-inline:12px;gap:6px}.site-header .header-cta{padding-inline:9px;font-size:11px}}
+@media(prefers-reduced-motion:reduce){html:not(.motion-enabled) .site-header .brand,html:not(.motion-enabled) .site-nav a,html:not(.motion-enabled) .site-header .header-cta,html:not(.motion-enabled) .demo-links a,html:not(.motion-enabled) .contact-form input{animation:none!important}}
+html.motion-disabled .site-header .brand,html.motion-disabled .site-nav a,html.motion-disabled .site-header .header-cta,html.motion-disabled .demo-links a,html.motion-disabled .contact-form input{animation:none!important}

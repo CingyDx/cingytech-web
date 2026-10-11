@@ -23,6 +23,7 @@
     document.body.classList.toggle('menu-open', open);
   });
   nav?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+  document.querySelector('.header-cta')?.addEventListener('click', closeMenu);
   document.addEventListener('keydown', event => { if (event.key === 'Escape') closeMenu(); });
   window.addEventListener('resize', () => { if (window.innerWidth > 760) closeMenu(); });
 

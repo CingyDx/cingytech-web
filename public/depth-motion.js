@@ -2,8 +2,8 @@
   const root=document.documentElement;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
   const pointer=matchMedia('(hover: hover) and (pointer: fine)');
-  const reveals=[...document.querySelectorAll('.reveal,.signal,.portfolio-window,.demo-rail,.method-inner')];
-  const surfaces=[...document.querySelectorAll('.signal,.portfolio-window,.subpage .glass,.demo-rail,.contact-form,.button,.header-cta,.btn,.site-header')];
+  const reveals=[...document.querySelectorAll('.reveal,.signal,.portfolio-window,.automation-window,.demo-rail,.method-inner')];
+  const surfaces=[...document.querySelectorAll('.signal,.portfolio-window,.automation-window,.subpage .glass,.demo-rail,.contact-form,.button,.header-cta,.btn,.site-header')];
   const seen=new WeakSet(),active=new Set();
   let introStarted=false,pointerEvents;
   const allowed=()=>!root.classList.contains('motion-disabled')&&(!reduced.matches||root.classList.contains('motion-enabled'));
@@ -42,8 +42,8 @@
     if(seen.has(element)||document.hidden)return;
     seen.add(element);element.classList.remove('motion-pending');
     if(!allowed())return;
-    const isSlab=element.matches('.signal,.portfolio-window');
-    const side=element.matches('.portfolio-banik')?-35:element.matches('.portfolio-wenspol')?35:0;
+    const isSlab=element.matches('.signal,.portfolio-window,.automation-window');
+    const side=element.matches('.portfolio-banik,.automation-window:first-child')?-35:element.matches('.portfolio-wenspol,.automation-window:nth-child(2)')?35:0;
     const base=getComputedStyle(element).transform;
     animate(element,[{opacity:isSlab?.30:.75,transform:`perspective(1100px) translate3d(${side}px,${isSlab?46:20}px,-65px) ${base==='none'?'':base}`},{opacity:1,transform:base}],{duration:isSlab?1000:700});
   }
@@ -132,5 +132,5 @@
   intro();reveals.forEach(element=>{if(observer)observer.observe(element);else reveal(element);});configurePointer();sceneMotion();
   reduced.addEventListener('change',configure);pointer.addEventListener('change',configurePointer);window.addEventListener('cingy-motion-change',configure);
   document.addEventListener('visibilitychange',()=>{sceneMotion();if(document.hidden)active.forEach(animation=>animation.cancel());else{intro();reveals.filter(visible).forEach(reveal);}});
-  document.addEventListener('focusin',event=>{const element=event.target.closest('.reveal,.signal,.portfolio-window');if(element){seen.add(element);element.classList.remove('motion-pending');}});
+  document.addEventListener('focusin',event=>{const element=event.target.closest('.reveal,.signal,.portfolio-window,.automation-window');if(element){seen.add(element);element.classList.remove('motion-pending');}});
 })();

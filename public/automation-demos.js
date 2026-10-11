@@ -13,16 +13,17 @@
  function render(){
   steps.replaceChildren(...names[kind].map((name,i)=>{const li=document.createElement('li');li.textContent=name;li.className=i<phase?'done':i===phase?'current':'';return li}));
   if(kind==='inquiry'){
-   content.innerHTML='<div class="automation-input"><span class="automation-label">PŘÍCHOZÍ ZPRÁVA · UKÁZKOVÁ</span><p class="demo-message"></p></div><div class="automation-result"><span class="automation-label">ZÁZNAM POPTÁVKY</span><dl><div><dt>Kontakt</dt><dd class="demo-email">Čeká na zpracování</dd></div><div><dt>Rozpočet</dt><dd class="demo-budget">—</dd></div><div><dt>Stav</dt><dd class="demo-state">Nová zpráva</dd></div></dl><label for="demo-draft">Návrh odpovědi</label><textarea id="demo-draft" rows="4" readonly placeholder="Návrh se objeví po zpracování"></textarea><p class="demo-approval-note">Odpověď se nikam neodesílá.</p></div>';
+   content.innerHTML='<div class="automation-input"><span class="automation-label">PŘÍCHOZÍ ZPRÁVA · UKÁZKOVÁ</span><p class="demo-message"></p></div><div class="automation-result"><span class="automation-data-flow" aria-hidden="true"><span class="data-flow-bar"></span><span class="data-flow-bar"></span></span><span class="automation-label">ZÁZNAM POPTÁVKY</span><dl><div><dt>Kontakt</dt><dd class="demo-email">Čeká na zpracování</dd></div><div><dt>Rozpočet</dt><dd class="demo-budget">—</dd></div><div><dt>Stav</dt><dd class="demo-state">Nová zpráva</dd></div></dl><label for="demo-draft">Návrh odpovědi</label><textarea id="demo-draft" rows="4" readonly placeholder="Návrh se objeví po zpracování"></textarea><p class="demo-approval-note">Odpověď se nikam neodesílá.</p></div>';
    text('.demo-message',inquiry);
    if(phase>=2){text('.demo-email',parsed.email);text('.demo-budget',new Intl.NumberFormat('cs-CZ').format(parsed.budget)+' Kč');}
    if(phase>=3)text('.demo-state','Evidováno · DEMO-001');
    if(phase>=4){text('.demo-state','Ke schválení');const draft=content.querySelector('#demo-draft');draft.value=parsed.draft;draft.readOnly=false;}
   }else{
-   content.innerHTML='<div class="automation-input"><span class="automation-label">OBJEDNÁVKA · UKÁZKOVÁ</span><h3>DEMO-1048</h3><p>5 × USB-C adaptér<br>4 × Síťový kabel</p><p class="automation-muted">Změna se zapíše jen do této ukázky.</p></div><div class="automation-result"><span class="automation-label">SKLADOVÉ ZÁZNAMY</span><table><caption>Množství před a po objednávce</caption><thead><tr><th>Položka</th><th>Před</th><th>Nyní</th><th>Minimum</th></tr></thead><tbody></tbody></table><p class="demo-alert" role="status"></p></div>';
+   content.innerHTML='<div class="automation-input"><span class="automation-label">OBJEDNÁVKA · UKÁZKOVÁ</span><h3>DEMO-1048</h3><p>5 × USB-C adaptér<br>4 × Síťový kabel</p><p class="automation-muted">Změna se zapíše jen do této ukázky.</p></div><div class="automation-result"><span class="automation-data-flow" aria-hidden="true"><span class="data-flow-bar"></span><span class="data-flow-bar"></span></span><span class="automation-label">SKLADOVÉ ZÁZNAMY</span><table><caption>Množství před a po objednávce</caption><thead><tr><th>Položka</th><th>Před</th><th>Nyní</th><th>Minimum</th></tr></thead><tbody></tbody></table><p class="demo-alert" role="status"></p></div>';
    const body=content.querySelector('tbody');stock.items.forEach((item,i)=>{const row=document.createElement('tr');[item.name,initial.items[i].quantity,item.quantity,item.minimum].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.appendChild(cell)});if(phase>=3&&item.quantity<item.minimum)row.className='low';body.appendChild(row)});
    text('.demo-alert',phase>=4?'Dochází USB-C adaptér: zbývají 2 ks, minimum jsou 3. Připravte doplnění skladu.':phase>=3?'Sklad aktualizován. Objednávka zaznamenána jednou.':'Čeká na zpracování objednávky.');
   }
+  content.querySelector('.automation-result').classList.toggle('data-loading',phase>0&&phase<3&&!document.hidden);
   approve.hidden=kind!=='inquiry'||phase<4;
  }
  function resetDemo(){generation++;clearTimeout(timer);phase=0;stock=structuredClone(initial);parsed=null;run.disabled=false;approve.disabled=false;status.textContent='Připraveno. Spusťte ukázku.';render();}
@@ -38,6 +39,7 @@
  block.querySelectorAll('[data-demo]').forEach(button=>button.addEventListener('click',()=>{
   opener=button;kind=button.dataset.demo;title.textContent=kind==='inquiry'?'Z poptávky k návrhu odpovědi':'Z objednávky do skladu';resetDemo();dialog.showModal();document.body.classList.add('automation-open');dialog.querySelector('[data-close]').focus();
  }));
+ document.addEventListener('visibilitychange',()=>dialog.classList.toggle('demo-hidden',document.hidden));
  run.addEventListener('click',start);reset.addEventListener('click',resetDemo);
  approve.addEventListener('click',()=>{approve.disabled=true;content.querySelector('#demo-draft').readOnly=true;text('.demo-state','Schváleno v ukázce · neodesláno');status.textContent='Návrh schválen v ukázce. Žádný e-mail nebyl odeslán.';});
  dialog.querySelector('[data-close]').addEventListener('click',()=>dialog.close());
