@@ -65,7 +65,7 @@ body:not(.subpage) .hero{isolation:auto;perspective:none;background:none}
 /* One consistent pose on hover: no instant restacking or rotation reset. */
 .signal.depth-managed,.signal.depth-managed:hover,.signal.depth-managed:focus-visible{transform:perspective(1000px) translateY(calc(var(--rest-y) - var(--hover-progress,0)*4px)) rotateX(var(--tilt-x,0deg)) rotateY(var(--tilt-y,0deg));transition:border-color .65s ease}
 .portfolio-window.depth-managed,.portfolio-window.depth-managed:hover,.portfolio-window.depth-managed:focus-visible{z-index:var(--surface-z,2);transform:perspective(1100px) translateY(calc(var(--hover-progress,0)*-7px)) rotateY(calc(var(--card-turn) + var(--tilt-y,0deg))) rotateZ(var(--card-roll)) rotateX(var(--tilt-x,0deg)) scale(calc(1 + var(--hover-progress,0)*.008));transition:border-color .65s ease}
-.portfolio-domfins{--surface-z:3}.portfolio-window.depth-managed:focus-visible{z-index:5}
+.portfolio-banik{--surface-z:3}.portfolio-window.depth-managed:focus-visible{z-index:5}
 html.motion-disabled .signal.depth-managed:hover,html.motion-disabled .signal.depth-managed:focus-visible{transform:perspective(1000px) translateY(var(--rest-y))}
 html.motion-disabled .portfolio-window.depth-managed:hover,html.motion-disabled .portfolio-window.depth-managed:focus-visible{transform:perspective(1100px) rotateY(var(--card-turn)) rotateZ(var(--card-roll))}
 html.motion-disabled .portfolio-window.depth-managed:hover:not(:focus-visible){z-index:var(--surface-z,2)}

@@ -206,23 +206,23 @@ body{background:radial-gradient(circle at 74% 9%,rgba(95,72,166,.17),transparent
 .portfolio-stage{height:525px;position:relative;perspective:1300px;isolation:isolate}
 .portfolio-window{display:block;position:absolute;width:38%;overflow:hidden;border:1px solid rgba(192,171,255,.42);border-radius:17px;background:#151522;box-shadow:0 24px 60px rgba(0,0,0,.42),0 0 27px rgba(149,115,255,.12),inset 0 1px rgba(255,255,255,.18);transform-style:preserve-3d;transition:transform .42s cubic-bezier(.2,.75,.2,1),box-shadow .42s ease,border-color .42s ease;will-change:transform}
 .portfolio-window:hover,.portfolio-window:focus-visible{z-index:5;transform:translateY(-17px) rotateY(0) rotateZ(0) scale(1.035);border-color:rgba(205,184,255,.82);box-shadow:0 36px 85px rgba(0,0,0,.5),0 0 42px rgba(156,121,255,.28)}
-.portfolio-banik{left:0;top:22px;z-index:1;transform:rotateY(10deg) rotateZ(-3deg)}
-.portfolio-domfins{left:31%;top:103px;z-index:3;transform:translateZ(42px)}
-.portfolio-wenspol{right:0;top:22px;z-index:2;transform:rotateY(-10deg) rotateZ(3deg)}
+.portfolio-wenspol{left:0;top:22px;z-index:1;transform:rotateY(10deg) rotateZ(-3deg)}
+.portfolio-banik{left:31%;top:103px;z-index:3;transform:translateZ(42px)}
+.portfolio-domfins{right:0;top:22px;z-index:2;transform:rotateY(-10deg) rotateZ(3deg)}
 .portfolio-window .browser-bar{display:flex;height:29px}
 .portfolio-window .browser-bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .portfolio-window img{display:block;width:100%;height:clamp(180px,19vw,260px);object-fit:cover;object-position:top;background:#1b1c2a}
 .portfolio-caption{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 21px;background:linear-gradient(100deg,#191825,#202034)}
 .portfolio-caption small{display:block;color:#bcaeff;font-size:10px;text-transform:uppercase;letter-spacing:.12em;margin-bottom:3px}
 .portfolio-caption strong{display:block;font-size:clamp(18px,1.75vw,25px);letter-spacing:-.045em;font-weight:600;line-height:1.15}
-.portfolio-wenspol .portfolio-caption{justify-content:flex-end;text-align:right}
+.portfolio-domfins .portfolio-caption{justify-content:flex-end;text-align:right}
 .portfolio-arrow{font-size:22px;color:#c4b6ff;line-height:1}
 .demo-rail{display:flex;align-items:center;justify-content:center;gap:25px;padding:22px 0 0;border-top:1px solid rgba(194,177,255,.14)}
 .demo-rail>span{color:#c2b7dd;font-size:13px;white-space:nowrap}
 .demo-rail .demo-links{padding:0}
 .work-heading>p{max-width:240px}
-@media(max-width:1050px){.portfolio-stage{height:430px}.portfolio-window{width:39%}.portfolio-banik,.portfolio-wenspol{top:20px}.portfolio-domfins{top:87px}.portfolio-caption{padding:11px 14px;min-height:65px}.portfolio-caption strong{font-size:18px}}
-@media(max-width:760px){.hero-art{opacity:.53;mask-image:linear-gradient(to right,transparent 2%,black 52%);-webkit-mask-image:linear-gradient(to right,transparent 2%,black 52%)}.portfolio-stage{height:auto;display:grid;gap:16px;perspective:none}.portfolio-window,.portfolio-banik,.portfolio-domfins,.portfolio-wenspol{position:relative;left:auto;right:auto;top:auto;width:100%;transform:none;will-change:auto}.portfolio-window:hover,.portfolio-window:focus-visible{transform:translateY(-5px) scale(1.005)}.portfolio-window img{height:auto;aspect-ratio:16/8}.portfolio-caption,.portfolio-wenspol .portfolio-caption{min-height:74px;padding:14px 20px;justify-content:space-between;text-align:left}.portfolio-caption strong{font-size:24px}.demo-rail{justify-content:flex-start;align-items:flex-start;flex-direction:column;gap:12px;margin-top:30px;padding-top:23px}.demo-rail .demo-links{gap:9px}}
+@media(max-width:1050px){.portfolio-stage{height:430px}.portfolio-window{width:39%}.portfolio-wenspol,.portfolio-domfins{top:20px}.portfolio-banik{top:87px}.portfolio-caption{padding:11px 14px;min-height:65px}.portfolio-caption strong{font-size:18px}}
+@media(max-width:760px){.hero-art{opacity:.53;mask-image:linear-gradient(to right,transparent 2%,black 52%);-webkit-mask-image:linear-gradient(to right,transparent 2%,black 52%)}.portfolio-stage{height:auto;display:grid;gap:16px;perspective:none}.portfolio-window,.portfolio-wenspol,.portfolio-banik,.portfolio-domfins{position:relative;left:auto;right:auto;top:auto;width:100%;transform:none;will-change:auto}.portfolio-window:hover,.portfolio-window:focus-visible{transform:translateY(-5px) scale(1.005)}.portfolio-window img{height:auto;aspect-ratio:16/8}.portfolio-caption,.portfolio-domfins .portfolio-caption{min-height:74px;padding:14px 20px;justify-content:space-between;text-align:left}.portfolio-caption strong{font-size:24px}.demo-rail{justify-content:flex-start;align-items:flex-start;flex-direction:column;gap:12px;margin-top:30px;padding-top:23px}.demo-rail .demo-links{gap:9px}}
 @media(max-width:430px){.hero-art{top:31%;opacity:.62}.portfolio-caption strong{font-size:22px}.portfolio-window .browser-bar span{font-size:9px}}
 @media(prefers-reduced-motion:reduce){.portfolio-window{transition:none}}
 
@@ -238,7 +238,7 @@ body{background:radial-gradient(circle at 77% 8%,rgba(102,66,181,.19),transparen
 .work{background:radial-gradient(ellipse at 50% 51%,rgba(99,59,172,.11),transparent 49%)}
 .portfolio-stage:before{content:"";position:absolute;z-index:0;left:12%;right:12%;top:30%;height:55%;border-radius:50%;background:radial-gradient(ellipse,rgba(113,66,200,.18),transparent 67%);filter:blur(32px);pointer-events:none;animation:studio-light-drift 10s ease-in-out infinite alternate-reverse}
 .portfolio-window{border-color:rgba(201,177,255,.4);box-shadow:inset 0 1px rgba(255,255,255,.22),0 28px 65px rgba(0,0,0,.44),0 0 35px rgba(137,92,225,.12);animation:portfolio-float 7s ease-in-out infinite alternate}
-.portfolio-domfins{animation-delay:-2.3s}.portfolio-wenspol{animation-delay:-4.6s}
+.portfolio-banik{animation-delay:-2.3s}.portfolio-domfins{animation-delay:-4.6s}
 .portfolio-window:hover,.portfolio-window:focus-visible{box-shadow:inset 0 1px rgba(255,255,255,.3),0 37px 88px rgba(0,0,0,.5),0 0 54px rgba(157,114,245,.29)}
 .portfolio-window .browser-bar{background:linear-gradient(110deg,#282237,#171724 65%,#29233c)}
 .portfolio-caption{background:linear-gradient(125deg,rgba(45,35,67,.97),rgba(22,21,37,.98))}
