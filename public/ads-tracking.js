@@ -70,10 +70,14 @@
     const banner = document.createElement('aside');
     banner.className = 'ads-consent-banner';
     banner.setAttribute('role', 'region');
-    banner.setAttribute('aria-label', 'Volba reklamního měření');
+    banner.setAttribute('aria-label', 'Cookies');
 
     const message = document.createElement('p');
-    message.textContent = 'S vaším souhlasem používáme Google Ads k měření odeslaných poptávek. Google může ukládat reklamní cookies. Odmítnutí neomezí web ani formulář. ';
+    const title = document.createElement('strong');
+    title.textContent = 'Cookies';
+    const explanation = document.createElement('span');
+    explanation.textContent = 'S vaším souhlasem používáme Google Ads k měření odeslaných poptávek. Google může ukládat reklamní cookies. Odmítnutí neomezí web ani formulář. ';
+    message.append(title, document.createElement('br'), explanation);
     const privacy = document.createElement('a');
     privacy.href = '/pages/privacy.html';
     privacy.textContent = 'Více o soukromí';
@@ -89,7 +93,7 @@
     const accept = document.createElement('button');
     accept.type = 'button';
     accept.className = 'btn';
-    accept.textContent = 'Povolit měření';
+    accept.textContent = 'Povolit cookies';
     actions.append(reject, accept);
     banner.appendChild(actions);
     document.body.appendChild(banner);
@@ -121,7 +125,7 @@
       const settings = document.createElement('button');
       settings.type = 'button';
       settings.className = 'ads-consent-settings';
-      settings.textContent = 'Nastavení reklamního měření';
+      settings.textContent = 'Nastavení cookies';
       settings.addEventListener('click', showBanner);
       footer.appendChild(settings);
     }
