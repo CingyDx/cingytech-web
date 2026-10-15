@@ -4,6 +4,7 @@
   const form = document.querySelector('#contact-form');
   const status = document.querySelector('#form-status');
   const submit = form?.querySelector('button[type="submit"]');
+  const submitMarkup = submit?.innerHTML;
   const campaignFields = ['utm_source', 'utm_medium', 'utm_campaign'];
   const campaignKey = 'cingy-campaign-v1';
 
@@ -101,7 +102,7 @@
       }
     } finally {
       submit.disabled = false;
-      submit.innerHTML = 'Odeslat poptávku <span aria-hidden="true">↗</span>';
+      submit.innerHTML = submitMarkup;
     }
   });
 })();

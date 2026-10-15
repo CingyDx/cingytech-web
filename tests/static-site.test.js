@@ -7,6 +7,23 @@ const vm = require("node:vm");
 const root = path.resolve(__dirname, "..");
 const publicRoot = path.join(root, "public");
 
+test("home form restores the original SVG submit icon after success and failure", async () => {
+  const original = 'Odeslat poptávku <span aria-hidden="true"><svg class="icon-arrow" viewBox="0 0 24 24"><path d="M6 18 18 6M6 6h12v12"/></svg></span>';
+  for (const ok of [true, false]) {
+    let markup = original;
+    const button = { disabled: false, get innerHTML() { return markup; }, set innerHTML(value) { markup = value; }, set textContent(value) { markup = value; } };
+    let onSubmit;
+    const form = { querySelector() { return button; }, reportValidity() { return true; }, elements: { name: { value: 'Test' }, message: { value: 'Local simulation' } }, addEventListener(type, fn) { onSubmit = fn; }, reset() {} };
+    const status = { textContent: '', className: '', append() {} };
+    const document = { querySelector(selector) { return selector === '#contact-form' ? form : selector === '#form-status' ? status : null; }, addEventListener() {}, createElement() { return {}; } };
+    class FormData { set() {} *[Symbol.iterator]() {} }
+    vm.runInNewContext(fs.readFileSync(path.join(publicRoot, 'home.js'), 'utf8'), { document, window: { location: { search: '' }, addEventListener() {} }, sessionStorage: { getItem() { return null; } }, URLSearchParams, FormData, fetch: async () => ({ ok }) });
+    await onSubmit({ preventDefault() {} });
+    assert.equal(button.disabled, false);
+    assert.equal(button.innerHTML, original);
+  }
+});
+
 test("motion choice is restored before rendering without requiring storage access", () => {
   const script = fs.readFileSync(path.join(publicRoot, "motion-preference.js"), "utf8");
   for (const choice of ["on", "off", null, "unexpected"]) {

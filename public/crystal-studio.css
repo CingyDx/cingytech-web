@@ -123,3 +123,4 @@ html.motion-disabled .portfolio-window.depth-managed:hover:not(:focus-visible){z
 html.motion-disabled .depth-droplets{transition:none}
 @media(prefers-reduced-motion:reduce){html:not(.motion-enabled) .depth-droplets{transition:none}}
 .hero-art[data-video-state="adapting"] .hero-art-poster{transition:none}
+.icon-arrow{display:inline-block;width:1em;height:1em;flex:none;vertical-align:-.125em}
