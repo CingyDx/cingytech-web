@@ -124,3 +124,8 @@ html.motion-disabled .depth-droplets{transition:none}
 @media(prefers-reduced-motion:reduce){html:not(.motion-enabled) .depth-droplets{transition:none}}
 .hero-art[data-video-state="adapting"] .hero-art-poster{transition:none}
 .icon-arrow{display:inline-block;width:1em;height:1em;flex:none;vertical-align:-.125em}
+.contact-phone{display:flex;width:fit-content;max-width:100%;flex-wrap:wrap;align-items:center;gap:8px 16px;min-height:48px;margin-top:28px;font-size:clamp(23px,2vw,29px);font-weight:750;line-height:1.4;color:#f4f3f8}
+.contact-phone span{font-size:13px;font-weight:600;color:#c8a8ff;text-decoration:underline;text-underline-offset:4px}
+.contact-phone:hover{color:#cbb4ff}
+.contact-phone:focus-visible{outline:2px solid #c5a5ff;outline-offset:5px;border-radius:4px}
+.contact-phone+.contact-email{margin-top:14px}
