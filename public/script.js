@@ -316,6 +316,7 @@
     const status = document.getElementById('form-status');
     const submitButton = form.querySelector('button[type="submit"]');
     const defaultLabel = submitButton ? submitButton.textContent : '';
+    let submitting = false;
 
     function setStatus(text, type) {
       if (!status) return;
@@ -340,6 +341,8 @@
     }
 
     form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      if (submitting) return;
       const nameValue = (form.querySelector('[name="name"]')?.value || '').trim();
       const emailValue = (form.querySelector('[name="email"]')?.value || '').trim();
       const messageValue = (form.querySelector('[name="message"]')?.value || '').trim();
@@ -357,6 +360,7 @@
       }
 
       event.preventDefault();
+      submitting = true;
       setSubmitting(true);
       setStatus('Odesílám zprávu...', 'success');
 
@@ -389,6 +393,7 @@
       } catch (error) {
         setSubmitError();
       } finally {
+        submitting = false;
         setSubmitting(false);
       }
     });

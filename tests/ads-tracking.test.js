@@ -74,6 +74,17 @@ test('a returning visitor who declined does not load the tag', () => {
   assert.equal(document.head.children.length, 0);
 });
 
+test('confirmed leads use an anonymous transaction ID and duplicate callbacks count once', () => {
+  const { window } = loadConsent('granted');
+  window.CingyAds.trackLead('ct-test-001');
+  window.CingyAds.trackLead('ct-test-001');
+  window.CingyAds.trackLead('ct-test-002');
+  const events = window.dataLayer.filter(row => row[0] === 'event');
+  assert.equal(events.length, 2);
+  assert.equal(events[0][2].transaction_id, 'ct-test-001');
+  assert.equal(events[1][2].transaction_id, 'ct-test-002');
+});
+
 test('a visitor can revoke a previously saved consent', () => {
   const { document, window, banner, storage } = loadConsent('granted');
   assert.equal(document.head.children.length, 1);
@@ -92,8 +103,8 @@ test('all pages using the shared script load consent before form handling', () =
   }
   for (const file of walk(publicRoot).filter((name) => name.endsWith('.html'))) {
     const html = fs.readFileSync(file, 'utf8');
-    if (!html.includes('script.js" defer')) continue;
-    assert.match(html, /ads-tracking\.js" defer><\/script>[\s\S]*script\.js" defer><\/script>/,
+    if (!/src="[^"\s]*\/(?:home|script)\.js(?:\?[^"\s]*)?" defer/.test(html)) continue;
+    assert.match(html, /ads-tracking\.js(?:\?[^"\s]*)?" defer><\/script>[\s\S]*(?:home|script)\.js(?:\?[^"\s]*)?" defer><\/script>/,
       `${path.relative(publicRoot, file)} must load consent first`);
   }
 });
@@ -154,7 +165,7 @@ function loadContactForm(response, trackingFails = false, campaignSearch = '', c
   let postedBody = '';
   vm.runInNewContext(fs.readFileSync(path.join(publicRoot, 'script.js'), 'utf8'), {
     document, window, FormData: MockFormData, URLSearchParams,
-    fetch: async (target, request) => { postedBody = request.body; return response; }
+    fetch: async (target, request) => { postedBody = request.body; return await (typeof response === 'function' ? response() : response); }
   });
   handlers.DOMContentLoaded();
   return { submit: handlers.submit, form, status, conversions: () => conversions, postedBody: () => postedBody };
@@ -169,6 +180,20 @@ test('campaign source survives navigation and reaches the CRM form submission', 
   assert.equal(body.get('utm_source'), 'google');
   assert.equal(body.get('utm_medium'), 'cpc');
   assert.equal(body.get('utm_campaign'), 'launch_sep26');
+});
+
+test('contact form prevents overlapping requests while preserving retry after failure', async () => {
+  let finish, requests = 0;
+  const pending = new Promise(resolve => { finish = resolve; });
+  const contact = loadContactForm(() => { requests++; return pending; });
+  const first = contact.submit({ preventDefault() {} });
+  const second = contact.submit({ preventDefault() {} });
+  assert.equal(requests, 1);
+  finish({ ok: false });
+  await Promise.all([first, second]);
+  await contact.submit({ preventDefault() {} });
+  assert.equal(requests, 2);
+  assert.equal(contact.form.resetCalled, undefined);
 });
 
 test('contact form counts a lead only after Netlify confirms a successful response', async () => {

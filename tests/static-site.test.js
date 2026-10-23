@@ -40,6 +40,29 @@ test("motion choice is restored before rendering without requiring storage acces
   }));
 });
 
+test('homepage suppresses parallel submissions and allows a new request after failure', async () => {
+  let onSubmit, finish, requests = 0;
+  const pending = new Promise(resolve => { finish = resolve; });
+  const button = { disabled: false, innerHTML: 'Odeslat' };
+  const form = { querySelector() { return button; }, reportValidity() { return true; }, elements: { name: { value: 'Test' }, message: { value: 'Local QA' } }, addEventListener(type, fn) { onSubmit = fn; }, reset() { throw new Error('Failed request must not reset'); } };
+  const status = { textContent: '', className: '', append() {} };
+  const document = { querySelector(selector) { return selector === '#contact-form' ? form : selector === '#form-status' ? status : null; }, addEventListener() {}, createElement() { return {}; } };
+  class FormData { set() {} *[Symbol.iterator]() {} }
+  vm.runInNewContext(fs.readFileSync(path.join(publicRoot, 'home.js'), 'utf8'), {
+    document, window: { location: { search: '' }, addEventListener() {} },
+    sessionStorage: { getItem() { return null; } }, URLSearchParams, FormData,
+    fetch: async () => { requests++; return pending; }
+  });
+  const first = onSubmit({ preventDefault() {} });
+  const second = onSubmit({ preventDefault() {} });
+  assert.equal(requests, 1);
+  finish({ ok: false });
+  await Promise.all([first, second]);
+  assert.equal(button.disabled, false);
+  await onSubmit({ preventDefault() {} });
+  assert.equal(requests, 2);
+});
+
 function walk(dir) {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const fullPath = path.join(dir, entry.name);

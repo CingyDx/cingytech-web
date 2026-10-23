@@ -5,6 +5,7 @@
   const CHOICE_LIFETIME_MS = 180 * 24 * 60 * 60 * 1000;
   let consent = null;
   let tagLoaded = false;
+  const countedLeads = new Set();
 
   function readChoice() {
     try {
@@ -54,10 +55,16 @@
     document.head.appendChild(tag);
   }
 
-  function trackLead() {
+  function trackLead(transactionId) {
     if (consent !== 'granted' || !tagLoaded) return;
+    // Random receipt identity only: never derive it from customer fields.
+    const id = transactionId || window.crypto?.randomUUID?.() ||
+      `ct-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+    if (countedLeads.has(id)) return;
+    countedLeads.add(id);
     window.gtag('event', 'conversion', {
       send_to: CONVERSION_ID,
+      transaction_id: id,
       value: 1,
       currency: 'CZK'
     });

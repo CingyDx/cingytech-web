@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://cingy.tech/</loc></url>
-  <url><loc>https://cingy.tech/pages/weby-aplikace.html</loc></url>
-  <url><loc>https://cingy.tech/pages/tvorba-webu.html</loc></url>
-  <url><loc>https://cingy.tech/pages/sluzby.html</loc></url>
-  <url><loc>https://cingy.tech/pages/omne.html</loc></url>
-  <url><loc>https://cingy.tech/pages/kontakt.html</loc></url>
+  <url><loc>https://cingy.tech/pages/blog/blog1</loc></url>
+  <url><loc>https://cingy.tech/pages/blog/blog2</loc></url>
+  <url><loc>https://cingy.tech/pages/blog/blog3</loc></url>
+  <url><loc>https://cingy.tech/pages/blog/blog4</loc></url>
+  <url><loc>https://cingy.tech/pages/blog/blog5</loc></url>
+  <url><loc>https://cingy.tech/pages/blog/blog6</loc></url>
   <url><loc>https://cingy.tech/pages/blog/</loc></url>
+  <url><loc>https://cingy.tech/pages/blog/wdblog1</loc></url>
+  <url><loc>https://cingy.tech/pages/blog/wdblog2</loc></url>
+  <url><loc>https://cingy.tech/pages/blog/wdblog3</loc></url>
+  <url><loc>https://cingy.tech/pages/kontakt</loc></url>
+  <url><loc>https://cingy.tech/pages/omne</loc></url>
+  <url><loc>https://cingy.tech/pages/privacy</loc></url>
+  <url><loc>https://cingy.tech/pages/sluzby</loc></url>
+  <url><loc>https://cingy.tech/pages/tvorba-webu</loc></url>
+  <url><loc>https://cingy.tech/pages/weby-aplikace.html</loc></url>
 </urlset>

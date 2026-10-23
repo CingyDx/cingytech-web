@@ -64,7 +64,7 @@ test("homepage lead form is Netlify-ready and retains consent-based conversion t
   const homeScript = read("public/home.js");
   assert.match(index, /name="poptavka"[^>]*data-netlify="true"[^>]*netlify-honeypot="bot-field"/);
   assert.match(index, /name="phone"[^>]*type="tel"|type="tel"[^>]*name="phone"/);
-  assert.match(index, /src="\.?\/ads-tracking\.js"/);
+  assert.match(index, /src="\.?\/ads-tracking\.js(?:\?[^"\s]+)?"/);
   assert.match(homeScript, /response\.ok/);
   assert.match(homeScript, /CingyAds\?\.trackLead\(\)/);
 });
@@ -81,7 +81,7 @@ test("work-site proof is visible and game dependencies are not required", () => 
   assert.match(index, /IT servis|hardware/);
   assert.match(index, /class="hero-art"/);
   assert.match(kontakt, /Kontakt pro web, aplikaci nebo IT servis/);
-  assert.match(sluzby, /Weby, IT servis a hardware/);
+  assert.match(sluzby, /Weby, aplikace, automatizace a IT/);
   assert.match(weby, /portfolio-banik-rynholec\.png/);
   assert.match(css, /portfolio-preview img[\s\S]*object-fit:\s*contain/);
   assert.equal(fs.existsSync(path.join(publicRoot, "assets", "portfolio-banik-rynholec.png")), true);

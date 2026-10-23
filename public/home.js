@@ -7,6 +7,7 @@
   const submitMarkup = submit?.innerHTML;
   const campaignFields = ['utm_source', 'utm_medium', 'utm_campaign'];
   const campaignKey = 'cingy-campaign-v1';
+  let submitting = false;
 
   function closeMenu() {
     if (!menu || !nav) return;
@@ -64,6 +65,7 @@
 
   form?.addEventListener('submit', async event => {
     event.preventDefault();
+    if (submitting) return;
     if (!form.reportValidity()) return;
     const message = form.elements.message.value.trim();
     if (!form.elements.name.value.trim() || !message) {
@@ -74,6 +76,7 @@
       setStatus('Zpráva je příliš dlouhá. Zkraťte ji prosím na 4000 znaků.', 'error');
       return;
     }
+    submitting = true;
     submit.disabled = true;
     submit.textContent = 'Odesílám…';
     setStatus('Odesílám poptávku…');
@@ -101,6 +104,7 @@
         status.append(emailLink, '.');
       }
     } finally {
+      submitting = false;
       submit.disabled = false;
       submit.innerHTML = submitMarkup;
     }
